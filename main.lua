@@ -1,5 +1,6 @@
 require("rooms")
 require("char")
+require("mouse")
 
 function love.load()
   rooms_load()
@@ -7,6 +8,7 @@ function love.load()
 
   tile = love.graphics.newImage("tile.png")
   wall = love.graphics.newImage("wall.png")
+  cursor = love.graphics.newImage("cursor.png")
   tileSize = 8
 
   levels = {}
@@ -18,10 +20,11 @@ function love.load()
 
 end
 
-function love.update()
+function love.update(dt)
+  mouse_update(dt)
 end
 
 function love.draw()
-
   rooms_draw()
+  mouse_draw()
 end

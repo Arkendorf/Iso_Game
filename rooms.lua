@@ -8,6 +8,7 @@ function rooms_load()
               {1, 0, 0, 1, 0, 0}}
   tileType = {[0] = 0, 1}
   floor = love.graphics.newCanvas(1, 1)
+  roomNodes = {}
 end
 
 function rooms_draw()
@@ -43,11 +44,12 @@ function tileToIso(x, y)
 end
 
 function startRoom(room)
-  drawFloor(room)
+  floor = drawFloor(room)
+  roomNodes = createIsoNodes(room)
 end
 
 function drawFloor(room)
-  floor = love.graphics.newCanvas((#rooms[room][1]+1)*tileSize*4, (#rooms[room]+1)*tileSize*2)
+  local floor = love.graphics.newCanvas((#rooms[room][1]+1)*tileSize*4, (#rooms[room]+1)*tileSize*2)
   love.graphics.setCanvas(floor)
   love.graphics.clear()
   for i, v in ipairs(rooms[room]) do
@@ -59,4 +61,17 @@ function drawFloor(room)
     end
   end
   love.graphics.setCanvas()
+  return floor
+end
+
+function createIsoNodes(room)
+  roomNodes = {}
+  for i, v in ipairs(rooms[room]) do
+    for j, t in ipairs(v) do
+      if tileType[t] == 0 then
+        roomNodes[#roomNodes + 1] = {j, i, tileToIso(j-1, i-1)}
+      end
+    end
+  end
+  return roomNodes
 end
