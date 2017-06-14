@@ -1,5 +1,7 @@
 function mouse_update(dt)
   local mX, mY = love.mouse.getPosition()
+  mX = mX - cameraPos.x
+  mY = mY - cameraPos.y
   cursorPos = roomNodes[1]
   for i, v in ipairs(roomNodes) do
     if distance(v[3], v[4], mX, mY) < distance(cursorPos[3], cursorPos[4], mX, mY) then

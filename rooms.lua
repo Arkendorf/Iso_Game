@@ -78,7 +78,7 @@ function createIsoNodes(room)
     for j, t in ipairs(v) do
       if tileType[t] == 0 then
         local tX, tY = tileToIso(j-1, i-1)
-        roomNodes[#roomNodes + 1] = {j, i, tX + tileSize, tY + tileSize/2}
+        roomNodes[#roomNodes + 1] = {j, i, tX + tileSize*2, tY + tileSize}
       end
     end
   end

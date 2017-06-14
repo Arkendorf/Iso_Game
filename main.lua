@@ -2,6 +2,7 @@ require("rooms")
 require("char")
 require("mouse")
 require("actor")
+require("camera")
 
 function love.load()
   rooms_load()
@@ -18,18 +19,23 @@ function love.load()
   currentRoom = levels[currentLevel].start.room
   startRoom(currentRoom)
 
-
+  w, h = love.graphics.getDimensions()
 
   actor_load()
+  camera_load()
 end
 
 function love.update(dt)
   mouse_update(dt)
+  camera_update(dt)
 end
 
 function love.draw()
+  love.graphics.push()
+  love.graphics.translate(cameraPos.x, cameraPos.y)
   rooms_draw()
   mouse_draw()
+  love.graphics.pop()
 end
 
 function love.keypressed(key)
