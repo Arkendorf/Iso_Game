@@ -6,6 +6,7 @@ function mouse_update(dt)
       currentNode = i
     end
   end
+  cursorPos = roomNodes[currentNode]
 end
 
 function distance(x1, y1, x2, y2)
@@ -13,5 +14,5 @@ function distance(x1, y1, x2, y2)
 end
 
 function mouse_draw()
-  love.graphics.draw(cursor, roomNodes[currentNode][3],roomNodes[currentNode][4])
+  love.graphics.draw(cursor, tileToIso(cursorPos[1]-1,cursorPos[2]-1))
 end
