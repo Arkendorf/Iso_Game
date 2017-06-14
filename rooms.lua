@@ -22,6 +22,10 @@ function rooms_draw()
   love.graphics.draw(floors[currentRoom])
 
   --the walls are then drawn
+  drawWalls()
+end
+
+function drawWalls()
   local x = 0
   local y = 0
   for i = 1, #rooms[currentRoom] + #rooms[currentRoom][1] - 1 do

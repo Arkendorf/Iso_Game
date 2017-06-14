@@ -15,3 +15,9 @@ function camera_update(dt)
     cameraPos.x = cameraPos.x - 1
   end
 end
+
+function centerCamOnRoom()
+  local x, y = coordToIso(#rooms[currentRoom][1] * 16, #rooms[currentRoom] * 16)
+  cameraPos.x = w / 2 - x - tileSize*2
+  cameraPos.y = h / 2 - y - tileSize
+end
