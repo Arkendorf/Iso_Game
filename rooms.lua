@@ -6,14 +6,20 @@ function rooms_load()
               {1, 0, 0, 1, 0, 0},
               {1, 0, 0, 1, 0, 0},
               {1, 0, 1, 1, 0, 0}}
+  rooms[2] = {{1, 0, 0, 1, 0, 0},
+              {0, 0, 0, 0, 0, 0},
+              {1, 0, 0, 1, 0, 0},
+              {0, 0, 0, 0, 0, 0},
+              {1, 0, 0, 1, 0, 0},
+              {0, 0, 0, 0, 0, 1}}
   tileType = {[0] = 0, 1}
-  floor = love.graphics.newCanvas(1, 1)
+  floors = {}
   roomNodes = {}
 end
 
 function rooms_draw()
   -- floor is drawn first so it will be at the bottom
-  love.graphics.draw(floor)
+  love.graphics.draw(floors[currentRoom])
 
   --the walls are then drawn
   local x = 0
@@ -44,7 +50,9 @@ function tileToIso(x, y)
 end
 
 function startRoom(room)
-  floor = drawFloor(room)
+  if floors[room] == nil then
+    floors[room] = drawFloor(room)
+  end
   roomNodes = createIsoNodes(room)
 end
 
