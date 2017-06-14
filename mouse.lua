@@ -1,12 +1,11 @@
 function mouse_update(dt)
   local mX, mY = love.mouse.getPosition()
-  currentNode = 1
+  cursorPos = roomNodes[1]
   for i, v in ipairs(roomNodes) do
-    if distance(v[3], v[4], mX, mY) < distance(roomNodes[currentNode][3], roomNodes[currentNode][4], mX, mY) then
-      currentNode = i
+    if distance(v[3], v[4], mX, mY) < distance(cursorPos[3], cursorPos[4], mX, mY) then
+      cursorPos = v
     end
   end
-  cursorPos = roomNodes[currentNode]
 end
 
 function distance(x1, y1, x2, y2)
