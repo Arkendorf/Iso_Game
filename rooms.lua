@@ -12,7 +12,7 @@ function rooms_load()
               {0, 0, 0, 0, 0, 0},
               {1, 0, 0, 1, 0, 0},
               {0, 0, 0, 0, 0, 1}}
-  tileType = {[0] = 0, 1}
+  tileType = {[0] = 0, [1] = 1}
   floors = {}
   roomNodes = {}
 end
@@ -21,8 +21,11 @@ function rooms_draw()
   -- floor is drawn first so it will be at the bottom
   love.graphics.draw(floors[currentRoom])
 
+  drawPath(currentActor)
+
   --the walls are then drawn
   drawWalls()
+
 end
 
 function drawWalls()
@@ -82,7 +85,7 @@ function createIsoNodes(room)
     for j, t in ipairs(v) do
       if tileType[t] == 0 then
         local tX, tY = tileToIso(j-1, i-1)
-        roomNodes[#roomNodes + 1] = {j, i, tX + tileSize*2, tY + tileSize}
+        roomNodes[#roomNodes + 1] = {tX = j, tY = i, x = tX + tileSize*2, y = tY + tileSize}
       end
     end
   end

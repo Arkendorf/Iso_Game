@@ -7,7 +7,7 @@ function drawAChar(y,y2)
   for i, v in ipairs(levels[currentLevel].actors) do
     if currentRoom == v.room and v.y >= y and v.y < y2 then
       local tX, tY = coordToIso(v.x-1, v.y-1)
-      if i == currentActor then
+      if i == currentActorNum then
         love.graphics.draw(cursor, tX, tY)
       end
 

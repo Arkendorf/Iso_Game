@@ -4,7 +4,7 @@ function mouse_update(dt)
   mY = mY - cameraPos.y
   cursorPos = roomNodes[1]
   for i, v in ipairs(roomNodes) do
-    if distance(v[3], v[4], mX, mY) < distance(cursorPos[3], cursorPos[4], mX, mY) then
+    if distance(v.x, v.y, mX, mY) < distance(cursorPos.x, cursorPos.y, mX, mY) then
       cursorPos = v
     end
   end
@@ -15,5 +15,5 @@ function distance(x1, y1, x2, y2)
 end
 
 function mouse_draw()
-  love.graphics.draw(cursor, tileToIso(cursorPos[1]-1,cursorPos[2]-1))
+  love.graphics.draw(cursor, tileToIso(cursorPos.tX-1,cursorPos.tY-1))
 end
