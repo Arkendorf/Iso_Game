@@ -20,7 +20,7 @@ function newPath(start, finish, map)
     local path = {}
     local parent = closedList[i]
     while parent ~= nil do
-      path[#path+1] = {x = parent.x, y = parent.y}
+      table.insert(path, 1, {x = parent.x, y = parent.y})
       parent = parent.parent
     end
     return path

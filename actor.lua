@@ -35,13 +35,20 @@ end
 function actor_update(dt)
   if currentActor.move == false then
     currentActor.path = newPath({x = math.floor(currentActor.x/tileSize)+1, y = math.floor(currentActor.y/tileSize)+1}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
-  else
-    if currentActor.x - currentActor.path[1].x * tileSize > 0 then
-
-    elseif currentActor.x - currentActor.path[1].x * tileSize < 0 then
-    elseif currentActor.y - currentActor.path[1].y * tileSize > 0 then
-    elseif currentActor.y - currentActor.path[1].y * tileSize < 0 then
-    else
+  end
+  for i, v in ipairs(levels[currentLevel].actors) do
+    if v.move == true then
+      if v.x == v.path[1].x*tileSize and v.y == v.path[1].y*tileSize then
+        table.remove(currentActor.path, 1)
+      else
+        if v.x > v.path[1].x * tileSize then
+          v.x = v.x + dt
+        elseif v.x < v.path[1].x * tileSize then
+          v.x = v.x - dt
+        elseif v.y > v.path[1].y * tileSize then
+        elseif v.y < v.path[1].y * tileSize then
+        end
+      end
     end
   end
 end
@@ -49,7 +56,6 @@ end
 function actor_mousepressed(x, y, button)
   if button == 1 and currentActor.move == false then
     currentActor.move = true
-    table.remove(currentActor.path, 1)
   end
 end
 
