@@ -39,7 +39,21 @@ end
 function drawPath(actor)
   love.graphics.setColor(255, 0, 0)
   for i, v in ipairs(actor.path) do
-    love.graphics.draw(tile, tileToIso(v.x-1, v.y-1))
+    if i > 1 and i < #actor.path then
+      if math.abs(v.x - actor.path[i-1].x) == 1 and math.abs(v.x - actor.path[i+1].x) == 1 then
+        love.graphics.draw(pathImg, pathQuad[2], tileToIso(v.x-1, v.y-1))
+      elseif math.abs(v.y - actor.path[i-1].y) == 1 and math.abs(v.y - actor.path[i+1].y) == 1 then
+        love.graphics.draw(pathImg, pathQuad[5], tileToIso(v.x-1, v.y-1))
+      elseif (v.x - actor.path[i-1].x == 1 and v.y - actor.path[i+1].y == -1) or (v.y - actor.path[i-1].y == -1 and v.x - actor.path[i+1].x == 1) then
+        love.graphics.draw(pathImg, pathQuad[4], tileToIso(v.x-1, v.y-1))
+      elseif (v.x - actor.path[i-1].x == 1 and v.y - actor.path[i+1].y == 1) or (v.y - actor.path[i-1].y == 1 and v.x - actor.path[i+1].x == 1) then
+        love.graphics.draw(pathImg, pathQuad[6], tileToIso(v.x-1, v.y-1))
+      elseif (v.x - actor.path[i-1].x == -1 and v.y - actor.path[i+1].y == -1) or (v.y - actor.path[i-1].y == 1 and v.x - actor.path[i+1].x == 1) then
+        love.graphics.draw(pathImg, pathQuad[1], tileToIso(v.x-1, v.y-1))
+      else
+        love.graphics.draw(pathImg, pathQuad[3], tileToIso(v.x-1, v.y-1))
+      end
+    end
   end
 end
 
