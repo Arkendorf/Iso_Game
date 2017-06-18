@@ -1,6 +1,7 @@
 function char_load()
   chars = {}
-  chars[1] = {}
+  chars[1] = {speed = 30}
+  chars[2] = {speed = 120}
 end
 
 function drawAChar(y,y2)
