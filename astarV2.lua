@@ -1,5 +1,5 @@
 function newPath(start, finish, map)
-  local openList = {{x = start.x, y = start.y, g = 0, h = distance(finish.x, finish.y, start.x, start.y)}}
+  local openList = {{x = start.x, y = start.y, g = 0, h = heuristic(finish.x, finish.y, start.x, start.y)}}
   local closedList = {}
   local result, i = inList(finish.x, finish.y, closedList)
   while result == false and #openList > 0 do
@@ -39,7 +39,7 @@ function checkTile(x, y, g, parent, openList, closedList, finish, map)
         openList = addAndSortF(openList, item)
       end
     else
-      openList = addAndSortF(openList, {x = x, y = y, g = g, h = distance(finish.x, finish.y, x, y), parent = parent})
+      openList = addAndSortF(openList, {x = x, y = y, g = g, h = heuristic(finish.x, finish.y, x, y), parent = parent})
     end
   end
   return openList
@@ -65,6 +65,6 @@ function inList(x, y, list)
   return false
 end
 
-function distance(x1, y1, x2, y2)
-  return math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1))
+function heuristic(x1, y1, x2, y2)
+  return math.abs(x2-x1) + math.abs(y2-y1)
 end

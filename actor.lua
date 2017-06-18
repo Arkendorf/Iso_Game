@@ -7,8 +7,8 @@ end
 function newCurrentActor(newActorNum)
   currentActorNum = newActorNum
   currentActor = levels[currentLevel].actors[newActorNum]
-  if currentRoom ~= currentActor.room then
-    currentRoom = currentActor.room
+  if currentRoom ~= levels[currentLevel].rooms[currentActor.room] then
+    currentRoom = levels[currentLevel].rooms[currentActor.room]
     local x, y = coordToIso(currentActor.x, currentActor.y)
     cameraPos.x = w / 2 - x - tileSize*2
     cameraPos.y = h / 2 - y - tileSize
@@ -40,17 +40,20 @@ function drawPath(actor)
   love.graphics.setColor(255, 0, 0)
   for i, v in ipairs(actor.path) do
     if i > 1 and i < #actor.path then
-      if math.abs(v.x - actor.path[i-1].x) == 1 and math.abs(v.x - actor.path[i+1].x) == 1 then
+      local oldTile = {x = actor.path[i-1].x - v.x, y = actor.path[i-1].y - v.y}
+      local newTile = {x = actor.path[i+1].x - v.x, y = actor.path[i+1].y - v.y}
+      
+      if math.abs(oldTile.x) == 1 and math.abs(newTile.x) == 1 then
         love.graphics.draw(pathImg, pathQuad[2], tileToIso(v.x-1, v.y-1))
-      elseif math.abs(v.y - actor.path[i-1].y) == 1 and math.abs(v.y - actor.path[i+1].y) == 1 then
+      elseif math.abs(oldTile.y) == 1 and math.abs(newTile.y) == 1 then
         love.graphics.draw(pathImg, pathQuad[5], tileToIso(v.x-1, v.y-1))
-      elseif (v.x - actor.path[i-1].x == 1 and v.y - actor.path[i+1].y == -1) or (v.y - actor.path[i-1].y == -1 and v.x - actor.path[i+1].x == 1) then
+      elseif (oldTile.x == -1 and newTile.y == 1) or (oldTile.y == 1 and newTile.x == -1) then
         love.graphics.draw(pathImg, pathQuad[4], tileToIso(v.x-1, v.y-1))
-      elseif (v.x - actor.path[i-1].x == 1 and v.y - actor.path[i+1].y == 1) or (v.y - actor.path[i-1].y == 1 and v.x - actor.path[i+1].x == 1) then
-        love.graphics.draw(pathImg, pathQuad[6], tileToIso(v.x-1, v.y-1))
-      elseif (v.x - actor.path[i-1].x == -1 and v.y - actor.path[i+1].y == -1) or (v.y - actor.path[i-1].y == 1 and v.x - actor.path[i+1].x == 1) then
+      elseif (oldTile.x == 1 and newTile.y == 1) or (oldTile.y == 1 and newTile.x == 1) then
         love.graphics.draw(pathImg, pathQuad[1], tileToIso(v.x-1, v.y-1))
-      else
+      elseif (oldTile.x == -1 and newTile.y == -1) or (oldTile.y == -1 and newTile.x == -1) then
+        love.graphics.draw(pathImg, pathQuad[6], tileToIso(v.x-1, v.y-1))
+      elseif (oldTile.x == 1 and newTile.y == -1) or (oldTile.y == -1 and newTile.x == 1) then
         love.graphics.draw(pathImg, pathQuad[3], tileToIso(v.x-1, v.y-1))
       end
     end
