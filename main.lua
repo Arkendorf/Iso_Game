@@ -28,7 +28,7 @@ function love.draw()
   rooms_draw()
   mouse_draw()
   love.graphics.pop()
-  love.graphics.draw(pathImg, pathQuad[2], 0, 0)
+  love.graphics.print(tostring(#currentActor.path))
 end
 
 function love.keypressed(key)

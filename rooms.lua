@@ -43,17 +43,17 @@ function drawWalls()
       if tileType[rooms[currentRoom][y][x]] == 1 then
         love.graphics.setColor(255, 255, 255)
         local tX, tY = tileToIso(x-1, y-1)
-        love.graphics.draw(wall, tX, tY - wall:getHeight()+tileSize*2)
+        love.graphics.draw(wall, tX, tY - wall:getHeight()+tileSize)
       end
       x = x + 1
       y = y - 1
     end
-    drawAChar((i-1)*tileSize,(i-1)*tileSize+tileSize)
+    drawAChar((i-1)*tileSize/2,i*tileSize/2)
   end
 end
 
 function tileToIso(x, y)
-  return (x-y+#rooms[currentRoom]-1)*tileSize*2, (y+x)*tileSize
+  return (x-y+#rooms[currentRoom]-1)*tileSize, (y+x)*tileSize/2
 end
 
 function startRoom(room)
@@ -64,7 +64,7 @@ function startRoom(room)
 end
 
 function drawFloor(room)
-  local floor = love.graphics.newCanvas((#rooms[room][1]+1)*tileSize*4, (#rooms[room]+1)*tileSize*2)
+  local floor = love.graphics.newCanvas((#rooms[room][1]+1)*tileSize*2, (#rooms[room]+1)*tileSize)
   love.graphics.setCanvas(floor)
   love.graphics.clear()
   for i, v in ipairs(rooms[room]) do
@@ -85,7 +85,7 @@ function createIsoNodes(room)
     for j, t in ipairs(v) do
       if tileType[t] == 0 then
         local tX, tY = tileToIso(j-1, i-1)
-        roomNodes[#roomNodes + 1] = {tX = j, tY = i, x = tX + tileSize*2, y = tY + tileSize}
+        roomNodes[#roomNodes + 1] = {tX = j, tY = i, x = tX + tileSize, y = tY + tileSize/2}
       end
     end
   end

@@ -12,7 +12,7 @@ function drawAChar(y,y2)
       end
 
       love.graphics.setColor(100, 100, 200)
-      love.graphics.draw(wall, tX, tY - wall:getHeight()+tileSize*2 + 1)
+      love.graphics.draw(wall, tX, tY - wall:getHeight()+tileSize+1)
       love.graphics.setColor(255, 255, 255)
     end
   end
