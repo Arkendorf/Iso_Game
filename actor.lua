@@ -52,7 +52,7 @@ function followPath(v, dt)
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)
-    local speed = chars[v.actor].speed -- will need to be changed when level mode 2 is added  
+    local speed = chars[v.actor].speed -- will need to be changed when level mode 2 is added
     v.x = v.x + dir.x * dt * speed
     v.y = v.y + dir.y * dt * speed
     if (dir.x > 0 and v.x > path.x) or (dir.x < 0 and v.x < path.x) then
@@ -65,7 +65,7 @@ function followPath(v, dt)
 end
 
 function actor_mousepressed(x, y, button)
-  if button == 1 and currentActor.path ~= nil and currentActor.move == false then
+  if button == 1 and currentActor.path ~= nil and currentActor.move == false and #currentActor.path > 1 then
     currentActor.move = true
     currentActor.path = simplifyPath(currentActor.path)
   end
