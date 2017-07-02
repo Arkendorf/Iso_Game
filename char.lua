@@ -4,17 +4,11 @@ function char_load()
   chars[2] = {speed = 120}
 end
 
-function drawAChar(y,y2)
+function queueChars()
   for i, v in ipairs(levels[currentLevel].actors) do
-    if currentRoom == v.room and v.y >= y and v.y < y2 then
-      local tX, tY = coordToIso(v.x-1, v.y-1)
-      if i == currentActorNum then
-        love.graphics.draw(cursor, tX, tY)
+      if currentRoom == v.room then
+        local x, y = coordToIso(v.x, v.y)
+        drawQueue[#drawQueue + 1] = {img = wall, x = x, y = y, z= wall:getHeight()-tileSize, r = 100, g = 100, b = 200}
       end
-
-      love.graphics.setColor(100, 100, 200)
-      love.graphics.draw(wall, tX, tY - wall:getHeight()+tileSize+1)
-      love.graphics.setColor(255, 255, 255)
-    end
   end
 end

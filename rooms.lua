@@ -15,6 +15,8 @@ function rooms_load()
   tileType = {[0] = 0, [1] = 1}
   floors = {}
   roomNodes = {}
+
+  drawQueue = {}
 end
 
 function rooms_draw()
@@ -23,32 +25,33 @@ function rooms_draw()
 
   drawPath(currentActor)
 
-  --the walls are then drawn
-  drawWalls()
-
+  drawQueue = {} -- reset queue
+  queueWalls()
+  queueChars()
+  table.sort(drawQueue, function(a, b) return a.y < b.y end) -- sort queue to ensure proper layering
+  for i, v in ipairs(drawQueue) do -- draw items in queue
+    if v.r ~= nil and v.g ~= nil and v.b ~= nil then -- set the color if a color is given
+      love.graphics.setColor(v.r, v.g, v.b)
+    else
+      love.graphics.setColor(255, 255, 255)
+    end
+    if v.quad == nil then -- check if item being drawn is a quad or image
+      love.graphics.draw(v.img, v.x, v.y-v.z)
+    else
+      love.graphics.draw(v.img, v.quad, v.x, v.y-v.z)
+    end
+  end
+  love.graphics.setColor(225, 255, 255)
 end
 
-function drawWalls()
-  local x = 0
-  local y = 0
-  for i = 1, #rooms[currentRoom] + #rooms[currentRoom][1] - 1 do
-    if i <= #rooms[currentRoom] then
-      x = 1
-      y = i
-    else
-      x = i - #rooms[currentRoom] + 1
-      y = #rooms[currentRoom]
-    end
-    while x <= #rooms[currentRoom][1] and y >= 1 do
-      if tileType[rooms[currentRoom][y][x]] == 1 then
-        love.graphics.setColor(255, 255, 255)
-        local tX, tY = tileToIso(x-1, y-1)
-        love.graphics.draw(wall, tX, tY - wall:getHeight()+tileSize)
+function queueWalls()
+  for i, v in ipairs(rooms[currentRoom]) do
+    for j, t in ipairs(v) do
+      if tileType[rooms[currentRoom][i][j]] == 1 then
+        local x, y = tileToIso(j-1, i-1)
+        drawQueue[#drawQueue + 1] = {img = wall, x = x, y = y, z= wall:getHeight()-tileSize}
       end
-      x = x + 1
-      y = y - 1
     end
-    drawAChar((i-1)*tileSize/2,i*tileSize/2)
   end
 end
 
