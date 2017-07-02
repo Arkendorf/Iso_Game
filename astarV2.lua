@@ -1,5 +1,5 @@
 function newPath(start, finish, map)
-  local openList = {{x = start.x, y = start.y, g = 0, h = heuristic(finish.x, finish.y, start.x, start.y)}}
+  local openList = {{x = start.x, y = start.y, g = 0, h = heuristic(finish.x, finish.y, start.x, start.y), parent = {}}}
   local closedList = {}
   local result, i = inList(finish.x, finish.y, closedList)
   while result == false and #openList > 0 do
@@ -7,22 +7,22 @@ function newPath(start, finish, map)
     closedList[#closedList+1] = currentTile
     table.remove(openList, 1)
 
-    openList = checkTile(currentTile.x+1, currentTile.y,   currentTile.g+1, currentTile, openList, closedList, finish, map)
-    openList = checkTile(currentTile.x-1, currentTile.y,   currentTile.g+1, currentTile, openList, closedList, finish, map)
-    openList = checkTile(currentTile.x,   currentTile.y+1, currentTile.g+1, currentTile, openList, closedList, finish, map)
-    openList = checkTile(currentTile.x,   currentTile.y-1, currentTile.g+1, currentTile, openList, closedList, finish, map)
+    local newParent = {unpack(currentTile.parent)} -- unpacked so that tiles dont have themselves as parents
+    newParent[#newParent+1] = {x = currentTile.x, y = currentTile.y}
+
+    openList = checkTile(currentTile.x+1, currentTile.y,   currentTile.g+1, newParent, openList, closedList, finish, map)
+    openList = checkTile(currentTile.x-1, currentTile.y,   currentTile.g+1, newParent, openList, closedList, finish, map)
+    openList = checkTile(currentTile.x,   currentTile.y+1, currentTile.g+1, newParent, openList, closedList, finish, map)
+    openList = checkTile(currentTile.x,   currentTile.y-1, currentTile.g+1, newParent, openList, closedList, finish, map)
 
     result, i = inList(finish.x, finish.y, closedList)
   end
   if result == false and #openList == 0 then
     return {}
   else
-    local path = {}
-    local parent = closedList[i]
-    while parent ~= nil do
-      table.insert(path, 1, {x = parent.x, y = parent.y})
-      parent = parent.parent
-    end
+    local v = closedList[i]
+    local path = v.parent -- retrieve path from list of parents
+    path[#path+1] = {x = v.x, y = v.y} -- add current tile to path
     return path
   end
 end
