@@ -29,7 +29,11 @@ function rooms_draw()
   queueWalls()
   queueChars()
   table.sort(drawQueue, function(a, b) return a.y < b.y end) -- sort queue to ensure proper layering
-  for i, v in ipairs(drawQueue) do -- draw items in queue
+  drawItemsInQueue() -- draw items in queue
+end
+
+function drawItemsInQueue()
+  for i, v in ipairs(drawQueue) do
     if v.r ~= nil and v.g ~= nil and v.b ~= nil then -- set the color if a color is given
       love.graphics.setColor(v.r, v.g, v.b)
     else

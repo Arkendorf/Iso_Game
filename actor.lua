@@ -38,42 +38,28 @@ function actor_update(dt)
   end
   for i, v in ipairs(levels[currentLevel].actors) do
     if v.move == true then
-      local path = {x = (v.path[1].x-1) * tileSize, y = (v.path[1].y-1) * tileSize}
-      if v.x == path.x and v.y == path.y then
-        table.remove(v.path, 1)
-        if #v.path < 1 then -- stop moving the actor
-          v.move = false
-        end
-      else
+      followPath(v, dt)
+    end
+  end
+end
 
-          local speed = chars[v.actor].speed -- will need to be changed when level mode 2 is added
-
-        if v.x > path.x then -- move left
-          if v.x - dt * speed < path.x then
-            v.x = path.x
-          else
-            v.x = v.x - dt * speed
-          end
-        elseif v.x < path.x then -- move right
-          if v.x + dt * speed > path.x then
-            v.x = path.x
-          else
-            v.x = v.x + dt * speed
-          end
-        elseif v.y > path.y then -- move up
-          if v.y - dt * speed < path.y then
-            v.y = path.y
-          else
-            v.y = v.y - dt * speed
-          end
-        elseif v.y < path.y then -- move down
-          if v.y + dt * speed > path.y then
-            v.y = path.y
-          else
-            v.y = v.y + dt * speed
-          end
-        end
-      end
+function followPath(v, dt)
+  local path = {x = (v.path[1].x-1) * tileSize, y = (v.path[1].y-1) * tileSize}
+  if v.x == path.x and v.y == path.y then
+    table.remove(v.path, 1)
+    if #v.path < 1 then -- stop moving the actor
+      v.move = false
+    end
+  else
+    local dir = pathDirection({x = v.x, y = v.y}, path)
+    local speed = chars[v.actor].speed -- will need to be changed when level mode 2 is added  
+    v.x = v.x + dir.x * dt * speed
+    v.y = v.y + dir.y * dt * speed
+    if (dir.x > 0 and v.x > path.x) or (dir.x < 0 and v.x < path.x) then
+      v.x = path.x
+    end
+    if (dir.y > 0 and v.y > path.y) or (dir.y < 0 and v.y < path.y) then
+      v.y = path.y
     end
   end
 end
@@ -81,6 +67,33 @@ end
 function actor_mousepressed(x, y, button)
   if button == 1 and currentActor.path ~= nil and currentActor.move == false then
     currentActor.move = true
+    currentActor.path = simplifyPath(currentActor.path)
+  end
+end
+
+function simplifyPath(path)
+  local simplePath = {path[1]}
+  local oldDir = pathDirection(path[1], path[2])
+  for i = 2, #path-1 do
+    newDir = pathDirection(path[i], path[i+1]) -- find new direction
+    if newDir.x ~= oldDir.x or newDir.y ~= oldDir.y then -- check if path is going in same direction
+      simplePath[#simplePath + 1] = path[i]
+      oldDir = newDir
+    end
+  end
+  simplePath[#simplePath + 1] = path[#path]
+  return simplePath
+end
+
+function pathDirection(a, b)
+  if a.x > b.x then
+    return {x = -1, y = 0}
+  elseif a.x < b.x then
+    return {x = 1, y = 0}
+  elseif a.y > b.y then
+    return {x = 0, y = -1}
+  else
+    return {x = 0, y = 1}
   end
 end
 
