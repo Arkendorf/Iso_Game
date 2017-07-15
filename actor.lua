@@ -29,17 +29,32 @@ function actor_keypressed(key)
     else
       newCurrentActor(1)
     end
+  elseif key == "space" then
+    currentActor.turnPts = 0
   end
 end
 
 function actor_update(dt)
   if currentActor.move == false then
     currentActor.path = newPath({x = math.floor(currentActor.x/tileSize)+1, y = math.floor(currentActor.y/tileSize)+1}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
+    if #currentActor.path-1 > currentActor.turnPts then -- get rid of path if destination is too far away
+      currentActor.path = {}
+    end
   end
+  local nextTurn = true
   for i, v in ipairs(levels[currentLevel].actors) do
     if v.move == true then
+      nextTurn = false -- don't end players turn if actors are still moving
       followPath(v, dt)
     end
+    if v.turnPts > 0 then
+      nextTurn = false -- dont end players turn if orders need to be given
+    end
+  end
+
+  if nextTurn == true then
+    -- do stuff if players turn is over
+    giveActorsTurnPts()
   end
 end
 
@@ -66,6 +81,7 @@ end
 
 function actor_mousepressed(x, y, button)
   if button == 1 and currentActor.path ~= nil and currentActor.move == false and #currentActor.path > 1 then
+    currentActor.turnPts = currentActor.turnPts - (#currentActor.path-1) -- reduce turnPts based on how far the actor is moving
     currentActor.move = true
     currentActor.path = simplifyPath(currentActor.path)
   end
@@ -121,5 +137,11 @@ function drawPath(actor)
         love.graphics.draw(cursor, tileToIso(v.x-1, v.y-1))
       end
     end
+  end
+end
+
+function giveActorsTurnPts()
+  for i, v in ipairs(levels[currentLevel].actors) do
+    v.turnPts = chars[v.actor].turnPts
   end
 end

@@ -1,7 +1,7 @@
 function char_load()
   chars = {}
-  chars[1] = {speed = 30}
-  chars[2] = {speed = 120}
+  chars[1] = {speed = 30, turnPts = 10}
+  chars[2] = {speed = 120, turnPts = 20}
 end
 
 function queueChars()
