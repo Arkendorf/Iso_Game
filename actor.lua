@@ -142,6 +142,6 @@ end
 
 function giveActorsTurnPts()
   for i, v in ipairs(levels[currentLevel].actors) do
-    v.turnPts = chars[v.actor].turnPts
+    v.turnPts = chars[v.actor].turnPts -- will need to be changed when level mode 2 is added
   end
 end
