@@ -1,18 +1,18 @@
 function rooms_load()
   rooms = {}
-  rooms[1] = {{1, 0, 0, 1, 0, 0},
-              {1, 0, 0, 1, 0, 0},
-              {1, 0, 0, 1, 0, 0},
-              {1, 0, 0, 0, 0, 0},
-              {1, 0, 0, 1, 0, 0},
-              {1, 0, 1, 1, 0, 0}}
-  rooms[2] = {{0, 0, 0, 0, 0, 0},
-              {0, 0, 0, 0, 0, 0},
-              {0, 0, 0, 0, 0, 0},
-              {0, 0, 0, 0, 0, 0},
-              {0, 0, 0, 0, 0, 0},
-              {0, 0, 0, 0, 0, 0}}
-  tileType = {[0] = 0, [1] = 1}
+  rooms[1] = {{2, 1, 1, 2, 1, 1},
+              {2, 1, 1, 2, 1, 1},
+              {2, 1, 1, 2, 1, 1},
+              {2, 1, 1, 1, 1, 1},
+              {2, 1, 1, 2, 1, 1},
+              {2, 1, 2, 2, 1, 1}}
+  rooms[2] = {{1, 1, 1, 1, 1, 1},
+              {1, 1, 1, 1, 1, 1},
+              {1, 1, 1, 1, 1, 1},
+              {1, 1, 1, 1, 1, 1},
+              {1, 1, 1, 1, 0, 0},
+              {1, 1, 1, 1, 0, 0}}
+  tileType = {[0] = 0, [1] = 1, [2] = 2}
   floors = {}
   roomNodes = {}
 
@@ -64,7 +64,7 @@ end
 function queueWalls()
   for i, v in ipairs(rooms[currentRoom]) do
     for j, t in ipairs(v) do
-      if tileType[rooms[currentRoom][i][j]] == 1 then
+      if tileType[rooms[currentRoom][i][j]] == 2 then
         local x, y = tileToIso(j-1, i-1)
         drawQueue[#drawQueue + 1] = {img = wall, x = x, y = y, z= wall:getHeight()-tileSize}
       end
@@ -89,7 +89,7 @@ function drawFloor(room)
   love.graphics.clear()
   for i, v in ipairs(rooms[room]) do
     for j, t in ipairs(v) do
-      if tileType[t] == 0 then
+      if tileType[t] == 1 then
         love.graphics.setColor(155, 155, 155)
         love.graphics.draw(tile, tileToIso(j-1, i-1))
       end
@@ -103,7 +103,7 @@ function createIsoNodes(room)
   roomNodes = {}
   for i, v in ipairs(rooms[room]) do
     for j, t in ipairs(v) do
-      if tileType[t] == 0 then
+      if tileType[t] == 1 then
         local tX, tY = tileToIso(j-1, i-1)
         roomNodes[#roomNodes + 1] = {tX = j, tY = i, x = tX + tileSize, y = tY + tileSize/2}
       end

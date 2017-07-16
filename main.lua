@@ -26,7 +26,6 @@ function love.draw()
   love.graphics.push()
   love.graphics.translate(cameraPos.x, cameraPos.y)
   rooms_draw()
-  mouse_draw()
   love.graphics.pop()
   love.graphics.print(tostring(#currentActor.path))
 end

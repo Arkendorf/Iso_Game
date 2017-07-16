@@ -148,13 +148,15 @@ function pathIsValid(actor)
     return false
   end
   for i, v in ipairs(levels[currentLevel].actors) do
-    if v.move == true then
-      if actor.path[#actor.path].x == v.path[#v.path].x and actor.path[#actor.path].y == v.path[#v.path].y then
-        return false
-      end
-    elseif  #actor.path > 0 then
-      if (actor.path[#actor.path].x-1)*tileSize == v.x and (actor.path[#actor.path].y-1)*tileSize == v.y then
-        return false
+    if actor.room == v.room then
+      if v.move == true then
+        if actor.path[#actor.path].x == v.path[#v.path].x and actor.path[#actor.path].y == v.path[#v.path].y then
+          return false
+        end
+      elseif  #actor.path > 0 then
+        if (actor.path[#actor.path].x-1)*tileSize == v.x and (actor.path[#actor.path].y-1)*tileSize == v.y then
+          return false
+        end
       end
     end
   end

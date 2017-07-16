@@ -28,7 +28,7 @@ function newPath(start, finish, map)
 end
 
 function checkTile(x, y, g, parent, openList, closedList, finish, map)
-  if inList(x, y, closedList) == false and x > 0 and x <= #map[1] and y > 0 and y <= #map and tileType[map[y][x]] == 0 then
+  if inList(x, y, closedList) == false and x > 0 and x <= #map[1] and y > 0 and y <= #map and tileType[map[y][x]] == 1 then
     local result, i = inList(x, y, openList)
     if result == true then
       local item = openList[i]
