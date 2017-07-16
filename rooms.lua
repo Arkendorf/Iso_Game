@@ -23,6 +23,11 @@ function rooms_draw()
   -- floor is drawn first so it will be at the bottom
   love.graphics.draw(floors[currentRoom])
 
+  if pathIsValid(currentActor) then
+    love.graphics.setColor(0, 255, 0)
+  else
+    love.graphics.setColor(255, 0, 0)
+  end
   drawPath(currentActor)
 
   drawQueue = {} -- reset queue
@@ -30,6 +35,14 @@ function rooms_draw()
   queueChars()
   table.sort(drawQueue, function(a, b) return a.y < b.y end) -- sort queue to ensure proper layering
   drawItemsInQueue() -- draw items in queue
+
+  if pathIsValid(currentActor) then
+    love.graphics.setColor(0, 255, 0)
+  else
+    love.graphics.setColor(255, 0, 0)
+  end
+  mouse_draw()
+  love.graphics.setColor(255, 255, 255)
 end
 
 function drawItemsInQueue()

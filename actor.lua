@@ -37,9 +37,6 @@ end
 function actor_update(dt)
   if currentActor.move == false then
     currentActor.path = newPath({x = math.floor(currentActor.x/tileSize)+1, y = math.floor(currentActor.y/tileSize)+1}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
-    if #currentActor.path-1 > currentActor.turnPts then -- get rid of path if destination is too far away
-      currentActor.path = {}
-    end
   end
   local nextTurn = true
   for i, v in ipairs(levels[currentLevel].actors) do
@@ -80,7 +77,7 @@ function followPath(v, dt)
 end
 
 function actor_mousepressed(x, y, button)
-  if button == 1 and currentActor.path ~= nil and currentActor.move == false and #currentActor.path > 1 then
+  if button == 1 and currentActor.path ~= nil and currentActor.move == false and #currentActor.path > 1 and pathIsValid(currentActor) then
     currentActor.turnPts = currentActor.turnPts - (#currentActor.path-1) -- reduce turnPts based on how far the actor is moving
     currentActor.move = true
     currentActor.path = simplifyPath(currentActor.path)
@@ -144,4 +141,22 @@ function giveActorsTurnPts()
   for i, v in ipairs(levels[currentLevel].actors) do
     v.turnPts = chars[v.actor].turnPts -- will need to be changed when level mode 2 is added
   end
+end
+
+function pathIsValid(actor)
+  if #actor.path-1 > actor.turnPts then -- get rid of path if destination is too far away
+    return false
+  end
+  for i, v in ipairs(levels[currentLevel].actors) do
+    if v.move == true then
+      if actor.path[#actor.path].x == v.path[#v.path].x and actor.path[#actor.path].y == v.path[#v.path].y then
+        return false
+      end
+    elseif  #actor.path > 0 then
+      if (actor.path[#actor.path].x-1)*tileSize == v.x and (actor.path[#actor.path].y-1)*tileSize == v.y then
+        return false
+      end
+    end
+  end
+  return true
 end
