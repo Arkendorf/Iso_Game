@@ -4,6 +4,7 @@ function graphics_load()
   tile = love.graphics.newImage("tile.png")
   wall = love.graphics.newImage("wall.png")
   cursor = love.graphics.newImage("cursor.png")
+  door = love.graphics.newImage("door.png")
   tileSize = 16
 
   pathImg = love.graphics.newImage("path.png")

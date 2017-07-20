@@ -6,12 +6,12 @@ function rooms_load()
               {2, 1, 1, 1, 1, 1},
               {2, 1, 1, 2, 1, 1},
               {2, 1, 2, 2, 1, 1}}
-  rooms[2] = {{1, 1, 1, 1, 1, 1},
-              {1, 1, 1, 1, 1, 1},
-              {1, 1, 1, 1, 1, 1},
-              {1, 1, 1, 1, 1, 1},
-              {1, 1, 1, 1, 0, 0},
-              {1, 1, 1, 1, 0, 0}}
+  rooms[2] = {{1, 1, 1, 1, 1, 0},
+              {1, 1, 1, 1, 1, 0},
+              {1, 1, 1, 1, 1, 0},
+              {1, 1, 1, 0, 0, 0},
+              {1, 1, 1, 0, 0, 0},
+              {1, 1, 1, 1, 1, 1}}
   tileType = {[0] = 0, [1] = 1, [2] = 2}
   floors = {}
   roomNodes = {}
@@ -23,6 +23,7 @@ function rooms_draw()
   -- floor is drawn first so it will be at the bottom
   love.graphics.draw(floors[currentRoom])
 
+  drawDoors() -- draws the door icons
   if pathIsValid(currentActor) then
     love.graphics.setColor(0, 255, 0)
   else
@@ -77,6 +78,9 @@ function tileToIso(x, y)
 end
 
 function startRoom(room)
+  if floors[room] == nil then
+    floors[room] = drawFloor(room)
+  end
   roomNodes = createIsoNodes(room)
 end
 
@@ -96,13 +100,23 @@ function drawFloor(room)
   return floor
 end
 
+function drawDoors()
+  for i, v in ipairs(levels[currentLevel].doors) do
+    if v.room1 == currentRoom then
+      love.graphics.draw(door, tileToIso(v.tX1-1, v.tY1-1))
+    elseif v.room2 == currentRoom then
+      love.graphics.draw(door, tileToIso(v.tX2-1, v.tY2-1))
+    end
+  end
+end
+
 function createIsoNodes(room)
   roomNodes = {}
   for i, v in ipairs(rooms[room]) do
     for j, t in ipairs(v) do
       if tileType[t] == 1 then
-        local tX, tY = tileToIso(j-1, i-1)
-        roomNodes[#roomNodes + 1] = {tX = j, tY = i, x = tX + tileSize, y = tY + tileSize/2}
+        local x, y = tileToIso(j-1, i-1)
+        roomNodes[#roomNodes + 1] = {tX = j, tY = i, x = x + tileSize, y = y + tileSize/2}
       end
     end
   end

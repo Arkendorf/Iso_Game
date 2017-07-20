@@ -7,8 +7,8 @@ end
 function newCurrentActor(newActorNum)
   currentActorNum = newActorNum
   currentActor = levels[currentLevel].actors[newActorNum]
-  if currentRoom ~= levels[currentLevel].rooms[currentActor.room] then
-    currentRoom = levels[currentLevel].rooms[currentActor.room]
+  if currentRoom ~= currentActor.room then
+    currentRoom = currentActor.room
     local x, y = coordToIso(currentActor.x, currentActor.y)
     cameraPos.x = w / 2 - x - tileSize
     cameraPos.y = h / 2 - y - tileSize/2
@@ -61,6 +61,14 @@ function followPath(v, dt)
     table.remove(v.path, 1)
     if #v.path < 1 then -- stop moving the actor
       v.move = false
+
+      for j, t in ipairs(levels[currentLevel].doors) do -- if actor has stopped on a door, move them to proper room
+        if v.room == t.room1 and (t.tX1-1)*tileSize == v.x and (t.tY1-1)*tileSize == v.y then
+          v.room = t.room2
+        elseif v.room == t.room2 and (t.tX2-1)*tileSize == v.x and (t.tY2-1)*tileSize == v.y then
+          v.room = t.room1
+        end
+      end
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)
