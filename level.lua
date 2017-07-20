@@ -7,9 +7,13 @@ end
 
 function startLevel(level)
   currentLevel = level
-  currentRoom = levels[currentLevel].start.room
+  currentRoom = levels[currentLevel].rooms[levels[currentLevel].start.room] -- current room is set to what start.room refers to in list of rooms used by level
   startRoom(currentRoom)
   centerCamOnRoom()
+
+  for i, v in ipairs(levels[currentLevel].rooms) do -- renders the floor for all rooms in level
+    floors[i] = drawFloor(v)
+  end
 
   for i, v in ipairs(levels[currentLevel].actors) do
     v.turnPts = chars[v.actor].turnPts -- will need to be changed when level mode 2 is added

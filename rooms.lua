@@ -77,9 +77,6 @@ function tileToIso(x, y)
 end
 
 function startRoom(room)
-  if floors[room] == nil then
-    floors[room] = drawFloor(room)
-  end
   roomNodes = createIsoNodes(room)
 end
 
