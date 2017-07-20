@@ -7,6 +7,10 @@ end
 function newCurrentActor(newActorNum)
   currentActorNum = newActorNum
   currentActor = levels[currentLevel].actors[newActorNum]
+  syncRooms()
+end
+
+function syncRooms()
   if currentRoom ~= currentActor.room then
     currentRoom = currentActor.room
     local x, y = coordToIso(currentActor.x, currentActor.y)
@@ -20,6 +24,10 @@ function coordToIso(x, y)
   x = x /tileSize
   y = y /tileSize
   return (x-y+#rooms[currentRoom]-1)*tileSize, (y+x)*tileSize/2
+end
+
+function tileToCoord(x, y)
+  return (x-1)*tileSize, (y-1)*tileSize
 end
 
 function actor_keypressed(key)
@@ -42,7 +50,7 @@ function actor_update(dt)
   for i, v in ipairs(levels[currentLevel].actors) do
     if v.move == true then
       nextTurn = false -- don't end players turn if actors are still moving
-      followPath(v, dt)
+      followPath(i, v, dt)
     end
     if v.turnPts > 0 then
       nextTurn = false -- dont end players turn if orders need to be given
@@ -55,7 +63,7 @@ function actor_update(dt)
   end
 end
 
-function followPath(v, dt)
+function followPath(i, v, dt)
   local path = {x = (v.path[1].x-1) * tileSize, y = (v.path[1].y-1) * tileSize}
   if v.x == path.x and v.y == path.y then
     table.remove(v.path, 1)
@@ -63,10 +71,18 @@ function followPath(v, dt)
       v.move = false
 
       for j, t in ipairs(levels[currentLevel].doors) do -- if actor has stopped on a door, move them to proper room
-        if v.room == t.room1 and (t.tX1-1)*tileSize == v.x and (t.tY1-1)*tileSize == v.y then
+        local x1, y1 = tileToCoord(t.tX1, t.tY1)
+        local x2, y2 = tileToCoord(t.tX2, t.tY2)
+        if v.room == t.room1 and x1 == v.x and y1 == v.y then
           v.room = t.room2
-        elseif v.room == t.room2 and (t.tX2-1)*tileSize == v.x and (t.tY2-1)*tileSize == v.y then
+          v.x = x2
+          v.y = y2
+          syncRooms()
+        elseif v.room == t.room2 and x2 == v.x and y2 == v.y then
           v.room = t.room1
+          v.x = x1
+          v.y = y1
+          syncRooms()
         end
       end
     end
@@ -162,7 +178,8 @@ function pathIsValid(actor)
           return false
         end
       elseif  #actor.path > 0 then
-        if (actor.path[#actor.path].x-1)*tileSize == v.x and (actor.path[#actor.path].y-1)*tileSize == v.y then
+        local x, y = tileToCoord(actor.path[#actor.path].x, actor.path[#actor.path].y)
+        if x == v.x and y == v.y then
           return false
         end
       end
