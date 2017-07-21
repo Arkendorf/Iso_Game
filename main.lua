@@ -6,6 +6,7 @@ require("camera")
 require("graphics")
 require("level")
 require("astarV2")
+require("door")
 
 function love.load()
   graphics_load()
@@ -27,7 +28,7 @@ function love.draw()
   love.graphics.translate(cameraPos.x, cameraPos.y)
   rooms_draw()
   love.graphics.pop()
-  love.graphics.print(tostring(#currentActor.path))
+  love.graphics.print(tostring(tileDoorInfo(1, 6, 1)))
 end
 
 function love.keypressed(key)

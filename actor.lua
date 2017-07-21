@@ -30,6 +30,10 @@ function tileToCoord(x, y)
   return (x-1)*tileSize, (y-1)*tileSize
 end
 
+function coordToTile(x, y)
+  return math.floor(x/tileSize)+1, math.floor(y/tileSize)+1
+end
+
 function actor_keypressed(key)
   if key == "tab" then
     if currentActorNum < #levels[currentLevel].actors then
@@ -39,6 +43,11 @@ function actor_keypressed(key)
     end
   elseif key == "space" then
     currentActor.turnPts = 0
+  elseif key == "e" and currentActor.move == false and currentActor.turnPts > 0 then
+    newPos = useDoor(tileDoorInfo(currentActor.room, coordToTile(currentActor.x, currentActor.y)))
+    if newPos ~= nil then currentActor.room, currentActor.x, currentActor.y = newPos.room, newPos.x, newPos.y end
+    syncRooms()
+    currentActor.turnPts = currentActor.turnPts - 1
   end
 end
 
@@ -69,22 +78,6 @@ function followPath(i, v, dt)
     table.remove(v.path, 1)
     if #v.path < 1 then -- stop moving the actor
       v.move = false
-
-      for j, t in ipairs(levels[currentLevel].doors) do -- if actor has stopped on a door, move them to proper room
-        local x1, y1 = tileToCoord(t.tX1, t.tY1)
-        local x2, y2 = tileToCoord(t.tX2, t.tY2)
-        if v.room == t.room1 and x1 == v.x and y1 == v.y then
-          v.room = t.room2
-          v.x = x2
-          v.y = y2
-          syncRooms()
-        elseif v.room == t.room2 and x2 == v.x and y2 == v.y then
-          v.room = t.room1
-          v.x = x1
-          v.y = y1
-          syncRooms()
-        end
-      end
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)
@@ -101,7 +94,7 @@ function followPath(i, v, dt)
 end
 
 function actor_mousepressed(x, y, button)
-  if button == 1 and currentActor.path ~= nil and currentActor.move == false and #currentActor.path > 1 and pathIsValid(currentActor) then
+  if button == 1 and currentActor.move == false and #currentActor.path > 1 and pathIsValid(currentActor) then
     currentActor.turnPts = currentActor.turnPts - (#currentActor.path-1) -- reduce turnPts based on how far the actor is moving
     currentActor.move = true
     currentActor.path = simplifyPath(currentActor.path)
@@ -170,17 +163,18 @@ end
 function pathIsValid(actor)
   if #actor.path-1 > actor.turnPts then -- get rid of path if destination is too far away
     return false
-  end
-  for i, v in ipairs(levels[currentLevel].actors) do
-    if actor.room == v.room then
-      if v.move == true then
-        if actor.path[#actor.path].x == v.path[#v.path].x and actor.path[#actor.path].y == v.path[#v.path].y then
-          return false
-        end
-      elseif  #actor.path > 0 then
-        local x, y = tileToCoord(actor.path[#actor.path].x, actor.path[#actor.path].y)
-        if x == v.x and y == v.y then
-          return false
+  else
+    for i, v in ipairs(levels[currentLevel].actors) do
+      if actor.room == v.room then
+        if v.move == true then
+          if actor.path[#actor.path].x == v.path[#v.path].x and actor.path[#actor.path].y == v.path[#v.path].y then
+            return false
+          end
+        elseif  #actor.path > 0 then
+          local x, y = tileToCoord(actor.path[#actor.path].x, actor.path[#actor.path].y)
+          if x == v.x and y == v.y then
+            return false
+          end
         end
       end
     end

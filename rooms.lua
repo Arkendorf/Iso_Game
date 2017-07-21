@@ -23,7 +23,9 @@ function rooms_draw()
   -- floor is drawn first so it will be at the bottom
   love.graphics.draw(floors[currentRoom])
 
+
   drawDoors() -- draws the door icons
+
   if pathIsValid(currentActor) then
     love.graphics.setColor(0, 255, 0)
   else
@@ -98,16 +100,6 @@ function drawFloor(room)
   end
   love.graphics.setCanvas()
   return floor
-end
-
-function drawDoors()
-  for i, v in ipairs(levels[currentLevel].doors) do
-    if v.room1 == currentRoom then
-      love.graphics.draw(door, tileToIso(v.tX1-1, v.tY1-1))
-    elseif v.room2 == currentRoom then
-      love.graphics.draw(door, tileToIso(v.tX2-1, v.tY2-1))
-    end
-  end
 end
 
 function createIsoNodes(room)
