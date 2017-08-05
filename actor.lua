@@ -53,7 +53,8 @@ end
 
 function actor_update(dt)
   if currentActor.move == false then
-    currentActor.path = newPath({x = math.floor(currentActor.x/tileSize)+1, y = math.floor(currentActor.y/tileSize)+1}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
+    currentActor.path.tiles = newPath({x = math.floor(currentActor.x/tileSize)+1, y = math.floor(currentActor.y/tileSize)+1}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
+    currentActor.path.valid = pathIsValid(currentActor)
   end
   local nextTurn = true
   for i, v in ipairs(levels[currentLevel].actors) do
@@ -73,10 +74,10 @@ function actor_update(dt)
 end
 
 function followPath(i, v, dt)
-  local path = {x = (v.path[1].x-1) * tileSize, y = (v.path[1].y-1) * tileSize}
+  local path = {x = (v.path.tiles[1].x-1) * tileSize, y = (v.path.tiles[1].y-1) * tileSize}
   if v.x == path.x and v.y == path.y then
-    table.remove(v.path, 1)
-    if #v.path < 1 then -- stop moving the actor
+    table.remove(v.path.tiles, 1)
+    if #v.path.tiles < 1 then -- stop moving the actor
       v.move = false
     end
   else
@@ -94,10 +95,10 @@ function followPath(i, v, dt)
 end
 
 function actor_mousepressed(x, y, button)
-  if button == 1 and currentActor.move == false and #currentActor.path > 1 and pathIsValid(currentActor) then
-    currentActor.turnPts = currentActor.turnPts - (#currentActor.path-1) -- reduce turnPts based on how far the actor is moving
+  if button == 1 and currentActor.move == false and #currentActor.path.tiles > 1 and currentActor.path.valid then
+    currentActor.turnPts = currentActor.turnPts - (#currentActor.path.tiles-1) -- reduce turnPts based on how far the actor is moving
     currentActor.move = true
-    currentActor.path = simplifyPath(currentActor.path)
+    currentActor.path.tiles = simplifyPath(currentActor.path.tiles)
   end
 end
 
@@ -129,10 +130,10 @@ end
 
 function drawPath(actor)
   if actor.move == false then -- only draw the path if the actor isn't moving along it
-    for i, v in ipairs(actor.path) do
-      if i > 1 and i < #actor.path then
-        local oldTile = {x = actor.path[i-1].x - v.x, y = actor.path[i-1].y - v.y}
-        local newTile = {x = actor.path[i+1].x - v.x, y = actor.path[i+1].y - v.y}
+    for i, v in ipairs(actor.path.tiles) do
+      if i > 1 and i < #actor.path.tiles then
+        local oldTile = {x = actor.path.tiles[i-1].x - v.x, y = actor.path.tiles[i-1].y - v.y}
+        local newTile = {x = actor.path.tiles[i+1].x - v.x, y = actor.path.tiles[i+1].y - v.y}
 
         if math.abs(oldTile.x) == 1 and math.abs(newTile.x) == 1 then
           love.graphics.draw(pathImg, pathQuad[2], tileToIso(v.x-1, v.y-1))
@@ -161,17 +162,17 @@ function giveActorsTurnPts()
 end
 
 function pathIsValid(actor)
-  if #actor.path-1 > actor.turnPts then -- get rid of path if destination is too far away
+  if #actor.path.tiles-1 > actor.turnPts then -- get rid of path if destination is too far away
     return false
   else
     for i, v in ipairs(levels[currentLevel].actors) do
       if actor.room == v.room then
         if v.move == true then
-          if actor.path[#actor.path].x == v.path[#v.path].x and actor.path[#actor.path].y == v.path[#v.path].y then
+          if actor.path.tiles[#actor.path.tiles].x == v.path.tiles[#v.path.tiles].x and actor.path.tiles[#actor.path.tiles].y == v.path.tiles[#v.path.tiles].y then
             return false
           end
-        elseif  #actor.path > 0 then
-          local x, y = tileToCoord(actor.path[#actor.path].x, actor.path[#actor.path].y)
+        elseif  #actor.path.tiles > 0 then
+          local x, y = tileToCoord(actor.path.tiles[#actor.path.tiles].x, actor.path.tiles[#actor.path.tiles].y)
           if x == v.x and y == v.y then
             return false
           end

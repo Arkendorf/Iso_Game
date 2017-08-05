@@ -55,14 +55,14 @@ function isDoorObstructed(door, side)
   if side == 1 then
     local x, y = tileToCoord(currentDoor.tX2, currentDoor.tY2)
     for i, v in ipairs(levels[currentLevel].actors) do
-      if (v.room == currentDoor.room2 and v.x == x and v.y == y) or (v.move == true and v.room == currentDoor.room2 and v.path[#v.path].x == currentDoor.tX2 and v.path[#v.path].y == currentDoor.tY2) then
+      if (v.room == currentDoor.room2 and v.x == x and v.y == y) or (v.move == true and v.room == currentDoor.room2 and v.path.tiles[#v.path.tiles].x == currentDoor.tX2 and v.path.tiles[#v.path.tiles].y == currentDoor.tY2) then
         return true
       end
     end
   else
     local x, y = tileToCoord(currentDoor.tX1, currentDoor.tY1)
     for i, v in ipairs(levels[currentLevel].actors) do
-      if (v.room == currentDoor.room1 and v.x == x and v.y == y) or (v.move == true and v.room == currentDoor.room1 and v.path[#v.path].x == currentDoor.tX1 and v.path[#v.path].y == currentDoor.tY1) then
+      if (v.room == currentDoor.room1 and v.x == x and v.y == y) or (v.move == true and v.room == currentDoor.room1 and v.path.tiles[#v.path.tiles].x == currentDoor.tX1 and v.path.tiles[#v.path.tiles].y == currentDoor.tY1) then
         return true
       end
     end

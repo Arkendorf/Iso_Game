@@ -26,7 +26,7 @@ function rooms_draw()
 
   drawDoors() -- draws the door icons
 
-  if pathIsValid(currentActor) then
+  if currentActor.path.valid then
     love.graphics.setColor(0, 255, 0)
   else
     love.graphics.setColor(255, 0, 0)
@@ -39,7 +39,7 @@ function rooms_draw()
   table.sort(drawQueue, function(a, b) return a.y < b.y end) -- sort queue to ensure proper layering
   drawItemsInQueue() -- draw items in queue
 
-  if pathIsValid(currentActor) then
+  if currentActor.path.valid then
     love.graphics.setColor(0, 255, 0)
   else
     love.graphics.setColor(255, 0, 0)
