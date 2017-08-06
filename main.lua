@@ -9,7 +9,8 @@ require("astarV2")
 require("door")
 require("hazard")
 require("scanreader")
-
+require("functiondump")
+require("hud")
 
 function love.load()
   graphics_load()
@@ -19,6 +20,12 @@ function love.load()
   camera_load()
   level_load()
   actor_load()
+
+  controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, scanreader = "tab", switchActor = "q", use = "e", endTurn = "space"}
+  text = {}
+  for line in love.filesystem.lines("text.txt") do
+  table.insert(text, line)
+  end
 end
 
 function love.update(dt)
@@ -33,7 +40,7 @@ function love.draw()
   love.graphics.translate(cameraPos.x, cameraPos.y)
   rooms_draw()
   love.graphics.pop()
-  love.graphics.print(tostring(scanFlicker[1]))
+  hud_draw()
 end
 
 function love.keypressed(key)
@@ -43,14 +50,4 @@ end
 
 function love.mousepressed(x, y, button)
   actor_mousepressed(x, y, button)
-end
-
-function copy(obj, seen)
-  if type(obj) ~= 'table' then return obj end
-  if seen and seen[obj] then return seen[obj] end
-  local s = seen or {}
-  local res = setmetatable({}, getmetatable(obj))
-  s[obj] = res
-  for k, v in pairs(obj) do res[copy(k, s)] = copy(v, s) end
-  return res
 end

@@ -2,16 +2,16 @@ function camera_load()
   cameraPos = {x = 0, y = 0}
 end
 function camera_update(dt)
-  if love.keyboard.isDown("w") then
+  if love.keyboard.isDown(controls.panCamera.up) then
     cameraPos.y = cameraPos.y + 1
   end
-  if love.keyboard.isDown("s") then
+  if love.keyboard.isDown(controls.panCamera.down) then
     cameraPos.y = cameraPos.y - 1
   end
-  if love.keyboard.isDown("a") then
+  if love.keyboard.isDown(controls.panCamera.left) then
     cameraPos.x = cameraPos.x + 1
   end
-  if love.keyboard.isDown("d") then
+  if love.keyboard.isDown(controls.panCamera.right) then
     cameraPos.x = cameraPos.x - 1
   end
 end

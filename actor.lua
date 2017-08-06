@@ -35,15 +35,15 @@ function coordToTile(x, y)
 end
 
 function actor_keypressed(key)
-  if key == "tab" then
+  if key == controls.switchActor then
     if currentActorNum < #levels[currentLevel].actors then
       newCurrentActor(currentActorNum + 1)
     else
       newCurrentActor(1)
     end
-  elseif key == "space" then
+  elseif key == controls.endTurn then
     currentActor.turnPts = 0
-  elseif key == "e" and currentActor.move == false and currentActor.turnPts > 0 then
+  elseif key == controls.use and currentActor.move == false and currentActor.turnPts > 0 then
     newPos = useDoor(tileDoorInfo(currentActor.room, coordToTile(currentActor.x, currentActor.y)))
     if newPos ~= nil then currentActor.room, currentActor.x, currentActor.y = newPos.room, newPos.x, newPos.y end
     syncRooms()

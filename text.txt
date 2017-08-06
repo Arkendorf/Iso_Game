@@ -1,0 +1,10 @@
+Floor
+Wall
+Cover
+Door
+Hazard
+Floor tiles can be moved over
+Wall tiles are impassable and block all projectiles
+Cover tiles are impassable and block some projectiles, based on how far away they were shot from
+Press the use key on a door tile to pass through into another room
+Hazard tiles can be walked through, but will cause injuries

@@ -54,7 +54,7 @@ end
 
 
 function scanreader_keypressed(key)
-  if key == "q" then
+  if key == controls.scanreader then
     if scanning == false then
       scanning = true
     else
