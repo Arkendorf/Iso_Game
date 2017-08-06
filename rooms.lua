@@ -1,8 +1,8 @@
 function rooms_load()
   rooms = {}
-  rooms[1] = {{2, 1, 1, 2, 1, 1},
-              {2, 1, 1, 2, 1, 1},
-              {2, 1, 1, 2, 1, 1},
+  rooms[1] = {{2, 1, 1, 3, 1, 1},
+              {2, 1, 1, 3, 1, 1},
+              {2, 1, 1, 3, 1, 1},
               {2, 1, 1, 1, 1, 1},
               {2, 1, 1, 2, 1, 1},
               {2, 1, 2, 2, 1, 1}}
@@ -12,13 +12,13 @@ function rooms_load()
               {1, 1, 1, 0, 0, 0},
               {1, 1, 1, 0, 0, 0},
               {1, 1, 1, 1, 1, 1}}
-  tileType = {[0] = 0, [1] = 1, [2] = 2}
+  tileType = {[0] = 0, [1] = 1, [2] = 2, [3] = 3}
   floors = {}
   roomNodes = {}
 
   drawQueue = {}
 
-  palette = {green = {0, 255, 33}, yellow = {255, 216, 0}, purple = {178, 0, 255}, blue = {0, 38, 255}, cyan = {0, 255, 255}, red = {255, 0, 110}}
+  palette = {green = {0, 255, 33}, yellow = {255, 216, 0}, purple = {178, 0, 255}, blue = {0, 38, 255}, cyan = {0, 200, 255}, red = {255, 0, 110}}
 end
 
 function rooms_draw()
@@ -36,6 +36,9 @@ function rooms_draw()
   else
     drawScannedFloor(currentRoom)
     drawScannedWall(currentRoom)
+    drawScannedCover(currentRoom)
+    setPathColor() -- sets color of path indicator
+    drawPath(currentActor) -- draws path indicator
   end
 
 
