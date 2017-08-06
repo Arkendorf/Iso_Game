@@ -157,9 +157,17 @@ end
 
 function setPathColor()
   if currentActor.path.valid then
-    love.graphics.setColor(unpack(palette.green))
+    if scanFlicker[6] == 0 then
+      love.graphics.setColor(palette.green)
+    else
+      love.graphics.setColor(palette.green[1]/2, palette.green[2]/2, palette.green[3]/2)
+    end
   else
-    love.graphics.setColor(unpack(palette.red))
+    if scanFlicker[5] == 0 then
+      love.graphics.setColor(palette.red)
+    else
+      love.graphics.setColor(palette.red[1]/2, palette.red[2]/2, palette.red[3]/2)
+    end
   end
 end
 
