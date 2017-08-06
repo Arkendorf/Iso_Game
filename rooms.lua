@@ -17,33 +17,32 @@ function rooms_load()
   roomNodes = {}
 
   drawQueue = {}
+
+  palette = {green = {0, 255, 33}, yellow = {255, 216, 0}, purple = {178, 0, 255}, blue = {0, 38, 255}, cyan = {0, 255, 255}, red = {255, 0, 110}}
 end
 
 function rooms_draw()
-  -- floor is drawn first so it will be at the bottom
-  love.graphics.draw(floors[currentRoom])
+  if scanning == false then
+    love.graphics.draw(floors[currentRoom]) -- floor is drawn first so it will be at the bottom
+    drawDoors() -- draws the door icons
+    setPathColor() -- sets color of path indicator
+    drawPath(currentActor) -- draws path indicator
 
-
-  drawDoors() -- draws the door icons
-
-  if currentActor.path.valid then
-    love.graphics.setColor(0, 255, 0)
+    drawQueue = {} -- reset queue
+    queueWalls()
+    queueChars()
+    table.sort(drawQueue, function(a, b) return a.y < b.y end) -- sort queue to ensure proper layering
+    drawItemsInQueue() -- draw items in queue
   else
-    love.graphics.setColor(255, 0, 0)
+    drawScannedFloor(currentRoom)
+    drawScannedWall(currentRoom)
   end
-  drawPath(currentActor)
 
-  drawQueue = {} -- reset queue
-  queueWalls()
-  queueChars()
-  table.sort(drawQueue, function(a, b) return a.y < b.y end) -- sort queue to ensure proper layering
-  drawItemsInQueue() -- draw items in queue
 
-  if currentActor.path.valid then
-    love.graphics.setColor(0, 255, 0)
-  else
-    love.graphics.setColor(255, 0, 0)
-  end
+
+
+
+  setPathColor()
   mouse_draw()
   love.graphics.setColor(255, 255, 255)
 end

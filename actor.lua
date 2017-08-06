@@ -136,22 +136,30 @@ function drawPath(actor)
         local newTile = {x = actor.path.tiles[i+1].x - v.x, y = actor.path.tiles[i+1].y - v.y}
 
         if math.abs(oldTile.x) == 1 and math.abs(newTile.x) == 1 then
-          love.graphics.draw(pathImg, pathQuad[2], tileToIso(v.x-1, v.y-1))
+          love.graphics.draw(pathImg, pathQuad[3], tileToIso(v.x-1, v.y-1))
         elseif math.abs(oldTile.y) == 1 and math.abs(newTile.y) == 1 then
-          love.graphics.draw(pathImg, pathQuad[5], tileToIso(v.x-1, v.y-1))
-        elseif (oldTile.x == -1 and newTile.y == 1) or (oldTile.y == 1 and newTile.x == -1) then
           love.graphics.draw(pathImg, pathQuad[4], tileToIso(v.x-1, v.y-1))
+        elseif (oldTile.x == -1 and newTile.y == 1) or (oldTile.y == 1 and newTile.x == -1) then
+          love.graphics.draw(pathImg, pathQuad[2], tileToIso(v.x-1, v.y-1))
         elseif (oldTile.x == 1 and newTile.y == 1) or (oldTile.y == 1 and newTile.x == 1) then
           love.graphics.draw(pathImg, pathQuad[1], tileToIso(v.x-1, v.y-1))
         elseif (oldTile.x == -1 and newTile.y == -1) or (oldTile.y == -1 and newTile.x == -1) then
           love.graphics.draw(pathImg, pathQuad[6], tileToIso(v.x-1, v.y-1))
         elseif (oldTile.x == 1 and newTile.y == -1) or (oldTile.y == -1 and newTile.x == 1) then
-          love.graphics.draw(pathImg, pathQuad[3], tileToIso(v.x-1, v.y-1))
+          love.graphics.draw(pathImg, pathQuad[5], tileToIso(v.x-1, v.y-1))
         end
       else
         love.graphics.draw(cursor, tileToIso(v.x-1, v.y-1))
       end
     end
+  end
+end
+
+function setPathColor()
+  if currentActor.path.valid then
+    love.graphics.setColor(unpack(palette.green))
+  else
+    love.graphics.setColor(unpack(palette.red))
   end
 end
 

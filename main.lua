@@ -7,6 +7,7 @@ require("graphics")
 require("level")
 require("astarV2")
 require("door")
+require("scanreader")
 
 function love.load()
   graphics_load()
@@ -15,6 +16,7 @@ function love.load()
   camera_load()
   level_load()
   actor_load()
+  scanreader_load()
 end
 
 function love.update(dt)
@@ -28,11 +30,12 @@ function love.draw()
   love.graphics.translate(cameraPos.x, cameraPos.y)
   rooms_draw()
   love.graphics.pop()
-  love.graphics.print(tostring(tileDoorInfo(1, 6, 1)))
+  love.graphics.print(tostring(scanning))
 end
 
 function love.keypressed(key)
   actor_keypressed(key)
+  scanreader_keypressed(key)
 end
 
 function love.mousepressed(x, y, button)
