@@ -18,7 +18,7 @@ function rooms_load()
 
   drawQueue = {}
 
-  palette = {green = {0, 255, 33}, yellow = {255, 216, 0}, purple = {178, 0, 255}, blue = {0, 38, 255}, cyan = {0, 200, 255}, red = {255, 0, 110}}
+  palette = {green = {0, 255, 33}, yellow = {255, 216, 0}, blue = {0, 38, 255}, cyan = {0, 200, 255}, purple = {178, 0, 255}, red = {255, 0, 110}}
 end
 
 function rooms_draw()
@@ -34,9 +34,12 @@ function rooms_draw()
     table.sort(drawQueue, function(a, b) return a.y < b.y end) -- sort queue to ensure proper layering
     drawItemsInQueue() -- draw items in queue
   else
-    drawScannedFloor(currentRoom)
-    drawScannedWall(currentRoom)
-    drawScannedCover(currentRoom)
+    love.graphics.setColor(unpack(palette.yellow))
+    drawScanLayer(currentRoom, 1) -- floor
+    love.graphics.setColor(unpack(palette.blue))
+    drawScanLayer(currentRoom, 2) -- walls
+    love.graphics.setColor(unpack(palette.cyan))
+    drawScanLayer(currentRoom, 3) -- cover
     setPathColor() -- sets color of path indicator
     drawPath(currentActor) -- draws path indicator
   end

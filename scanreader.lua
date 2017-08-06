@@ -41,3 +41,21 @@ function drawScannedCover(room)
     end
   end
 end
+
+function drawScanLayer(room, type)
+  for i, v in ipairs(rooms[room]) do
+    for j, t in ipairs(v) do
+      if tileType[t] == type then
+        love.graphics.draw(scanBorderImg, scanBorderQuad[bitmaskFromMap(j, i, rooms[room], type)], tileToIso(j-1, i-1))
+        love.graphics.draw(scanIconImg, scanIconQuad[type], tileToIso(j-1, i-1))
+      else
+        if i < #rooms[room] and j > 1 and tileType[rooms[room][i+1][j-1]] == type then -- fills in some gaps in border
+          love.graphics.draw(scanBorderImg, scanBorderQuad[18], tileToIso(j-2, i))
+        end
+        if i > 1 and j < #rooms[room][i] and tileType[rooms[room][i-1][j+1]] == type then -- fills in some gaps in border
+          love.graphics.draw(scanBorderImg, scanBorderQuad[17], tileToIso(j, i-2))
+        end
+      end
+    end
+  end
+end
