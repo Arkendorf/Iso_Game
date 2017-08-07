@@ -4,9 +4,12 @@ end
 
 function mouse_update(dt)
   mouse.x, mouse.y = love.mouse.getPosition()
+  mouse.transX, mouse.transY = love.mouse.getPosition()
+  mouse.transX = mouse.transX-cameraPos.x
+  mouse.transY = mouse.transY-cameraPos.y
   cursorPos = roomNodes[1]
   for i, v in ipairs(roomNodes) do
-    if distance(v.x, v.y, mouse.x, mouse.y) < distance(cursorPos.x, cursorPos.y, mouse.x, mouse.y) then
+    if distance(v.x, v.y, mouse.transX, mouse.transY) < distance(cursorPos.x, cursorPos.y, mouse.transX, mouse.transY) then
       cursorPos = v
     end
   end

@@ -38,6 +38,8 @@ function drawRoom()
 
   drawQueue = {} -- reset queue
   queueWalls(currentRoom)
+  queueCover(currentRoom)
+  queueHazards(currentRoom)
   queueChars(currentRoom)
   table.sort(drawQueue, function(a, b) return a.y < b.y end) -- sort queue to ensure proper layering
   drawItemsInQueue() -- draw items in queue
@@ -65,6 +67,17 @@ function queueWalls(room)
       if tileType[rooms[room][i][j]] == 2 then
         local x, y = tileToIso(j-1, i-1)
         drawQueue[#drawQueue + 1] = {img = wall, x = x, y = y, z= wall:getHeight()-tileSize}
+      end
+    end
+  end
+end
+
+function queueCover(room)
+  for i, v in ipairs(rooms[room]) do
+    for j, t in ipairs(v) do
+      if tileType[rooms[room][i][j]] == 3 then
+        local x, y = tileToIso(j-1, i-1)
+        drawQueue[#drawQueue + 1] = {img = cover, x = x, y = y, z= cover:getHeight()-tileSize}
       end
     end
   end
