@@ -14,8 +14,8 @@ function syncRooms()
   if currentRoom ~= currentActor.room then
     currentRoom = currentActor.room
     local x, y = coordToIso(currentActor.x, currentActor.y)
-    cameraPos.x = w / 2 - x - tileSize
-    cameraPos.y = h / 2 - y - tileSize/2
+    cameraPos.x = screen.w / 2 - x - tileSize
+    cameraPos.y = screen.h / 2 - y - tileSize/2
     startRoom(currentRoom)
   end
 end
@@ -157,17 +157,9 @@ end
 
 function setPathColor()
   if currentActor.path.valid then
-    if scanFlicker[6] == 0 then
-      love.graphics.setColor(palette.green)
-    else
-      love.graphics.setColor(palette.green[1]/2, palette.green[2]/2, palette.green[3]/2)
-    end
+    love.graphics.setColor(palette.green)
   else
-    if scanFlicker[5] == 0 then
-      love.graphics.setColor(palette.red)
-    else
-      love.graphics.setColor(palette.red[1]/2, palette.red[2]/2, palette.red[3]/2)
-    end
+    love.graphics.setColor(palette.red)
   end
 end
 

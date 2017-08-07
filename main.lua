@@ -11,8 +11,15 @@ require("hazard")
 require("scanreader")
 require("functiondump")
 require("hud")
+require("infobox")
 
 function love.load()
+  controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, scanreader = "tab", switchActor = "q", use = "e", endTurn = "space"}
+  text = {}
+  for line in love.filesystem.lines("text.txt") do
+  table.insert(text, line)
+  end
+
   graphics_load()
   scanreader_load()
   rooms_load()
@@ -20,19 +27,14 @@ function love.load()
   camera_load()
   level_load()
   actor_load()
-
-  controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, scanreader = "tab", switchActor = "q", use = "e", endTurn = "space"}
-  text = {}
-  for line in love.filesystem.lines("text.txt") do
-  table.insert(text, line)
-  end
+  mouse_load()
+  infobox_load()
 end
 
 function love.update(dt)
   mouse_update(dt)
   camera_update(dt)
   actor_update(dt)
-  scanreader_update(dt)
 end
 
 function love.draw()
@@ -41,6 +43,7 @@ function love.draw()
   rooms_draw()
   love.graphics.pop()
   hud_draw()
+  infobox_draw()
 end
 
 function love.keypressed(key)

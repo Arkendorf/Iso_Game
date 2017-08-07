@@ -18,6 +18,6 @@ end
 
 function centerCamOnRoom()
   local x, y = coordToIso(#rooms[currentRoom][1] * 16, #rooms[currentRoom] * 16)
-  cameraPos.x = w / 2 - x - tileSize
-  cameraPos.y = h / 2 - y - tileSize/2
+  cameraPos.x = screen.w / 2 - x - tileSize
+  cameraPos.y = screen.h / 2 - y - tileSize/2
 end

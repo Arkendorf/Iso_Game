@@ -6,10 +6,6 @@ function drawDoors(room)
       else
         love.graphics.setColor(palette.purple)
       end
-      if scanFlicker[4] ~= 0 then
-        local r, g, b = love.graphics.getColor()
-        love.graphics.setColor(r / 2, g / 2, b / 2)
-      end
       love.graphics.draw(scanBorderImg, scanBorderQuad[bitmaskFromDoors(room, v.tX1, v.tY1)], tileToIso(v.tX1-1, v.tY1-1))
       love.graphics.draw(scanIconImg, scanIconQuad[4], tileToIso(v.tX1-1, v.tY1-1))
     elseif v.room2 == room then

@@ -1,5 +1,12 @@
 function graphics_load()
-  w, h = love.graphics.getDimensions()
+  screen = {}
+  screen.w, screen.h = love.graphics.getDimensions()
+  --font = love.graphics.newFont(12)
+  font = love.graphics.newImageFont("font.png",
+  " abcdefghijklmnopqrstuvwxyz" ..
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
+  "123456789.,!?-+/():;%&`'*#=[]\"", 1)
+  love.graphics.setFont(font)
 
   tile = love.graphics.newImage("tile.png")
   wall = love.graphics.newImage("wall.png")
@@ -15,6 +22,20 @@ function graphics_load()
 
   scanIconImg = love.graphics.newImage("scanicons.png")
   scanIconQuad = createSpriteSheet(scanIconImg, 5, 1, 32, 16, 0, 0)
+
+  infoBoxImg = love.graphics.newImage("infobox.png")
+  infoBoxQuad = {love.graphics.newQuad(0, 0, 12, 12, infoBoxImg:getDimensions()),
+                 love.graphics.newQuad(12, 0, 10, 12, infoBoxImg:getDimensions()),
+                 love.graphics.newQuad(22, 0, 12, 12, infoBoxImg:getDimensions()),
+                 love.graphics.newQuad(0, 12, 12, 10, infoBoxImg:getDimensions()),
+                 love.graphics.newQuad(12, 12, 10, 10, infoBoxImg:getDimensions()),
+                 love.graphics.newQuad(22, 12, 12, 10, infoBoxImg:getDimensions()),
+                 love.graphics.newQuad(0, 22, 12, 12, infoBoxImg:getDimensions()),
+                 love.graphics.newQuad(12, 22, 10, 12, infoBoxImg:getDimensions()),
+                 love.graphics.newQuad(22, 22, 12, 12, infoBoxImg:getDimensions()),
+                 love.graphics.newQuad(0, 32, 12, 2, infoBoxImg:getDimensions()),
+                 love.graphics.newQuad(12, 32, 10, 2, infoBoxImg:getDimensions()),
+                 love.graphics.newQuad(22, 32, 12, 2, infoBoxImg:getDimensions())}
 end
 
 

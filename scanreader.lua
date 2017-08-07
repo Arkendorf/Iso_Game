@@ -2,56 +2,23 @@ function scanreader_load()
   scanning = false
   scanLayers = {}
   palette = {green = {0, 255, 33}, yellow = {255, 216, 0}, blue = {0, 38, 255}, cyan = {0, 200, 255}, purple = {178, 0, 255}, red = {255, 0, 110}}
-  scanFlicker = {0, 0, 0, 0, 0, 0}
 end
 
 function drawScannedRoom()
-  if scanFlicker[1] == 0 then
-    love.graphics.setColor(palette.yellow)
-  else
-    love.graphics.setColor(palette.yellow[1]/2, palette.yellow[2]/2, palette.yellow[3]/2)
-  end
+  love.graphics.setColor(palette.yellow)
   love.graphics.draw(scanLayers[currentRoom].floor)
-  if scanFlicker[2] == 0 then
-    love.graphics.setColor(palette.blue)
-  else
-    love.graphics.setColor(palette.blue[1]/2, palette.blue[2]/2, palette.blue[3]/2)
-  end
+  love.graphics.setColor(palette.blue)
   love.graphics.draw(scanLayers[currentRoom].walls)
-  if scanFlicker[3] == 0 then
-    love.graphics.setColor(palette.cyan)
-  else
-    love.graphics.setColor(palette.cyan[1]/2, palette.cyan[2]/2, palette.cyan[3]/2)
-  end
+  love.graphics.setColor(palette.cyan)
   love.graphics.draw(scanLayers[currentRoom].cover)
   drawDoors(currentRoom) -- draws the door icons
   drawScannedHazards(currentRoom) -- draws hazard icon
   setPathColor() -- sets color of path indicator
   drawPath(currentActor) -- draws path indicator
   local charCanvas = charScanCanvas(currentRoom)
-  if scanFlicker[6] == 0 then
-    love.graphics.setColor(palette.green)
-  else
-    love.graphics.setColor(palette.green[1]/2, palette.green[2]/2, palette.green[3]/2)
-  end
+  love.graphics.setColor(palette.green)
   love.graphics.draw(charCanvas, 0, -charHeight)
 end
-
-function scanreader_update(dt)
-  for i = 1, #scanFlicker do
-    if scanFlicker[i] == 0 then
-      if math.random(0, 500) == 1 then
-        scanFlicker[i] = math.random(0.1, 1)
-      end
-    else
-      scanFlicker[i] = scanFlicker[i] - dt
-      if scanFlicker[i] < 0 then
-        scanFlicker[i] = 0
-      end
-    end
-  end
-end
-
 
 function scanreader_keypressed(key)
   if key == controls.scanreader then
