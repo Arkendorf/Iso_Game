@@ -51,12 +51,33 @@ function infobox_load()
   for i, v in ipairs(infoboxes) do
     v.canvas = drawInfoBox(v.str)
   end
+  currentInfoBox = {box = infoboxes[1], anim = 0}
+end
+
+function infobox_update(dt)
+  if mouse.x >= currentInfoBox.box.x and mouse.x <= currentInfoBox.box.x + currentInfoBox.box.w and mouse.y >= currentInfoBox.box.y and mouse.y <= currentInfoBox.box.y + currentInfoBox.box.h then
+    if currentInfoBox.anim < 1 then
+      currentInfoBox.anim = currentInfoBox.anim + dt
+    elseif currentInfoBox.anim > 1 then
+      currentInfoBox.anim = 1
+    end
+  else
+    if currentInfoBox.anim > 0 then
+      currentInfoBox.anim = currentInfoBox.anim - dt *2
+    elseif currentInfoBox.anim < 0 then
+      currentInfoBox.anim = 0
+    end
+  end
+
+  for i, v in ipairs(infoboxes) do
+    if mouse.x >= v.x and mouse.x <= v.x + v.w and mouse.y >= v.y and mouse.y <= v.y + v.h then
+      currentInfoBox.box = v
+    end
+  end
 end
 
 function infobox_draw()
-  for i, v in ipairs(infoboxes) do
-    if mouse.x >= v.x and mouse.x <= v.x + v.w and mouse.y >= v.y and mouse.y <= v.y + v.h then
-      love.graphics.draw(v.canvas, mouse.x+12, mouse.y+12)
-    end
-  end
+  love.graphics.setColor(255, 255, 255, currentInfoBox.anim*255)
+  love.graphics.draw(currentInfoBox.box.canvas, mouse.x+12, mouse.y+12)
+  love.graphics.setColor(255, 255, 255, 255)
 end

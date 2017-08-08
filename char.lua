@@ -9,7 +9,7 @@ function queueChars(room)
   for i, v in ipairs(levels[currentLevel].actors) do
     if room == v.room then
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {img = wall, x = x, y = y, z= charHeight-tileSize, r = 100, g = 100, b = 200}
+      drawQueue[#drawQueue + 1] = {img = wall, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize, r = 100, g = 100, b = 200}
     end
   end
 end
@@ -22,7 +22,7 @@ function charScanCanvas(room)
   for i, v in ipairs(levels[currentLevel].actors) do
     if room == v.room then
       local x, y = coordToIso(v.x, v.y)
-      love.graphics.draw(wall, x-cameraPos.x, y+16-cameraPos.y) -- cameraPos is subtracted because this function is called in room_draw() which causes it to be translated twice
+      love.graphics.draw(wall, math.floor(x)-cameraPos.x, math.floor(y)+16-cameraPos.y) -- cameraPos is subtracted because this function is called in room_draw() which causes it to be translated twice
     end
   end
   love.graphics.setColor(255, 255, 255)

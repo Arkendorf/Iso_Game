@@ -35,6 +35,7 @@ function love.update(dt)
   mouse_update(dt)
   camera_update(dt)
   actor_update(dt)
+  infobox_update(dt)
 end
 
 function love.draw()
@@ -44,6 +45,7 @@ function love.draw()
   love.graphics.pop()
   hud_draw()
   infobox_draw()
+  love.graphics.print(tostring(love.timer.getFPS()))
 end
 
 function love.keypressed(key)

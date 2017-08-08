@@ -14,8 +14,8 @@ function syncRooms()
   if currentRoom ~= currentActor.room then
     currentRoom = currentActor.room
     local x, y = coordToIso(currentActor.x, currentActor.y)
-    cameraPos.x = screen.w / 2 - x - tileSize
-    cameraPos.y = screen.h / 2 - y - tileSize/2
+    cameraPos.rawX = screen.w / 2 - x - tileSize
+    cameraPos.rawY = screen.h / 2 - y - tileSize/2
     startRoom(currentRoom)
   end
 end
