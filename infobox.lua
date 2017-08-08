@@ -47,7 +47,7 @@ function getWrapSize(str, limit)
 end
 
 function infobox_load()
-  infoboxes = {{x = 0, y = 0, w = 64, h = 16, str = text[6]}, {x =0, y = 16, w = 64, h = 16, str = text[7]}, {x = 0, y = 32, w = 64, h = 16, str = text[8]}, {x = 0, y = 48, w = 64, h = 16, str = text[9]}, {x = 0, y = 64, w = 64, h = 16, str = text[10]}}
+  infoboxes = {{x = 0, y = 0, w = 32+font:getWidth(text[1]), h = 16, str = text[6]}, {x =0, y = 16, w = 32+font:getWidth(text[2]), h = 16, str = text[7]}, {x = 0, y = 32, w = 32+font:getWidth(text[3]), h = 16, str = text[8]}, {x = 0, y = 48, w = 32+font:getWidth(text[4]), h = 16, str = text[9]}, {x = 0, y = 64, w = 32+font:getWidth(text[5]), h = 16, str = text[10]}}
   for i, v in ipairs(infoboxes) do
     v.canvas = drawInfoBox(v.str)
   end
