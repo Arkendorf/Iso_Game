@@ -8,11 +8,11 @@ function graphics_load()
   "123456789.,!?-+/():;%&`'*#=[]\"", 1)
   love.graphics.setFont(font)
 
-  tile = love.graphics.newImage("tile.png")
-  wall = love.graphics.newImage("wall.png")
-  cover = love.graphics.newImage("cover.png")
+  tileImg = love.graphics.newImage("tile.png")
+  wallImg = love.graphics.newImage("wall.png")
+  coverImg = love.graphics.newImage("cover.png")
   hazardImg = love.graphics.newImage("hazard.png")
-  cursor = love.graphics.newImage("cursor.png")
+  cursorImg = love.graphics.newImage("cursor.png")
   tileSize = 16
 
   pathImg = love.graphics.newImage("path.png")

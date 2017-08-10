@@ -9,7 +9,7 @@ function queueChars(room)
   for i, v in ipairs(levels[currentLevel].actors) do
     if room == v.room then
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {img = wall, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize, r = 100, g = 100, b = 200}
+      drawQueue[#drawQueue + 1] = {img = wallImg, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize, r = 100, g = 100, b = 200}
     end
   end
 end

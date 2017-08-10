@@ -41,6 +41,7 @@ function drawRoom()
   queueCover(currentRoom)
   queueHazards(currentRoom)
   queueChars(currentRoom)
+  queueEnemyChars(currentRoom)
   table.sort(drawQueue, function(a, b) return a.y < b.y end) -- sort queue to ensure proper layering
   drawItemsInQueue() -- draw items in queue
 end
@@ -65,8 +66,8 @@ function queueWalls(room)
   for i, v in ipairs(rooms[room]) do
     for j, t in ipairs(v) do
       if tileType[rooms[room][i][j]] == 2 then
-        local x, y = tileToIso(j-1, i-1)
-        drawQueue[#drawQueue + 1] = {img = wall, x = x, y = y, z= wall:getHeight()-tileSize}
+        local x, y = tileToIso(j, i)
+        drawQueue[#drawQueue + 1] = {img = wallImg, x = x, y = y, z= wallImg:getHeight()-tileSize}
       end
     end
   end
@@ -76,15 +77,11 @@ function queueCover(room)
   for i, v in ipairs(rooms[room]) do
     for j, t in ipairs(v) do
       if tileType[rooms[room][i][j]] == 3 then
-        local x, y = tileToIso(j-1, i-1)
-        drawQueue[#drawQueue + 1] = {img = cover, x = x, y = y, z= cover:getHeight()-tileSize}
+        local x, y = tileToIso(j, i)
+        drawQueue[#drawQueue + 1] = {img = coverImg, x = x, y = y, z= coverImg:getHeight()-tileSize}
       end
     end
   end
-end
-
-function tileToIso(x, y)
-  return (x-y+#rooms[currentRoom]-1)*tileSize, (y+x)*tileSize/2
 end
 
 function startRoom(room)
@@ -105,7 +102,7 @@ function drawFloor(room)
     for j, t in ipairs(v) do
       if tileType[t] == 1 then
         love.graphics.setColor(155, 155, 155)
-        love.graphics.draw(tile, tileToIso(j-1, i-1))
+        love.graphics.draw(tileImg, tileToIso(j, i))
       end
     end
   end
@@ -119,7 +116,7 @@ function createIsoNodes(room)
   for i, v in ipairs(rooms[room]) do
     for j, t in ipairs(v) do
       if tileType[t] == 1 then
-        local x, y = tileToIso(j-1, i-1)
+        local x, y = tileToIso(j, i)
         roomNodes[#roomNodes + 1] = {tX = j, tY = i, x = x + tileSize, y = y + tileSize/2}
       end
     end

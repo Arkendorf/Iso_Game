@@ -1,6 +1,7 @@
 function actor_load()
-    currentActorNum = 1
-    currentActor = levels[currentLevel].actors[currentActorNum]
+  currentActorNum = 1
+  currentActor = levels[currentLevel].actors[currentActorNum]
+  playerTurn = true
 end
 
 
@@ -18,20 +19,6 @@ function syncRooms()
     cameraPos.rawY = screen.h / 2 - y - tileSize/2
     startRoom(currentRoom)
   end
-end
-
-function coordToIso(x, y)
-  x = x /tileSize
-  y = y /tileSize
-  return (x-y+#rooms[currentRoom]-1)*tileSize, (y+x)*tileSize/2
-end
-
-function tileToCoord(x, y)
-  return (x-1)*tileSize, (y-1)*tileSize
-end
-
-function coordToTile(x, y)
-  return math.floor(x/tileSize)+1, math.floor(y/tileSize)+1
 end
 
 function actor_keypressed(key)
@@ -68,8 +55,21 @@ function actor_update(dt)
   end
 
   if nextTurn == true then
-    -- do stuff if players turn is over
-    giveActorsTurnPts()
+    startEnemyTurn()
+  end
+end
+
+function startPlayerTurn()
+  playerTurn = true
+  giveActorsTurnPts()
+end
+
+function actor_mousepressed(x, y, button)
+  if button == 1 and currentActor.move == false and #currentActor.path.tiles > 1 and currentActor.path.valid then
+    currentActor.turnPts = currentActor.turnPts - (#currentActor.path.tiles-1) -- reduce turnPts based on how far the actor is moving
+    currentActor.move = true
+    currentActor.path.tiles = simplifyPath(currentActor.path.tiles)
+    currentActor.path.valid = false
   end
 end
 
@@ -94,40 +94,6 @@ function followPath(i, v, dt)
   end
 end
 
-function actor_mousepressed(x, y, button)
-  if button == 1 and currentActor.move == false and #currentActor.path.tiles > 1 and currentActor.path.valid then
-    currentActor.turnPts = currentActor.turnPts - (#currentActor.path.tiles-1) -- reduce turnPts based on how far the actor is moving
-    currentActor.move = true
-    currentActor.path.tiles = simplifyPath(currentActor.path.tiles)
-  end
-end
-
-function simplifyPath(path)
-  local simplePath = {path[1]}
-  local oldDir = pathDirection(path[1], path[2])
-  for i = 2, #path-1 do
-    newDir = pathDirection(path[i], path[i+1]) -- find new direction
-    if newDir.x ~= oldDir.x or newDir.y ~= oldDir.y then -- check if path is going in same direction
-      simplePath[#simplePath + 1] = path[i]
-      oldDir = newDir
-    end
-  end
-  simplePath[#simplePath + 1] = path[#path]
-  return simplePath
-end
-
-function pathDirection(a, b)
-  if a.x > b.x then
-    return {x = -1, y = 0}
-  elseif a.x < b.x then
-    return {x = 1, y = 0}
-  elseif a.y > b.y then
-    return {x = 0, y = -1}
-  else
-    return {x = 0, y = 1}
-  end
-end
-
 function drawPath(actor)
   if actor.move == false then -- only draw the path if the actor isn't moving along it
     for i, v in ipairs(actor.path.tiles) do
@@ -136,30 +102,22 @@ function drawPath(actor)
         local newTile = {x = actor.path.tiles[i+1].x - v.x, y = actor.path.tiles[i+1].y - v.y}
 
         if math.abs(oldTile.x) == 1 and math.abs(newTile.x) == 1 then
-          love.graphics.draw(pathImg, pathQuad[3], tileToIso(v.x-1, v.y-1))
+          love.graphics.draw(pathImg, pathQuad[3], tileToIso(v.x, v.y))
         elseif math.abs(oldTile.y) == 1 and math.abs(newTile.y) == 1 then
-          love.graphics.draw(pathImg, pathQuad[4], tileToIso(v.x-1, v.y-1))
+          love.graphics.draw(pathImg, pathQuad[4], tileToIso(v.x, v.y))
         elseif (oldTile.x == -1 and newTile.y == 1) or (oldTile.y == 1 and newTile.x == -1) then
-          love.graphics.draw(pathImg, pathQuad[2], tileToIso(v.x-1, v.y-1))
+          love.graphics.draw(pathImg, pathQuad[2], tileToIso(v.x, v.y))
         elseif (oldTile.x == 1 and newTile.y == 1) or (oldTile.y == 1 and newTile.x == 1) then
-          love.graphics.draw(pathImg, pathQuad[1], tileToIso(v.x-1, v.y-1))
+          love.graphics.draw(pathImg, pathQuad[1], tileToIso(v.x, v.y))
         elseif (oldTile.x == -1 and newTile.y == -1) or (oldTile.y == -1 and newTile.x == -1) then
-          love.graphics.draw(pathImg, pathQuad[6], tileToIso(v.x-1, v.y-1))
+          love.graphics.draw(pathImg, pathQuad[6], tileToIso(v.x, v.y))
         elseif (oldTile.x == 1 and newTile.y == -1) or (oldTile.y == -1 and newTile.x == 1) then
-          love.graphics.draw(pathImg, pathQuad[5], tileToIso(v.x-1, v.y-1))
+          love.graphics.draw(pathImg, pathQuad[5], tileToIso(v.x, v.y))
         end
       else
-        love.graphics.draw(cursor, tileToIso(v.x-1, v.y-1))
+        love.graphics.draw(cursorImg, tileToIso(v.x, v.y))
       end
     end
-  end
-end
-
-function setPathColor()
-  if currentActor.path.valid then
-    love.graphics.setColor(palette.green)
-  else
-    love.graphics.setColor(palette.red)
   end
 end
 
@@ -167,26 +125,4 @@ function giveActorsTurnPts()
   for i, v in ipairs(levels[currentLevel].actors) do
     v.turnPts = chars[v.actor].turnPts -- will need to be changed when level mode 2 is added
   end
-end
-
-function pathIsValid(actor)
-  if #actor.path.tiles-1 > actor.turnPts then -- get rid of path if destination is too far away
-    return false
-  else
-    for i, v in ipairs(levels[currentLevel].actors) do
-      if actor.room == v.room then
-        if v.move == true then
-          if actor.path.tiles[#actor.path.tiles].x == v.path.tiles[#v.path.tiles].x and actor.path.tiles[#actor.path.tiles].y == v.path.tiles[#v.path.tiles].y then
-            return false
-          end
-        elseif  #actor.path.tiles > 0 then
-          local x, y = tileToCoord(actor.path.tiles[#actor.path.tiles].x, actor.path.tiles[#actor.path.tiles].y)
-          if x == v.x and y == v.y then
-            return false
-          end
-        end
-      end
-    end
-  end
-  return true
 end

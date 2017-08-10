@@ -20,5 +20,5 @@ function distance(x1, y1, x2, y2)
 end
 
 function mouse_draw()
-  love.graphics.draw(cursor, tileToIso(cursorPos.tX-1,cursorPos.tY-1))
+  love.graphics.draw(cursorImg, tileToIso(cursorPos.tX,cursorPos.tY))
 end

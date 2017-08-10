@@ -12,6 +12,8 @@ require("scanreader")
 require("functiondump")
 require("hud")
 require("infobox")
+require("enemychar")
+require("enemyactor")
 
 function love.load()
   controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, scanreader = "tab", switchActor = "q", use = "e", endTurn = "space"}
@@ -29,12 +31,16 @@ function love.load()
   actor_load()
   mouse_load()
   infobox_load()
+  enemychar_load()
+  enemyactor_load()
+
 end
 
 function love.update(dt)
   mouse_update(dt)
   camera_update(dt)
   actor_update(dt)
+  enemyactor_update(dt)
   infobox_update(dt)
 end
 
@@ -45,7 +51,9 @@ function love.draw()
   love.graphics.pop()
   hud_draw()
   infobox_draw()
-  love.graphics.print(tostring(love.timer.getFPS()))
+  if levels[currentLevel].enemyActors[1].path.tiles ~= nil then
+    love.graphics.print(tostring(#levels[currentLevel].enemyActors[1].path.tiles))
+  end
 end
 
 function love.keypressed(key)
