@@ -12,11 +12,7 @@ function enemyactor_update(dt)
     if v.move == true then
       nextTurn = false -- don't end players turn if actors are still moving
       enemyFollowPath(i, v, dt)
-    else
-      -- combat and attack stuff here
-      --v.turnPts = 0 -- for now
-    end
-    if v.turnPts > 0 then
+    elseif v.turnPts > 0 then
       nextTurn = false -- dont end players turn if orders need to be given
     end
   end
@@ -44,7 +40,7 @@ function startEnemyTurn()
 end
 
 function findEnemyPath(i, v)
-  return newPath({x = 6, y = 6}, {x = 6, y = 1}, rooms[v.room])
+  return newPath({x = 6, y = 6}, {x = 4, y = 4}, rooms[v.room])
 end
 
 function enemyFollowPath(i, v, dt)

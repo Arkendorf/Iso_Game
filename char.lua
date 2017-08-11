@@ -22,7 +22,7 @@ function charScanCanvas(room)
   for i, v in ipairs(levels[currentLevel].actors) do
     if room == v.room then
       local x, y = coordToIso(v.x, v.y)
-      love.graphics.draw(wall, math.floor(x)-cameraPos.x, math.floor(y)+16-cameraPos.y) -- cameraPos is subtracted because this function is called in room_draw() which causes it to be translated twice
+      love.graphics.draw(wallImg, math.floor(x)-cameraPos.x, math.floor(y)+16-cameraPos.y) -- cameraPos is subtracted because this function is called in room_draw() which causes it to be translated twice
     end
   end
   love.graphics.setColor(255, 255, 255)

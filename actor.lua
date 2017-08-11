@@ -48,8 +48,7 @@ function actor_update(dt)
     if v.move == true then
       nextTurn = false -- don't end players turn if actors are still moving
       followPath(i, v, dt)
-    end
-    if v.turnPts > 0 then
+    elseif v.turnPts > 0 then
       nextTurn = false -- dont end players turn if orders need to be given
     end
   end
