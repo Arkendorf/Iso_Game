@@ -64,7 +64,21 @@ function pathIsValid(actor)
   if #actor.path.tiles-1 > actor.turnPts then -- get rid of path if destination is too far away
     return false
   else
-    for i, v in ipairs(levels[currentLevel].actors) do
+    for i, v in ipairs(levels[currentLevel].actors) do -- check if actors path is colliding with player actor
+      if actor.room == v.room then
+        if v.move == true then
+          if actor.path.tiles[#actor.path.tiles].x == v.path.tiles[#v.path.tiles].x and actor.path.tiles[#actor.path.tiles].y == v.path.tiles[#v.path.tiles].y then
+            return false
+          end
+        elseif  #actor.path.tiles > 0 then
+          local x, y = tileToCoord(actor.path.tiles[#actor.path.tiles].x, actor.path.tiles[#actor.path.tiles].y)
+          if x == v.x and y == v.y then
+            return false
+          end
+        end
+      end
+    end
+    for i, v in ipairs(levels[currentLevel].enemyActors) do -- check if actors path is colliding with enemy actor
       if actor.room == v.room then
         if v.move == true then
           if actor.path.tiles[#actor.path.tiles].x == v.path.tiles[#v.path.tiles].x and actor.path.tiles[#actor.path.tiles].y == v.path.tiles[#v.path.tiles].y then
