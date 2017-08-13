@@ -3,21 +3,18 @@ function enemyactor_load()
 end
 
 function enemyactor_update(dt)
-  -- if currentActor.move == false then
-  --   currentActor.path.tiles = newPath({x = math.floor(currentActor.x/tileSize)+1, y = math.floor(currentActor.y/tileSize)+1}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
-  --   currentActor.path.valid = pathIsValid(currentActor)
-  -- end
   local nextTurn = true
   for i, v in ipairs(levels[currentLevel].enemyActors) do
     if v.move == true then
-      nextTurn = false -- don't end players turn if actors are still moving
+      nextTurn = false -- don't end enemies turn if actors are still moving
       enemyFollowPath(i, v, dt)
     elseif v.turnPts > 0 then
-      nextTurn = false -- dont end players turn if orders need to be given
+      v.turnPts = 0 -- TEMPORARY UNTIL COMBAT IS ADDED
+      nextTurn = false -- dont end enemies turn if orders need to be given
     end
   end
 
-  if nextTurn == true then
+  if nextTurn == true and playerTurn == false then
     startPlayerTurn()
   end
 end
@@ -40,7 +37,7 @@ function startEnemyTurn()
 end
 
 function findEnemyPath(i, v)
-  return newPath({x = 6, y = 6}, {x = 4, y = 4}, rooms[v.room])
+  return newPath({x = 6, y = 1}, {x = 4, y = 4}, rooms[v.room])
 end
 
 function enemyFollowPath(i, v, dt)

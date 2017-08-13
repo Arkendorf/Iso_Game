@@ -53,7 +53,7 @@ function actor_update(dt)
     end
   end
 
-  if nextTurn == true then
+  if nextTurn == true and playerTurn == true then
     startEnemyTurn()
   end
 end
