@@ -14,6 +14,7 @@ require("hud")
 require("infobox")
 require("enemychar")
 require("enemyactor")
+require("ai")
 
 function love.load()
   controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, scanreader = "tab", switchActor = "q", use = "e", endTurn = "space"}
@@ -31,6 +32,7 @@ function love.load()
   actor_load()
   mouse_load()
   infobox_load()
+  ai_load()
   enemychar_load()
   enemyactor_load()
 
@@ -51,12 +53,8 @@ function love.draw()
   love.graphics.pop()
   hud_draw()
   infobox_draw()
-  if levels[currentLevel].enemyActors[1].path.tiles ~= nil then
-    for i, v in ipairs(levels[currentLevel].enemyActors[1].path.tiles) do
-      love.graphics.print(tostring(v.x)..", "..tostring(v.y), 100, i*16)
-    end
-  end
-  love.graphics.print(tostring(levels[currentLevel].enemyActors[1].move), 100, 0)
+  local test = getDirection({x = 400, y = 300}, {x=mouse.x, y = mouse.y})
+  love.graphics.print(tostring(test.x)..", "..tostring(test.y), 100, 0)
 end
 
 function love.keypressed(key)

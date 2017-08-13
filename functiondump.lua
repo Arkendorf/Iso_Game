@@ -95,3 +95,20 @@ function pathIsValid(actor)
   end
   return true
 end
+
+function getDirection(a, b)
+  local angle = math.deg(math.atan2(b.y-a.y, b.x-a.x))
+  if angle > 45 and angle <= 135 then
+    return {x = 0, y = 1}
+  elseif (angle > 135 and angle <= 180) or (angle >= -180 and angle <= -135) then
+    return {x = -1, y = 0}
+  elseif angle > -135 and angle <= -45 then
+    return {x = 0, y = -1}
+  else
+    return {x = 1, y = 0}
+  end
+end
+
+function getDistance(a, b)
+  return math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y))
+end

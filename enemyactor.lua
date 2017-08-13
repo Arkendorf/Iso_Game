@@ -37,7 +37,8 @@ function startEnemyTurn()
 end
 
 function findEnemyPath(i, v)
-  return newPath({x = 6, y = 1}, {x = 4, y = 4}, rooms[v.room])
+  --return newPath({x = 6, y = 1}, {x = 4, y = 4}, rooms[v.room])
+  return enemyMoveAIs[1](i, v)
 end
 
 function enemyFollowPath(i, v, dt)
