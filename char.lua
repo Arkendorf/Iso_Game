@@ -1,6 +1,6 @@
 function char_load()
   chars = {}
-  chars[1] = {speed = 30, turnPts = 10}
+  chars[1] = {speed = 30, turnPts = 20}
   chars[2] = {speed = 120, turnPts = 20}
   charHeight = 32
 end

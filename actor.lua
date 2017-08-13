@@ -43,7 +43,7 @@ end
 function actor_update(dt)
   if currentActor.move == false then
     currentActor.path.tiles = newPath({x = math.floor(currentActor.x/tileSize)+1, y = math.floor(currentActor.y/tileSize)+1}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
-    currentActor.path.valid = pathIsValid(currentActor)
+    currentActor.path.valid = pathIsValid(currentActor.path.tiles, currentActor.room, currentActor.turnPts)
   end
   local nextTurn = true
   for i, v in ipairs(levels[currentLevel].actors) do

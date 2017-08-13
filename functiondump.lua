@@ -60,32 +60,32 @@ function setPathColor()
   end
 end
 
-function pathIsValid(actor)
-  if #actor.path.tiles-1 > actor.turnPts then -- get rid of path if destination is too far away
+function pathIsValid(path, room, turnPts)
+  if #path-1 > turnPts then -- get rid of path if destination is too far away
     return false
   else
     for i, v in ipairs(levels[currentLevel].actors) do -- check if actors path is colliding with player actor
-      if actor.room == v.room then
+      if room == v.room then
         if v.move == true then
-          if actor.path.tiles[#actor.path.tiles].x == v.path.tiles[#v.path.tiles].x and actor.path.tiles[#actor.path.tiles].y == v.path.tiles[#v.path.tiles].y then
+          if path[#path].x == v.path.tiles[#v.path.tiles].x and path[#path].y == v.path.tiles[#v.path.tiles].y then
             return false
           end
-        elseif  #actor.path.tiles > 0 then
-          local x, y = tileToCoord(actor.path.tiles[#actor.path.tiles].x, actor.path.tiles[#actor.path.tiles].y)
+        elseif  #path > 0 then
+          local x, y = tileToCoord(path[#path].x, path[#path].y)
           if x == v.x and y == v.y then
             return false
           end
         end
       end
     end
-    for i, v in ipairs(levels[currentLevel].enemyActors) do -- check if actors path is colliding with enemy actor
-      if actor.room == v.room then
+    for i, v in ipairs(levels[currentLevel].enemyActors) do -- check if actors path is colliding with player actor
+      if room == v.room then
         if v.move == true then
-          if actor.path.tiles[#actor.path.tiles].x == v.path.tiles[#v.path.tiles].x and actor.path.tiles[#actor.path.tiles].y == v.path.tiles[#v.path.tiles].y then
+          if path[#path].x == v.path.tiles[#v.path.tiles].x and path[#path].y == v.path.tiles[#v.path.tiles].y then
             return false
           end
-        elseif  #actor.path.tiles > 0 then
-          local x, y = tileToCoord(actor.path.tiles[#actor.path.tiles].x, actor.path.tiles[#actor.path.tiles].y)
+        elseif  #path > 0 then
+          local x, y = tileToCoord(path[#path].x, path[#path].y)
           if x == v.x and y == v.y then
             return false
           end
@@ -111,4 +111,39 @@ end
 
 function getDistance(a, b)
   return math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y))
+end
+
+
+function checkIntersect(l1p1, l1p2, l2p1, l2p2) -- Checks if two line segments intersect. Line segments are given in form of ({x=x, y=y},{x=x,y=y}, {x=x,y=y},{x=x,y=y}).
+	local function checkDir(pt1, pt2, pt3) return math.sign(((pt2.x-pt1.x)*(pt3.y-pt1.y)) - ((pt3.x-pt1.x)*(pt2.y-pt1.y))) end
+	return (checkDir(l1p1,l1p2,l2p1) ~= checkDir(l1p1,l1p2,l2p2)) and (checkDir(l2p1,l2p2,l1p1) ~= checkDir(l2p1,l2p2,l1p2))
+end
+function math.sign(n) return n>0 and 1 or n<0 and -1 or 0 end
+
+function LoS(a, b, map)
+  local xMin, xMax, yMin, yMax = 0, 0, 0, 0
+  if a.x > b.x then
+    xMin, xMax = b.x, a.x
+  else
+    xMin, xMax = a.x, b.x
+  end
+  if a.y > b.y then
+    yMin, yMax = b.y, a.y
+  else
+    yMin, yMax = a.y, b.y
+  end
+
+  for down = yMin, yMax do
+    for across = xMin, xMax do
+      if tileType[map[down][across]] == 2 then
+        if checkIntersect(a, b, {x = across-.5, y = down-.5}, {x = across+.5, y = down-.5}) or
+           checkIntersect(a, b, {x = across+.5, y = down-.5}, {x = across+.5, y = down+.5}) or
+           checkIntersect(a, b, {x = across+.5, y = down+.5}, {x = across-.5, y = down+.5}) or
+           checkIntersect(a, b, {x = across-.5, y = down+.5}, {x = across-.5, y = down-.5}) then
+          return false
+        end
+      end
+    end
+  end
+  return true
 end

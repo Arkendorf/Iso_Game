@@ -54,7 +54,7 @@ function love.draw()
   hud_draw()
   infobox_draw()
   local test = getDirection({x = 400, y = 300}, {x=mouse.x, y = mouse.y})
-  love.graphics.print(tostring(test.x)..", "..tostring(test.y), 100, 0)
+  love.graphics.print(tostring(LoS({x=6, y=1}, {x=2, y=1}, rooms[1])), 100, 0)
 end
 
 function love.keypressed(key)

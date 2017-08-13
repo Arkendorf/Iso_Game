@@ -21,8 +21,12 @@ function ai_load()
         if tileType[room[down][across]] == 3 then
           local playerAngles = {}
           for i, v in ipairs(levels[currentLevel].actors) do -- get angle from player to potential tile
-            local ptX, ptY = coordToTile(v.x, v.y)
-            playerAngles[#playerAngles + 1] = getDirection({x = tX, y = tY}, {x = across, y = down})
+            if v.room ==enemy.room then
+              local pTX, pTY = coordToTile(v.x, v.y)
+              if LoS({x = tX, y = tY}, {x = pTX, y = pTY}, room) == true then
+                playerAngles[#playerAngles + 1] = getDirection({x = pTX, y = pTY}, {x = across, y = down})
+              end
+            end
           end
 
           local playersPerSide = {0, 0, 0, 0}
@@ -60,7 +64,7 @@ function ai_load()
     for i, v in ipairs(potentialTiles) do -- pick closest potential tile that is valid
       local newPath = {tiles = newPath({x = tX, y = tY}, {x = v.tX, y = v.tY}, room)}
       newPath.score = #newPath.tiles + v.visibility*2
-      if #newPath.tiles > 0 and #newPath.tiles <= enemy.turnPts and (newPath.score < currentPath.score or #currentPath.tiles == 0) then
+      if #newPath.tiles > 0 and pathIsValid(newPath.tiles, room, enemy.turnPts) and (newPath.score < currentPath.score or #currentPath.tiles == 0) then
         currentPath = newPath
       end
     end
