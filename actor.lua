@@ -84,7 +84,7 @@ function followPath(i, v, dt)
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)
-    local speed = chars[v.actor].speed -- will need to be changed when level mode 2 is added
+    local speed = playerActors[levels[currentLevel].type][v.actor].speed
     v.x = v.x + dir.x * dt * speed
     v.y = v.y + dir.y * dt * speed
     if (dir.x > 0 and v.x > path.x) or (dir.x < 0 and v.x < path.x) then
@@ -125,6 +125,6 @@ end
 
 function giveActorsTurnPts()
   for i, v in ipairs(levels[currentLevel].actors) do
-    v.turnPts = chars[v.actor].turnPts -- will need to be changed when level mode 2 is added
+    v.turnPts = playerActors[levels[currentLevel].type][v.actor].turnPts
   end
 end

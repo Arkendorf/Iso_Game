@@ -96,7 +96,7 @@ function pathIsValid(path, room, turnPts)
   return true
 end
 
-function isUnderCover(a, b, map) -- b is object under attack
+function isUnderCover(a, b, map) -- a is object under attack
   local angle = math.deg(math.atan2(a.y-b.y, a.x-b.x))
   local tX, tY = coordToTile(a.x, a.y)
   if angle > 45 and angle < 135 then
