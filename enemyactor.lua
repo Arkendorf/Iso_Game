@@ -37,8 +37,8 @@ function startEnemyTurn()
 end
 
 function findEnemyPath(i, v)
-  --return newPath({x = 6, y = 1}, {x = 4, y = 4}, rooms[v.room])
-  return enemyMoveAIs[1](i, v)
+  local potentialTiles = rankTiles(i, v)
+  return chooseTile(i, v, potentialTiles)
 end
 
 function enemyFollowPath(i, v, dt)

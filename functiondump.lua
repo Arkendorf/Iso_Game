@@ -96,17 +96,43 @@ function pathIsValid(path, room, turnPts)
   return true
 end
 
-function getDirection(a, b)
-  local angle = math.deg(math.atan2(b.y-a.y, b.x-a.x))
-  if angle > 45 and angle <= 135 then
-    return {x = 0, y = 1}
-  elseif (angle > 135 and angle <= 180) or (angle >= -180 and angle <= -135) then
-    return {x = -1, y = 0}
-  elseif angle > -135 and angle <= -45 then
-    return {x = 0, y = -1}
-  else
-    return {x = 1, y = 0}
+function isUnderCover(a, b, map) -- b is object under attack
+  local angle = math.deg(math.atan2(a.y-b.y, a.x-b.x))
+  local tX, tY = coordToTile(a.x, a.y)
+  if angle > 45 and angle < 135 then
+    if tY > 1 and tileType[map[tY-1][tX]] == 3 then
+      return true
+    end
+  elseif (angle > 135 and angle <= 180) or (angle >= -180 and angle < -135) then
+    if tX < #map[1] and tileType[map[tY][tX+1]] == 3 then
+      return true
+    end
+  elseif angle > -135 and angle < -45 then
+    if tY < #map and tileType[map[tY+1][tX]] == 3 then
+      return true
+    end
+  elseif angle > -45 and angle < 45 then
+    if tX > 1 and tileType[map[tY][tX-1]] == 3 then
+      return true
+    end
+  elseif angle == 45 then
+    if (tX > 1 and tileType[map[tY][tX-1]] == 3) or (tY > 1 and tileType[map[tY-1][tX]] == 3) then
+      return true
+    end
+  elseif  angle == 135 then
+    if (tY > 1 and tileType[map[tY-1][tX]] == 3) or (tX < #map[1] and tileType[map[tY][tX+1]] == 3) then
+      return true
+    end
+  elseif angle == -135 then
+    if( tX < #map[1] and tileType[map[tY][tX+1]] == 3) or (tY < #map and tileType[map[tY+1][tX]] == 3) then
+      return true
+    end
+  elseif angle == -45 then
+    if (tX > 1 and tileType[map[tY][tX-1]] == 3) or (tY < #map and tileType[map[tY+1][tX]] == 3) then
+      return true
+    end
   end
+  return false
 end
 
 function getDistance(a, b)

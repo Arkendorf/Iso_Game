@@ -53,8 +53,9 @@ function love.draw()
   love.graphics.pop()
   hud_draw()
   infobox_draw()
-  local test = getDirection({x = 400, y = 300}, {x=mouse.x, y = mouse.y})
-  love.graphics.print(tostring(LoS({x=6, y=1}, {x=2, y=1}, rooms[1])), 100, 0)
+  if currentTile ~= nil then
+    love.graphics.print(tostring(currentTile.score), 100, 0)
+  end
 end
 
 function love.keypressed(key)
