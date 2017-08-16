@@ -20,13 +20,20 @@ function enemyactor_update(dt)
 end
 
 function revealPlayers()
+  local occupiedRooms = {}
   for i, v in ipairs(levels[currentLevel].enemyActors) do
+    occupiedRooms[v.room] = true
     local tX1, tY1 = coordToTile(v.x, v.y)
     for j, k in ipairs(levels[currentLevel].actors) do
       local tX2, tY2 = coordToTile(k.x, k.y)
       if v.room == k.room and getDistance({x = v.x, y = v.y}, {x = k.x, y = k.y}) <= enemyActors[levels[currentLevel].type][v.actor].eyesight and LoS({x = tX1, y = tY1}, {x = tX2, y = tY2}, rooms[v.room]) == true then
         visiblePlayers[v.room][j] = true
       end
+    end
+  end
+  for i, v in ipairs(levels[currentLevel].actors) do
+    if occupiedRooms[v.room] == nil then -- if no enemies are in the room, reset visible players in that room
+      visiblePlayers[v.room] = {}
     end
   end
 end
