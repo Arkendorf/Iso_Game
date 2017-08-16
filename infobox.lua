@@ -54,6 +54,15 @@ function infobox_load()
   currentInfoBox = {box = infoboxes[1], anim = 0}
 end
 
+function createInfoBox(x, y, w, h, str)
+  infoboxes[#infoboxes + 1] = {x = x, y = y, w = w, h = h, str = str, canvas = drawInfoBox(str)}
+  return #infoboxes
+end
+
+function deleteInfoBox(num)
+  table.remove(infoboxes, num)
+end
+
 function infobox_update(dt)
   if mouse.x >= currentInfoBox.box.x and mouse.x <= currentInfoBox.box.x + currentInfoBox.box.w and mouse.y >= currentInfoBox.box.y and mouse.y <= currentInfoBox.box.y + currentInfoBox.box.h then
     if currentInfoBox.anim < 1 then
@@ -78,6 +87,14 @@ end
 
 function infobox_draw()
   love.graphics.setColor(255, 255, 255, currentInfoBox.anim*255)
-  love.graphics.draw(currentInfoBox.box.canvas, mouse.x+12, mouse.y+12)
+  local x, y = mouse.x+12, mouse.y+12
+  if x+currentInfoBox.box.canvas:getWidth() > screen.w then
+    x = screen.w-currentInfoBox.box.canvas:getWidth()
+  end
+  if y+currentInfoBox.box.canvas:getHeight() > screen.h then
+    y = screen.h-currentInfoBox.box.canvas:getHeight()
+  end
+
+  love.graphics.draw(currentInfoBox.box.canvas, x, y)
   love.graphics.setColor(255, 255, 255, 255)
 end

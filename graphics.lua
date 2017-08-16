@@ -37,10 +37,13 @@ function graphics_load()
                  love.graphics.newQuad(0, 32, 12, 2, infoBoxImg:getDimensions()),
                  love.graphics.newQuad(12, 32, 10, 2, infoBoxImg:getDimensions()),
                  love.graphics.newQuad(22, 32, 12, 2, infoBoxImg:getDimensions())}
+
+  statusEffectImg = love.graphics.newImage("statuseffecticons.png")
+  statusEffectQuad = createSpriteSheet(statusEffectImg, 3, 1, 20, 20, 0, 0)
 end
 
 
-function createSpriteSheet(a, b, c, d, e, f, g)
+function createSpriteSheet(a, b, c, d, e, f, g) -- tiles across, tiles down, tile width, tile height, x offset, y offset
 local spriteSheet = {}
 for i = 1, c do
   for k = 1, b do

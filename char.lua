@@ -1,8 +1,8 @@
 function char_load()
   playerActors ={}
   playerActors[1] = {}
-  playerActors[1][1] = {speed = 30, turnPts = 10}
-  playerActors[1][2] = {speed = 120, turnPts = 20}
+  playerActors[1][1] = {speed = 30, turnPts = 10, name = "Luke"}
+  playerActors[1][2] = {speed = 120, turnPts = 20, name = "Ben"}
   charHeight = 32
 end
 

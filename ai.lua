@@ -29,16 +29,17 @@ function ai_load()
       score = score + singlePlayerPoints + playersInSight*extraPlayerPoints
     end
 
-    if across < #map[1] and tileType[map[down][across+1]] == 3 then
+    -- add points based on how much cover and walls are nearby
+    if across < #map[1] and (tileType[map[down][across+1]] == 3 or tileType[map[down][across+1]] == 2) then
       score = score +  coverPoints
     end
-    if across > 1 and tileType[map[down][across-1]] == 3 then
+    if across > 1 and (tileType[map[down][across-1]] == 3 or tileType[map[down][across-1]] == 2) then
       score = score + coverPoints
     end
-    if down < #map and tileType[map[down+1][across]] == 3 then
+    if down < #map and (tileType[map[down+1][across]] == 3 or tileType[map[down+1][across]] == 2) then
       score = score + coverPoints
     end
-    if down > 1 and tileType[map[down-1][across]] == 3 then
+    if down > 1 and (tileType[map[down-1][across]] == 3 or tileType[map[down-1][across]] == 2) then
       score = score +  coverPoints
     end
     return score
@@ -77,7 +78,7 @@ function chooseTile(enemyNum, enemy, tiles)
     local tX, tY = coordToTile(enemy.x, enemy.y)
     v.path = newPath({x = tX, y = tY}, {x = v.tX, y = v.tY}, rooms[enemy.room])
     if #v.path == 1 or (#v.path > 0 and pathIsValid(v.path, enemy.room, enemy.turnPts)) then
-      if currentTile.path == nil or v.score - #v.path/6 > currentTile.score - #currentTile.path/4 then
+      if currentTile.path == nil or v.score - #v.path/8 > currentTile.score - #currentTile.path/8 then
         currentTile = v
       end
     end

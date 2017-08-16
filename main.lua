@@ -35,6 +35,7 @@ function love.load()
   ai_load()
   enemychar_load()
   enemyactor_load()
+  hud_load()
 end
 
 function love.update(dt)
@@ -43,6 +44,7 @@ function love.update(dt)
   actor_update(dt)
   enemyactor_update(dt)
   infobox_update(dt)
+  hud_update()
 end
 
 function love.draw()
@@ -52,9 +54,7 @@ function love.draw()
   love.graphics.pop()
   hud_draw()
   infobox_draw()
-  if currentTile ~= nil then
-    love.graphics.print(tostring(), 100, 0)
-  end
+  love.graphics.print(tostring(love.timer.getFPS()), 100, 0)
 end
 
 function love.keypressed(key)
