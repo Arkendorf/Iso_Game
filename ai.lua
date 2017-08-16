@@ -58,7 +58,7 @@ function rankTiles(enemyNum, enemy)
   for down = yMin, yMax do -- search room within range for potential tile
     for across = xMin, xMax do
       if tileType[room[down][across]] == 1 then
-        potentialTiles[#potentialTiles + 1] = {tX = across, tY = down, score = enemyMoveAIs[enemyChars[enemy.actor].ai](enemyNum, enemy, across, down)}
+        potentialTiles[#potentialTiles + 1] = {tX = across, tY = down, score = enemyMoveAIs[enemyActors[levels[currentLevel].type][enemy.actor].ai](enemyNum, enemy, across, down)}
       end
     end
   end
