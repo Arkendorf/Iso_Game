@@ -1,8 +1,8 @@
 function enemychar_load()
   enemyActors = {}
   enemyActors[1] = {}
-  enemyActors[1][1] = {speed = 30, turnPts = 10, ai = 1}
-  enemyActors[1][2] = {speed = 120, turnPts = 20, ai = 1}
+  enemyActors[1][1] = {speed = 30, turnPts = 10, ai = 1, eyesight = 164}
+  enemyActors[1][2] = {speed = 120, turnPts = 20, ai = 1, eyesight = 164}
   enemyHeight = 32
 end
 

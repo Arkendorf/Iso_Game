@@ -19,6 +19,18 @@ function enemyactor_update(dt)
   end
 end
 
+function revealPlayers()
+  for i, v in ipairs(levels[currentLevel].enemyActors) do
+    local tX1, tY1 = coordToTile(v.x, v.y)
+    for j, k in ipairs(levels[currentLevel].actors) do
+      local tX2, tY2 = coordToTile(k.x, k.y)
+      if v.room == k.room and getDistance({x = v.x, y = v.y}, {x = k.x, y = k.y}) <= enemyActors[levels[currentLevel].type][v.actor].eyesight and LoS({x = tX1, y = tY1}, {x = tX2, y = tY2}, rooms[v.room]) == true then
+        visiblePlayers[v.room][j] = true
+      end
+    end
+  end
+end
+
 function giveEnemyActorsTurnPts()
   for i, v in ipairs(levels[currentLevel].enemyActors) do
     v.turnPts = enemyActors[levels[currentLevel].type][v.actor].turnPts
@@ -28,11 +40,14 @@ end
 function startEnemyTurn()
   playerTurn = false
   giveEnemyActorsTurnPts()
+  revealPlayers()
   for i, v in ipairs(levels[currentLevel].enemyActors) do
     v.path.tiles = findEnemyPath(i, v)
-    v.turnPts = v.turnPts - (#v.path.tiles-1)
-    v.path.tiles = simplifyPath(v.path.tiles)
-    v.move = true
+    if #v.path.tiles > 0 then -- if the best course of action is to move
+      v.turnPts = v.turnPts - (#v.path.tiles-1)
+      v.path.tiles = simplifyPath(v.path.tiles)
+      v.move = true
+    end
   end
 end
 

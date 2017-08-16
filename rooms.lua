@@ -92,6 +92,7 @@ function startRoom(room)
     scanLayers[room] = {floor = drawScanLayer(room, 1), walls = drawScanLayer(room, 2), cover = drawScanLayer(room, 3)}
   end
   roomNodes = createIsoNodes(room)
+  visiblePlayers[room] = {}
 end
 
 function drawFloor(room)

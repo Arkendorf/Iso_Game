@@ -35,7 +35,6 @@ function love.load()
   ai_load()
   enemychar_load()
   enemyactor_load()
-
 end
 
 function love.update(dt)
@@ -54,7 +53,7 @@ function love.draw()
   hud_draw()
   infobox_draw()
   if currentTile ~= nil then
-    love.graphics.print(tostring(currentTile.score), 100, 0)
+    love.graphics.print(tostring(), 100, 0)
   end
 end
 

@@ -14,10 +14,12 @@ end
 function startLevel(level)
   currentLevel = level
   currentRoom = levels[currentLevel].start.room
-  startRoom(currentRoom)
-  centerCamOnRoom()
 
   for i, v in ipairs(levels[currentLevel].actors) do
     v.turnPts = playerActors[levels[currentLevel].type][v.actor].turnPts -- will need to be changed when level mode 2 is added
   end
+  visiblePlayers = {}
+
+  startRoom(currentRoom)
+  centerCamOnRoom()
 end
