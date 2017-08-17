@@ -58,6 +58,34 @@ function ai_load()
 
 end
 
+function goToDoor(enemyNum, enemy)
+  local potentialTiles = {}
+  local tX, tY = coordToTile(enemy.x, enemy.y)
+  for i, v in ipairs(levels[currentLevel].doors) do
+    if enemy.room == v.room1 then
+      for j, k in ipairs(levels[currentLevel].actors) do
+        if k.room == v.room2 then
+          local path = newPath({x = tX, y = tY}, {x = v.tX1, y = v.tY1}, rooms[enemy.room])
+          for l, m in ipairs(path) do
+            potentialTiles[#potentialTiles + 1] = {tX = m.x, tY = m.y, score = l}
+          end
+          break
+        end
+      end
+    elseif enemy.room == v.room2 then
+      for j, k in ipairs(levels[currentLevel].actors) do
+        if k.room == v.room1 then
+          local path = newPath({x = tX, y = tY}, {x = v.tX2, y = v.tY2}, rooms[enemy.room])
+          for l, m in ipairs(path) do
+            potentialTiles[#potentialTiles + 1] = {tX = m.x, tY = m.y, score = l}
+          end
+          break
+        end
+      end
+    end
+  end
+  return potentialTiles
+end
 
 function rankTiles(enemyNum, enemy)
   local tX, tY = coordToTile(enemy.x, enemy.y)
@@ -72,13 +100,18 @@ function rankTiles(enemyNum, enemy)
   local yMax = tY + enemy.turnPts
   if yMax > #room then yMax = #room end
 
-  potentialTiles = {}
-  for down = yMin, yMax do -- search room within range for potential tile
-    for across = xMin, xMax do
-      if tileType[room[down][across]] == 1 then
-        potentialTiles[#potentialTiles + 1] = {tX = across, tY = down, score = enemyMoveAIs[enemyActors[levels[currentLevel].type][enemy.actor].ai](enemyNum, enemy, across, down)}
+
+  local potentialTiles = {}
+  if isRoomOccupied(enemy.room) == true then -- if room has a player in it, perform normal AI behavior
+    for down = yMin, yMax do -- search room within range for potential tiles
+      for across = xMin, xMax do
+        if tileType[room[down][across]] == 1 then
+          potentialTiles[#potentialTiles + 1] = {tX = across, tY = down, score = enemyMoveAIs[enemyActors[levels[currentLevel].type][enemy.actor].ai](enemyNum, enemy, across, down)}
+        end
       end
     end
+  else -- otherwise, find a door to a room with a player in it
+    potentialTiles = goToDoor(enemyNum, enemy)
   end
   return potentialTiles
 end

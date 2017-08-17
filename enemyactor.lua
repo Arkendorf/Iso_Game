@@ -9,6 +9,13 @@ function enemyactor_update(dt)
       nextTurn = false -- don't end enemies turn if actors are still moving
       enemyFollowPath(i, v, dt)
     elseif v.turnPts > 0 then
+      if isRoomOccupied(v.room) == false then -- use a door if on one and the current room is unoccupied
+        newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
+        if newPos ~= nil then
+          v.room, v.x, v.y = newPos.room, newPos.x, newPos.y
+          v.turnPts = v.turnPts - 1
+        end
+      end
       v.turnPts = 0 -- TEMPORARY UNTIL COMBAT IS ADDED
       nextTurn = false -- dont end enemies turn if orders need to be given
     end
@@ -17,6 +24,15 @@ function enemyactor_update(dt)
   if nextTurn == true and playerTurn == false then
     startPlayerTurn()
   end
+end
+
+function isRoomOccupied(room)
+  for i, v in ipairs(levels[currentLevel].actors) do -- sees if any players are in the room
+    if v.room == room then
+      return true
+    end
+  end
+  return false
 end
 
 function revealPlayers()
