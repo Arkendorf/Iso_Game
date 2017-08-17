@@ -3,25 +3,36 @@ function ai_load()
   local effectiveCoverPoints = 1
   local singlePlayerPoints = 2
   local extraPlayerPoints = -1
+  local distDiffPoints = -.04
+  local idealDist = 64
   enemyMoveAIs = {}
 
-  enemyMoveAIs[1] = function (enemyNum, enemy, across, down) -- basic AI 1: goes behind cover, wants only one player in LoS
+  enemyMoveAIs[1] = function (enemyNum, enemy, across, down) -- basic AI 1: goes behind cover, wants only one player in LoS, and wants a certain distance between players and enemy
     local x, y = tileToCoord(across, down)
     local map = rooms[enemy.room]
     local score = 0
 
     local playersInSight = 0
+    local distanceToPlayers = {}
     for i, v in ipairs(levels[currentLevel].actors) do
       if v.room == enemy.room and visiblePlayers[enemy.room][i] == true then
         local tX, tY = coordToTile(v.x, v.y)
         if LoS({x = across, y = down}, {x = tX, y = tY}, map) == true then
           playersInSight = playersInSight + 1
+          distanceToPlayers[#distanceToPlayers + 1] = getDistance({x = x, y = y}, {x = v.x, y = v.y}) -- gets distance from tile to player
           if isUnderCover({x = x, y = y}, {x = v.x, y = v.y}, map) == true then -- add a point if enemy is under cover from player
             score = score + effectiveCoverPoints
           end
         end
       end
     end
+
+    local averageDist = 0
+    for i, v in ipairs(distanceToPlayers) do
+      averageDist = averageDist + v/#distanceToPlayers
+    end
+    averageDist = averageDist
+    score = score + math.abs(idealDist - averageDist) * distDiffPoints-- subtrace points based on how close it is to desired distance
 
     if playersInSight == 1 then -- add points based on how exposed enemy is
       score = score + singlePlayerPoints
@@ -61,7 +72,7 @@ function rankTiles(enemyNum, enemy)
   local yMax = tY + enemy.turnPts
   if yMax > #room then yMax = #room end
 
-  local potentialTiles = {}
+  potentialTiles = {}
   for down = yMin, yMax do -- search room within range for potential tile
     for across = xMin, xMax do
       if tileType[room[down][across]] == 1 then

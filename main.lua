@@ -54,7 +54,9 @@ function love.draw()
   love.graphics.pop()
   hud_draw()
   infobox_draw()
-  love.graphics.print(tostring(love.timer.getFPS()), 100, 0)
+  if potentialTiles ~= nil then
+    love.graphics.print(tostring(potentialTiles[1].score), 100, 0)
+  end
 end
 
 function love.keypressed(key)

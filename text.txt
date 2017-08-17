@@ -5,7 +5,7 @@ Door
 Hazard
 Floor tiles can be moved over
 Wall tiles are impassable and block all projectiles
-Cover tiles are impassable and block some projectiles, based on how far away they were shot from
+Cover tiles are impassable and block some projectiles
 Press the use key on a door tile to pass through into another room. If a door is red, it is blocked
 Hazard tiles can be walked through, but will cause injuries
 Location known to enemies
