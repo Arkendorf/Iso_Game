@@ -39,11 +39,23 @@ function hud_draw()
   -- Player Info
   love.graphics.print(playerActors[levels[currentLevel].type][currentActor.actor].name, 1, screen.h-9-font:getHeight())
   love.graphics.setColor(255, 0, 0)
-  love.graphics.rectangle("fill", 1, screen.h-9, 128, 3)
+  love.graphics.rectangle("fill", 1, screen.h-9, 128, 3)--health
+  if currentActor.move == true or (currentActor.turnPts-#currentActor.path.tiles+1) < 0 then
   love.graphics.setColor(0, 255, 255)
-  love.graphics.rectangle("fill", 1, screen.h-4, 128, 3)
+  love.graphics.rectangle("fill", 1, screen.h-4, currentActor.turnPts/playerActors[levels[currentLevel].type][currentActor.actor].turnPts*128, 3)--turnPts
+  elseif (currentActor.turnPts-#currentActor.path.tiles+1) >= 0 then
+      love.graphics.setColor(gradient({0, 200, 255}, {0, 0, 255}, 5))
+      love.graphics.rectangle("fill", 1, screen.h-4, currentActor.turnPts/playerActors[levels[currentLevel].type][currentActor.actor].turnPts*128, 3)-- current quantity of turnPts
+      love.graphics.setColor(0, 255, 255)
+      love.graphics.rectangle("fill", 1, screen.h-4, (currentActor.turnPts-#currentActor.path.tiles+1)/playerActors[levels[currentLevel].type][currentActor.actor].turnPts*128, 3)--turnPts left after proposed move
+  end
   love.graphics.setColor(255, 255, 255)
   if visiblePlayers[currentActor.room][currentActorNum] == true then
     love.graphics.draw(statusEffectImg, statusEffectQuad[1], 130, screen.h-20)
   end
+end
+
+function gradient(c1, c2, speed)
+  local num = love.timer.getTime()*speed
+  return c1[1]*math.sin(num)+c2[1]*(1-math.sin(num)), c1[2]*math.sin(num)+c2[2]*(1-math.sin(num)), c1[3]*math.sin(num)+c2[3]*(1-math.sin(num))
 end
