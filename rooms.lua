@@ -89,8 +89,8 @@ function startRoom(room)
   if floors[room] == nil then
     floors[room] = drawFloor(room)
   end
-  if scanLayers[room] == nil then
-    scanLayers[room] = {floor = drawScanLayer(room, 1), walls = drawScanLayer(room, 2), cover = drawScanLayer(room, 3)}
+  if scanFloors[room] == nil then
+    scanFloors[room] = drawScanFloor(room)
   end
   roomNodes = createIsoNodes(room)
 end
