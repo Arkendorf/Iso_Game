@@ -13,8 +13,10 @@ function drawScannedRoom()
   love.graphics.draw(scanLayers[currentRoom].cover)
   drawDoors(currentRoom) -- draws the door icons
   drawScannedHazards(currentRoom) -- draws hazard icon
-  setPathColor() -- sets color of path indicator
-  drawPath(currentActor) -- draws path indicator
+  setValidColor(currentActor.path.valid) -- sets color of path indicator
+  if currentActor.mode == 0 then
+    drawPath(currentActor) -- draws path indicator
+  end
   local charCanvas = charScanCanvas(currentRoom) -- so it can be later greenified
   love.graphics.setColor(palette.green)
   love.graphics.draw(charCanvas, 0, -charHeight)

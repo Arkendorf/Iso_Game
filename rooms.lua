@@ -26,15 +26,16 @@ function rooms_draw()
     drawScannedRoom()
   end
 
-  setPathColor()
   mouse_draw()
   love.graphics.setColor(255, 255, 255)
 end
 
 function drawRoom()
   love.graphics.draw(floors[currentRoom]) -- floor is drawn first so it will be at the bottom
-  setPathColor() -- sets color of path indicator
-  drawPath(currentActor) -- draws path indicator
+  setValidColor(currentActor.path.valid) -- sets color of path indicator
+  if currentActor.mode == 0 then
+    drawPath(currentActor) -- draws path indicator
+  end
 
   drawQueue = {} -- reset queue
   queueWalls(currentRoom)

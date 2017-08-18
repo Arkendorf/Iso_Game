@@ -47,10 +47,8 @@ end
 function revealPlayers()
   local occupiedRooms = {}
   for i, v in ipairs(currentLevel.enemyActors) do
-    local tX1, tY1 = coordToTile(v.x, v.y)
     for j, k in ipairs(currentLevel.actors) do
-      local tX2, tY2 = coordToTile(k.x, k.y)
-      if v.room == k.room and getDistance({x = v.x, y = v.y}, {x = k.x, y = k.y}) <= enemyActors[currentLevel.type][v.actor].eyesight and LoS({x = tX1, y = tY1}, {x = tX2, y = tY2}, rooms[v.room]) == true then
+      if v.room == k.room and getDistance({x = v.x, y = v.y}, {x = k.x, y = k.y}) <= enemyActors[currentLevel.type][v.actor].eyesight and LoS({x = v.x, y = v.y}, {x = k.x, y = k.y}, rooms[v.room]) == true then
         v.seen[j] = true
       end
     end

@@ -18,7 +18,7 @@ require("ai")
 require("combat")
 
 function love.load()
-  controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, scanreader = "tab", switchActor = "q", use = "e", endTurn = "space"}
+  controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, scanreader = "tab", switchActor = "q", use = "e", endTurn = "space", mode1 = "1"}
   text = {}
   for line in love.filesystem.lines("text.txt") do
   table.insert(text, line)

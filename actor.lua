@@ -37,14 +37,48 @@ function actor_keypressed(key)
       syncRooms()
       currentActor.turnPts = currentActor.turnPts - 1
     end
+  elseif key == controls.mode1 then
+    if currentActor.mode == 1 then
+      currentActor.mode = 0
+    else
+      currentActor.mode = 1
+    end
+  end
+end
+
+function findTarget(tX1, tY1, room, table)
+  for i, v in ipairs(table) do
+    tX2, tY2 = coordToTile(v.x, v.y)
+    if v.room == room and tX1 == tX2 and tY1 == tY2 then
+      return i
+    end
+  end
+  return 0
+end
+
+function targetIsValid(target, actor)
+  if target > 0 then
+    local enemy = currentLevel.enemyActors[target]
+    if enemy.room == actor.room and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true then
+      return true
+    else
+      return false
+    end
+  else
+    return false
   end
 end
 
 function actor_update(dt)
   if currentActor.move == false then
-    local tX, tY = coordToTile(currentActor.x, currentActor.y)
-    currentActor.path.tiles = newPath({x = tX, y = tY}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
-    currentActor.path.valid = pathIsValid(currentActor.path.tiles, currentActor.room, currentActor.turnPts)
+    if currentActor.mode == 0 then
+      local tX, tY = coordToTile(currentActor.x, currentActor.y)
+      currentActor.path.tiles = newPath({x = tX, y = tY}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
+      currentActor.path.valid = pathIsValid(currentActor.path.tiles, currentActor.room, currentActor.turnPts)
+    elseif currentActor.mode == 1 then
+      currentActor.target.num = findTarget(cursorPos.tX, cursorPos.tY, currentActor.room, currentLevel.enemyActors)
+      currentActor.target.valid = targetIsValid(currentActor.target.num, currentActor)
+    end
   end
   local nextTurn = true
   for i, v in ipairs(currentLevel.actors) do
@@ -67,7 +101,7 @@ function startPlayerTurn()
 end
 
 function actor_mousepressed(x, y, button)
-  if button == 1 and currentActor.move == false and #currentActor.path.tiles > 1 and currentActor.path.valid then
+  if button == 1 and currentActor.mode == 0 and currentActor.move == false and #currentActor.path.tiles > 1 and currentActor.path.valid then
     currentActor.turnPts = currentActor.turnPts - (#currentActor.path.tiles-1) -- reduce turnPts based on how far the actor is moving
     currentActor.move = true
     currentActor.path.tiles = simplifyPath(currentActor.path.tiles)

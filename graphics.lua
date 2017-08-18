@@ -13,6 +13,7 @@ function graphics_load()
   coverImg = love.graphics.newImage("cover.png")
   hazardImg = love.graphics.newImage("hazard.png")
   cursorImg = love.graphics.newImage("cursor.png")
+  targetImg = love.graphics.newImage("target.png")
   tileSize = 16
 
   pathImg = love.graphics.newImage("path.png")

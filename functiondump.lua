@@ -52,8 +52,8 @@ function pathDirection(a, b)
   end
 end
 
-function setPathColor()
-  if currentActor.path.valid then
+function setValidColor(bool)
+  if bool then
     love.graphics.setColor(palette.green)
   else
     love.graphics.setColor(palette.red)
@@ -146,7 +146,9 @@ function checkIntersect(l1p1, l1p2, l2p1, l2p2) -- Checks if two line segments i
 end
 function math.sign(n) return n>0 and 1 or n<0 and -1 or 0 end
 
-function LoS(a, b, map)
+function LoS(a, b, map) -- a and b are coords
+  a.x, a.y = coordToTile(a.x, a.y)
+  b.x, b.y = coordToTile(b.x, b.y)
   local xMin, xMax, yMin, yMax = 0, 0, 0, 0
   if a.x > b.x then
     xMin, xMax = b.x, a.x

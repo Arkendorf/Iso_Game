@@ -19,6 +19,8 @@ function startLevel(level)
   for i, v in ipairs(currentLevel.actors) do
     v.turnPts = playerActors[currentLevel.type][v.actor].turnPts
     v.health = playerActors[currentLevel.type][v.actor].health
+    v.mode = 0
+    v.target = {valid = false, num = 0}
   end
   for i, v in ipairs(currentLevel.enemyActors) do
     v.turnPts = 0
