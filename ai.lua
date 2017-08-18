@@ -15,7 +15,7 @@ function ai_load()
     local playersInSight = 0
     local distanceToPlayers = {}
     for i, v in ipairs(currentLevel.actors) do
-      if v.room == enemy.room and visiblePlayers[enemy.room][i] == true then
+      if v.room == enemy.room and enemy.seen[i] == true then
         local tX, tY = coordToTile(v.x, v.y)
         if LoS({x = across, y = down}, {x = tX, y = tY}, map) == true then
           playersInSight = playersInSight + 1
@@ -102,7 +102,7 @@ function rankTiles(enemyNum, enemy)
 
 
   local potentialTiles = {}
-  if isRoomOccupied(enemy.room) == true then -- if room has a player in it, perform normal AI behavior
+  if isRoomOccupied(enemy) == true then -- if room has a player in it, perform normal AI behavior
     for down = yMin, yMax do -- search room within range for potential tiles
       for across = xMin, xMax do
         if tileType[room[down][across]] == 1 then

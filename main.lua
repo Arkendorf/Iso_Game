@@ -55,9 +55,7 @@ function love.draw()
   love.graphics.pop()
   hud_draw()
   infobox_draw()
-  if potentialTiles ~= nil then
-    love.graphics.print(tostring(potentialTiles[1].score), 100, 0)
-  end
+  love.graphics.print(tostring(currentLevel.enemyActors[1].seen[1]), 100, 0)
 end
 
 function love.keypressed(key)

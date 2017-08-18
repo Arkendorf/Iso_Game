@@ -3,7 +3,7 @@ function hud_load()
 end
 
 function hud_update(dt)
-  if visiblePlayers[currentActor.room][currentActorNum] == true then
+  if isPlayerVisible(currentActor, currentActorNum) == true then
     statusEffectInfoboxNums[1] = createInfoBox(130, screen.h-20, 20, 20, text[11])
   elseif statusEffectInfoboxNums[1] ~= nil then
     deleteInfoBox(statusEffectInfoboxNums[1])
@@ -50,7 +50,7 @@ function hud_draw()
       love.graphics.rectangle("fill", 1, screen.h-4, (currentActor.turnPts-#currentActor.path.tiles+1)/playerActors[currentLevel.type][currentActor.actor].turnPts*128, 3)--turnPts left after proposed move
   end
   love.graphics.setColor(255, 255, 255)
-  if visiblePlayers[currentActor.room][currentActorNum] == true then
+  if isPlayerVisible(currentActor, currentActorNum) == true then
     love.graphics.draw(statusEffectImg, statusEffectQuad[1], 130, screen.h-20)
   end
 end

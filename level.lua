@@ -21,9 +21,10 @@ function startLevel(level)
     v.health = playerActors[currentLevel.type][v.actor].health
   end
   for i, v in ipairs(currentLevel.enemyActors) do
+    v.turnPts = 0
     v.health = playerActors[currentLevel.type][v.actor].health
+    v.seen = {}
   end
-  visiblePlayers = {}
 
   startRoom(currentRoom)
   centerCamOnRoom()
