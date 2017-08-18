@@ -17,12 +17,12 @@ function drawScannedRoom()
   if currentActor.mode == 0 then
     drawPath(currentActor) -- draws path indicator
   end
-  local charCanvas = charScanCanvas(currentRoom) -- so it can be later greenified
-  love.graphics.setColor(palette.green)
-  love.graphics.draw(charCanvas, 0, -charHeight)
-  local enemyCharCanvas = enemyCharScanCanvas(currentRoom) -- so it can be later redified
-  love.graphics.setColor(palette.red)
-  love.graphics.draw(enemyCharCanvas, 0, -enemyHeight)
+
+  drawQueue = {} -- reset queue
+  queueScanChars(currentRoom)
+  queueScanEnemyChars(currentRoom)
+  table.sort(drawQueue, function(a, b) return a.y < b.y end) -- sort queue to ensure proper layering
+  drawItemsInQueue() -- draw items in queue
 end
 
 function scanreader_keypressed(key)

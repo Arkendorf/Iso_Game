@@ -15,18 +15,19 @@ function queueChars(room)
   end
 end
 
-function charScanCanvas(room)
-  local layer = love.graphics.newCanvas((#rooms[room][1]+1)*tileSize*2, (#rooms[room]+1)*tileSize+charHeight)
-  love.graphics.setCanvas(layer)
-  love.graphics.clear()
-  love.graphics.setColor(511, 511, 511)
+function queueScanChars(room)
   for i, v in ipairs(currentLevel.actors) do
     if room == v.room then
+      local canvas = love.graphics.newCanvas(tileSize*2, charHeight)
+      love.graphics.setCanvas(canvas)
+      love.graphics.clear()
+      love.graphics.setColor(511, 511, 511)
+
+      love.graphics.draw(wallImg, -cameraPos.x, -cameraPos.y)
+      love.graphics.setCanvas()
+
       local x, y = coordToIso(v.x, v.y)
-      love.graphics.draw(wallImg, math.floor(x)-cameraPos.x, math.floor(y)+16-cameraPos.y) -- cameraPos is subtracted because this function is called in room_draw() which causes it to be translated twice
+      drawQueue[#drawQueue + 1] = {img = canvas, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize, r = palette.green[1], g = palette.green[2], b = palette.green[3]}
     end
   end
-  love.graphics.setColor(255, 255, 255)
-  love.graphics.setCanvas()
-  return layer
 end
