@@ -37,17 +37,17 @@ function hud_draw()
 
 
   -- Player Info
-  love.graphics.print(playerActors[levels[currentLevel].type][currentActor.actor].name, 1, screen.h-9-font:getHeight())
+  love.graphics.print(playerActors[currentLevel.type][currentActor.actor].name, 1, screen.h-9-font:getHeight())
   love.graphics.setColor(255, 0, 0)
-  love.graphics.rectangle("fill", 1, screen.h-9, currentActor.health/playerActors[levels[currentLevel].type][currentActor.actor].health*128, 3)--health
+  love.graphics.rectangle("fill", 1, screen.h-9, currentActor.health/playerActors[currentLevel.type][currentActor.actor].health*128, 3)--health
   if currentActor.move == true or (currentActor.turnPts-#currentActor.path.tiles+1) < 0 then
   love.graphics.setColor(0, 255, 255)
-  love.graphics.rectangle("fill", 1, screen.h-4, currentActor.turnPts/playerActors[levels[currentLevel].type][currentActor.actor].turnPts*128, 3)--turnPts
+  love.graphics.rectangle("fill", 1, screen.h-4, currentActor.turnPts/playerActors[currentLevel.type][currentActor.actor].turnPts*128, 3)--turnPts
   elseif (currentActor.turnPts-#currentActor.path.tiles+1) >= 0 then
       love.graphics.setColor(gradient({0, 200, 255}, {0, 0, 255}, 5))
-      love.graphics.rectangle("fill", 1, screen.h-4, currentActor.turnPts/playerActors[levels[currentLevel].type][currentActor.actor].turnPts*128, 3)-- current quantity of turnPts
+      love.graphics.rectangle("fill", 1, screen.h-4, currentActor.turnPts/playerActors[currentLevel.type][currentActor.actor].turnPts*128, 3)-- current quantity of turnPts
       love.graphics.setColor(0, 255, 255)
-      love.graphics.rectangle("fill", 1, screen.h-4, (currentActor.turnPts-#currentActor.path.tiles+1)/playerActors[levels[currentLevel].type][currentActor.actor].turnPts*128, 3)--turnPts left after proposed move
+      love.graphics.rectangle("fill", 1, screen.h-4, (currentActor.turnPts-#currentActor.path.tiles+1)/playerActors[currentLevel.type][currentActor.actor].turnPts*128, 3)--turnPts left after proposed move
   end
   love.graphics.setColor(255, 255, 255)
   if visiblePlayers[currentActor.room][currentActorNum] == true then

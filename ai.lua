@@ -14,7 +14,7 @@ function ai_load()
 
     local playersInSight = 0
     local distanceToPlayers = {}
-    for i, v in ipairs(levels[currentLevel].actors) do
+    for i, v in ipairs(currentLevel.actors) do
       if v.room == enemy.room and visiblePlayers[enemy.room][i] == true then
         local tX, tY = coordToTile(v.x, v.y)
         if LoS({x = across, y = down}, {x = tX, y = tY}, map) == true then
@@ -61,9 +61,9 @@ end
 function goToDoor(enemyNum, enemy)
   local potentialTiles = {}
   local tX, tY = coordToTile(enemy.x, enemy.y)
-  for i, v in ipairs(levels[currentLevel].doors) do
+  for i, v in ipairs(currentLevel.doors) do
     if enemy.room == v.room1 then
-      for j, k in ipairs(levels[currentLevel].actors) do
+      for j, k in ipairs(currentLevel.actors) do
         if k.room == v.room2 then
           local path = newPath({x = tX, y = tY}, {x = v.tX1, y = v.tY1}, rooms[enemy.room])
           for l, m in ipairs(path) do
@@ -73,7 +73,7 @@ function goToDoor(enemyNum, enemy)
         end
       end
     elseif enemy.room == v.room2 then
-      for j, k in ipairs(levels[currentLevel].actors) do
+      for j, k in ipairs(currentLevel.actors) do
         if k.room == v.room1 then
           local path = newPath({x = tX, y = tY}, {x = v.tX2, y = v.tY2}, rooms[enemy.room])
           for l, m in ipairs(path) do
@@ -106,7 +106,7 @@ function rankTiles(enemyNum, enemy)
     for down = yMin, yMax do -- search room within range for potential tiles
       for across = xMin, xMax do
         if tileType[room[down][across]] == 1 then
-          potentialTiles[#potentialTiles + 1] = {tX = across, tY = down, score = enemyMoveAIs[enemyActors[levels[currentLevel].type][enemy.actor].ai](enemyNum, enemy, across, down)}
+          potentialTiles[#potentialTiles + 1] = {tX = across, tY = down, score = enemyMoveAIs[enemyActors[currentLevel.type][enemy.actor].ai](enemyNum, enemy, across, down)}
         end
       end
     end
@@ -122,7 +122,7 @@ function chooseTile(enemyNum, enemy, tiles)
     local tX, tY = coordToTile(enemy.x, enemy.y)
     v.path = newPath({x = tX, y = tY}, {x = v.tX, y = v.tY}, rooms[enemy.room])
     if #v.path == 1 or (#v.path > 0 and pathIsValid(v.path, enemy.room, enemy.turnPts)) then
-      local lengthPenalty = enemyActors[levels[currentLevel].type][enemy.actor].turnPts / 2
+      local lengthPenalty = enemyActors[currentLevel.type][enemy.actor].turnPts / 2
       if currentTile.path == nil or v.score - #v.path/lengthPenalty > currentTile.score - #currentTile.path/lengthPenalty then
         currentTile = v
       end

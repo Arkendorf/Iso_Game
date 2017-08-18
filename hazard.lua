@@ -1,5 +1,5 @@
 function drawScannedHazards(room)
-  for i, v in ipairs(levels[currentLevel].hazards) do
+  for i, v in ipairs(currentLevel.hazards) do
     if v.room == room then
       love.graphics.setColor(palette.red)
       love.graphics.draw(scanBorderImg, scanBorderQuad[bitmaskFromHazards(room, v.tX, v.tY)], tileToIso(v.tX, v.tY))
@@ -9,7 +9,7 @@ function drawScannedHazards(room)
 end
 
 function queueHazards(room)
-  for i, v in ipairs(levels[currentLevel].hazards) do
+  for i, v in ipairs(currentLevel.hazards) do
     if v.room == room then
       local x, y = tileToIso(v.tX, v.tY)
       drawQueue[#drawQueue + 1] = {img = hazardImg, x = x, y = y, z= hazardImg:getHeight()-tileSize}

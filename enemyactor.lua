@@ -4,7 +4,7 @@ end
 
 function enemyactor_update(dt)
   local nextTurn = true
-  for i, v in ipairs(levels[currentLevel].enemyActors) do
+  for i, v in ipairs(currentLevel.enemyActors) do
     if v.move == true then
       nextTurn = false -- don't end enemies turn if actors are still moving
       enemyFollowPath(i, v, dt)
@@ -27,7 +27,7 @@ function enemyactor_update(dt)
 end
 
 function isRoomOccupied(room)
-  for i, v in ipairs(levels[currentLevel].actors) do -- sees if any players are in the room
+  for i, v in ipairs(currentLevel.actors) do -- sees if any players are in the room
     if v.room == room then
       return true
     end
@@ -37,17 +37,17 @@ end
 
 function revealPlayers()
   local occupiedRooms = {}
-  for i, v in ipairs(levels[currentLevel].enemyActors) do
+  for i, v in ipairs(currentLevel.enemyActors) do
     occupiedRooms[v.room] = true
     local tX1, tY1 = coordToTile(v.x, v.y)
-    for j, k in ipairs(levels[currentLevel].actors) do
+    for j, k in ipairs(currentLevel.actors) do
       local tX2, tY2 = coordToTile(k.x, k.y)
-      if v.room == k.room and getDistance({x = v.x, y = v.y}, {x = k.x, y = k.y}) <= enemyActors[levels[currentLevel].type][v.actor].eyesight and LoS({x = tX1, y = tY1}, {x = tX2, y = tY2}, rooms[v.room]) == true then
+      if v.room == k.room and getDistance({x = v.x, y = v.y}, {x = k.x, y = k.y}) <= enemyActors[currentLevel.type][v.actor].eyesight and LoS({x = tX1, y = tY1}, {x = tX2, y = tY2}, rooms[v.room]) == true then
         visiblePlayers[v.room][j] = true
       end
     end
   end
-  for i, v in ipairs(levels[currentLevel].actors) do
+  for i, v in ipairs(currentLevel.actors) do
     if occupiedRooms[v.room] == nil then -- if no enemies are in the room, reset visible players in that room
       visiblePlayers[v.room] = {}
     end
@@ -55,8 +55,8 @@ function revealPlayers()
 end
 
 function giveEnemyActorsTurnPts()
-  for i, v in ipairs(levels[currentLevel].enemyActors) do
-    v.turnPts = enemyActors[levels[currentLevel].type][v.actor].turnPts
+  for i, v in ipairs(currentLevel.enemyActors) do
+    v.turnPts = enemyActors[currentLevel.type][v.actor].turnPts
   end
 end
 
@@ -64,7 +64,7 @@ function startEnemyTurn()
   playerTurn = false
   giveEnemyActorsTurnPts()
   revealPlayers()
-  for i, v in ipairs(levels[currentLevel].enemyActors) do
+  for i, v in ipairs(currentLevel.enemyActors) do
     v.path.tiles = findEnemyPath(i, v)
     if #v.path.tiles > 0 then -- if the best course of action is to move
       v.turnPts = v.turnPts - (#v.path.tiles-1)
@@ -88,7 +88,7 @@ function enemyFollowPath(i, v, dt)
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)
-    local speed = enemyActors[levels[currentLevel].type][v.actor].speed
+    local speed = enemyActors[currentLevel.type][v.actor].speed
     v.x = v.x + dir.x * dt * speed
     v.y = v.y + dir.y * dt * speed
     if (dir.x > 0 and v.x > path.x) or (dir.x < 0 and v.x < path.x) then

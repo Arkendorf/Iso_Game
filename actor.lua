@@ -1,13 +1,13 @@
 function actor_load()
   currentActorNum = 1
-  currentActor = levels[currentLevel].actors[currentActorNum]
+  currentActor = currentLevel.actors[currentActorNum]
   playerTurn = true
 end
 
 
 function newCurrentActor(newActorNum)
   currentActorNum = newActorNum
-  currentActor = levels[currentLevel].actors[newActorNum]
+  currentActor = currentLevel.actors[newActorNum]
   syncRooms()
 end
 
@@ -23,7 +23,7 @@ end
 
 function actor_keypressed(key)
   if key == controls.switchActor then
-    if currentActorNum < #levels[currentLevel].actors then
+    if currentActorNum < #currentLevel.actors then
       newCurrentActor(currentActorNum + 1)
     else
       newCurrentActor(1)
@@ -47,7 +47,7 @@ function actor_update(dt)
     currentActor.path.valid = pathIsValid(currentActor.path.tiles, currentActor.room, currentActor.turnPts)
   end
   local nextTurn = true
-  for i, v in ipairs(levels[currentLevel].actors) do
+  for i, v in ipairs(currentLevel.actors) do
     if v.move == true then
       nextTurn = false -- don't end players turn if actors are still moving
       followPath(i, v, dt)
@@ -84,7 +84,7 @@ function followPath(i, v, dt)
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)
-    local speed = playerActors[levels[currentLevel].type][v.actor].speed
+    local speed = playerActors[currentLevel.type][v.actor].speed
     v.x = v.x + dir.x * dt * speed
     v.y = v.y + dir.y * dt * speed
     if (dir.x > 0 and v.x > path.x) or (dir.x < 0 and v.x < path.x) then
@@ -124,7 +124,7 @@ function drawPath(actor)
 end
 
 function giveActorsTurnPts()
-  for i, v in ipairs(levels[currentLevel].actors) do
-    v.turnPts = playerActors[levels[currentLevel].type][v.actor].turnPts
+  for i, v in ipairs(currentLevel.actors) do
+    v.turnPts = playerActors[currentLevel.type][v.actor].turnPts
   end
 end

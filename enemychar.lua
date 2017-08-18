@@ -7,7 +7,7 @@ function enemychar_load()
 end
 
 function queueEnemyChars(room)
-  for i, v in ipairs(levels[currentLevel].enemyActors) do
+  for i, v in ipairs(currentLevel.enemyActors) do
     if room == v.room then
       local x, y = coordToIso(v.x, v.y)
       drawQueue[#drawQueue + 1] = {img = wallImg, x = math.floor(x), y = math.floor(y), z= enemyHeight-tileSize, r = 200, g = 100, b = 100}
@@ -20,7 +20,7 @@ function enemyCharScanCanvas(room)
   love.graphics.setCanvas(layer)
   love.graphics.clear()
   love.graphics.setColor(511, 511, 511)
-  for i, v in ipairs(levels[currentLevel].enemyActors) do
+  for i, v in ipairs(currentLevel.enemyActors) do
     if room == v.room then
       local x, y = coordToIso(v.x, v.y)
       love.graphics.draw(wallImg, math.floor(x)-cameraPos.x, math.floor(y)+16-cameraPos.y) -- cameraPos is subtracted because this function is called in room_draw() which causes it to be translated twice

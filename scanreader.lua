@@ -52,7 +52,7 @@ function drawScanLayer(room, type)
       end
     end
 
-    for i, v in ipairs(levels[currentLevel].doors) do -- fill in gaps around doors
+    for i, v in ipairs(currentLevel.doors) do -- fill in gaps around doors
       if room == v.room1 then
         if v.tY1 < #rooms[room] and v.tX1 > 1 and tileType[rooms[room][v.tY1+1][v.tX1-1]] == type then -- fills in some gaps in border
           love.graphics.draw(scanBorderImg, scanBorderQuad[18], tileToIso(v.tX1-1, v.tY1+1))
@@ -70,7 +70,7 @@ function drawScanLayer(room, type)
       end
     end
   end
-  for i, v in ipairs(levels[currentLevel].hazards) do -- fill in gaps around doors
+  for i, v in ipairs(currentLevel.hazards) do -- fill in gaps around doors
     if room == v.room then
       if v.tY < #rooms[room] and v.tX > 1 and tileType[rooms[room][v.tY+1][v.tX-1]] == type then -- fills in some gaps in border
         love.graphics.draw(scanBorderImg, scanBorderQuad[18], tileToIso(v.tX-1, v.tY+1))

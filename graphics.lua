@@ -57,7 +57,7 @@ end
 
 function bitmaskFromMap(room, tX, tY, roomMap, tile)
   local map = copy(roomMap)
-  for i, v in ipairs(levels[currentLevel].doors) do -- makes floors with doors on them not count towards bitmasking
+  for i, v in ipairs(currentLevel.doors) do -- makes floors with doors on them not count towards bitmasking
     if v.room1 == room then
       map[v.tY1][v.tX1] = 0
     elseif v.room2 == room then
@@ -65,7 +65,7 @@ function bitmaskFromMap(room, tX, tY, roomMap, tile)
     end
   end
 
-  for i, v in ipairs(levels[currentLevel].hazards) do -- makes floors with hazards on them not count towards bitmasking
+  for i, v in ipairs(currentLevel.hazards) do -- makes floors with hazards on them not count towards bitmasking
     if v.room == room then
       map[v.tY][v.tX] = 0
     end
@@ -89,7 +89,7 @@ end
 
 function bitmaskFromDoors(room, tX, tY)
   local value = 1
-  for i, v in ipairs(levels[currentLevel].doors) do
+  for i, v in ipairs(currentLevel.doors) do
     if v.room1 == room then
       if v.tX1 - tX == -1 and v.tY1 == tY then
         value = value + 2
@@ -123,7 +123,7 @@ end
 
 function bitmaskFromHazards(room, tX, tY)
   local value = 1
-  for i, v in ipairs(levels[currentLevel].hazards) do
+  for i, v in ipairs(currentLevel.hazards) do
     if v.room == room then
       if v.tX - tX == -1 and v.tY == tY then
         value = value + 2
