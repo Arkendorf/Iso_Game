@@ -57,7 +57,7 @@ function findTarget(tX1, tY1, room, table)
 end
 
 function targetIsValid(target, actor)
-  if target > 0 then
+  if target > 0 and actor.turnPts >= weapons[actor.weapon].cost then
     local enemy = currentLevel.enemyActors[target]
     if enemy.room == actor.room and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true then
       return true
@@ -106,6 +106,9 @@ function actor_mousepressed(x, y, button)
     currentActor.move = true
     currentActor.path.tiles = simplifyPath(currentActor.path.tiles)
     currentActor.path.valid = false
+  elseif button == 1 and currentActor.mode == 1 and currentActor.target.valid == true then
+    hitscan(currentActor, currentLevel.enemyActors[currentActor.target.num])
+    currentActor.turnPts = currentActor.turnPts - weapons[currentActor.weapon].cost
   end
 end
 

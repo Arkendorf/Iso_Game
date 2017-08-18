@@ -175,3 +175,11 @@ function LoS(a, b, map) -- a and b are coords
   end
   return true
 end
+
+function removeNil(t)
+  local ans = {}
+  for _,v in pairs(t) do
+    ans[ #ans+1 ] = v
+  end
+  return ans
+end

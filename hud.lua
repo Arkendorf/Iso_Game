@@ -40,14 +40,25 @@ function hud_draw()
   love.graphics.print(playerActors[currentLevel.type][currentActor.actor].name, 1, screen.h-9-font:getHeight())
   love.graphics.setColor(255, 0, 0)
   love.graphics.rectangle("fill", 1, screen.h-9, currentActor.health/playerActors[currentLevel.type][currentActor.actor].health*128, 3)--health
-  if currentActor.move == true or (currentActor.turnPts-#currentActor.path.tiles+1) < 0 then
+
+  local num = 0 -- set what is being subtracted from turnPts
+  local valid = false
+  if currentActor.mode == 0 then
+    num = #currentActor.path.tiles-1
+    valid = currentActor.path.valid
+  elseif currentActor.mode == 1 then
+    num = weapons[currentActor.weapon].cost
+    valid = currentActor.target.valid
+  end
+
+  if currentActor.move == true or valid == false then
   love.graphics.setColor(0, 255, 255)
   love.graphics.rectangle("fill", 1, screen.h-4, currentActor.turnPts/playerActors[currentLevel.type][currentActor.actor].turnPts*128, 3)--turnPts
-  elseif (currentActor.turnPts-#currentActor.path.tiles+1) >= 0 then
-      love.graphics.setColor(gradient({0, 200, 255}, {0, 0, 255}, 5))
-      love.graphics.rectangle("fill", 1, screen.h-4, currentActor.turnPts/playerActors[currentLevel.type][currentActor.actor].turnPts*128, 3)-- current quantity of turnPts
-      love.graphics.setColor(0, 255, 255)
-      love.graphics.rectangle("fill", 1, screen.h-4, (currentActor.turnPts-#currentActor.path.tiles+1)/playerActors[currentLevel.type][currentActor.actor].turnPts*128, 3)--turnPts left after proposed move
+  else
+    love.graphics.setColor(gradient({0, 200, 255}, {0, 0, 255}, 5))
+    love.graphics.rectangle("fill", 1, screen.h-4, currentActor.turnPts/playerActors[currentLevel.type][currentActor.actor].turnPts*128, 3)-- current quantity of turnPts
+    love.graphics.setColor(0, 255, 255)
+    love.graphics.rectangle("fill", 1, screen.h-4, (currentActor.turnPts-num)/playerActors[currentLevel.type][currentActor.actor].turnPts*128, 3)--turnPts left after subtraction
   end
   love.graphics.setColor(255, 255, 255)
   if isPlayerVisible(currentActor, currentActorNum) == true then

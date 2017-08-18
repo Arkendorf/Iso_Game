@@ -9,11 +9,22 @@ end
 function queueChars(room)
   for i, v in ipairs(currentLevel.actors) do
     if room == v.room then
+      local canvas = love.graphics.newCanvas(tileSize*2, charHeight)
+      love.graphics.setCanvas(canvas)
+      love.graphics.clear()
+      love.graphics.setColor(255, 255, 255)
+
+      love.graphics.draw(wallImg, -cameraPos.x, -cameraPos.y)
+      love.graphics.setCanvas()
+
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {img = wallImg, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize, r = 100, g = 100, b = 200}
+      drawQueue[#drawQueue + 1] = {img = canvas, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize, r = 100, g = 200, b = 100}
     end
   end
 end
+
+
+
 
 function queueScanChars(room)
   for i, v in ipairs(currentLevel.actors) do
