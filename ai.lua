@@ -3,8 +3,7 @@ function ai_load()
   local effectiveCoverPoints = 1
   local singlePlayerPoints = 2
   local extraPlayerPoints = -1
-  local distDiffPoints = -.04
-  local idealDist = 64
+
   enemyMoveAIs = {}
 
   enemyMoveAIs[1] = function (enemyNum, enemy, across, down) -- basic AI 1: goes behind cover, wants only one player in LoS, and wants a certain distance between players and enemy
@@ -32,6 +31,8 @@ function ai_load()
       averageDist = averageDist + v/#distanceToPlayers
     end
     averageDist = averageDist
+    local distDiffPoints = weapons[enemy.weapon].rangePenalty
+    local idealDist = weapons[enemy.weapon].idealDist
     score = score + math.abs(idealDist - averageDist) * distDiffPoints-- subtrace points based on how close it is to desired distance
 
     if playersInSight == 1 then -- add points based on how exposed enemy is
@@ -52,6 +53,18 @@ function ai_load()
     end
     if down > 1 and (tileType[map[down-1][across]] == 3 or tileType[map[down-1][across]] == 2) then
       score = score +  coverPoints
+    end
+    return score
+  end
+
+  enemyCombatAIs = {}
+
+  enemyCombatAIs[1] = function (enemyNum, enemy, target)
+    local score = 0
+    local dmg = getDamage(enemy, target)
+    score = score + dmg
+    if target.health - dmg <= 0 then -- if enemy kills target, add damage target would have done to enemy to score
+      score = score + getDamage(target, enemy)
     end
     return score
   end
@@ -87,6 +100,16 @@ function goToDoor(enemyNum, enemy)
   return potentialTiles
 end
 
+function rankTargets(enemyNum, enemy)
+  local potentialTargets = {}
+  for i, v in ipairs(currentLevel.actors) do
+    if v.room == enemy.room and enemy.seen[i] == true then
+      potentialTargets[#potentialTargets+1] = {num = i, score = enemyCombatAIs[enemyActors[currentLevel.type][enemy.actor].combatAI](enemyNum, enemy, v)}
+    end
+  end
+  return potentialTargets
+end
+
 function rankTiles(enemyNum, enemy)
   local tX, tY = coordToTile(enemy.x, enemy.y)
   local room = rooms[enemy.room]
@@ -102,11 +125,11 @@ function rankTiles(enemyNum, enemy)
 
 
   local potentialTiles = {}
-  if isRoomOccupied(enemy) == true then -- if room has a player in it, perform normal AI behavior
+  if isRoomOccupied(enemy.room, enemy.seen) == true then -- if room has a player in it, perform normal AI behavior
     for down = yMin, yMax do -- search room within range for potential tiles
       for across = xMin, xMax do
         if tileType[room[down][across]] == 1 then
-          potentialTiles[#potentialTiles + 1] = {tX = across, tY = down, score = enemyMoveAIs[enemyActors[currentLevel.type][enemy.actor].ai](enemyNum, enemy, across, down)}
+          potentialTiles[#potentialTiles + 1] = {tX = across, tY = down, score = enemyMoveAIs[enemyActors[currentLevel.type][enemy.actor].moveAI](enemyNum, enemy, across, down)}
         end
       end
     end
@@ -114,6 +137,16 @@ function rankTiles(enemyNum, enemy)
     potentialTiles = goToDoor(enemyNum, enemy)
   end
   return potentialTiles
+end
+
+function chooseTarget(enemyNum, enemy, targets)
+  local currentTarget = {num = 0, score = 0}
+  for i, v in ipairs(targets) do
+    if v.score > currentTarget.score and enemyTargetIsValid(v.num, enemy) then
+      currentTarget = v
+    end
+  end
+  return currentTarget.num
 end
 
 function chooseTile(enemyNum, enemy, tiles)

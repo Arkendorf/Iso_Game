@@ -1,6 +1,19 @@
 function enemyactor_load()
 end
 
+function enemyTargetIsValid(target, actor)
+  if target > 0 and actor.turnPts >= weapons[actor.weapon].cost then
+    local player = currentLevel.actors[target]
+    if player.room == actor.room and LoS({x = actor.x, y = actor.y}, {x = player.x, y = player.y}, rooms[actor.room]) == true then
+      return true
+    else
+      return false
+    end
+  else
+    return false
+  end
+end
+
 function enemyactor_update(dt)
   local nextTurn = true
   for i, v in ipairs(currentLevel.enemyActors) do
@@ -8,7 +21,7 @@ function enemyactor_update(dt)
       nextTurn = false -- don't end enemies turn if actors are still moving
       enemyFollowPath(i, v, dt)
     elseif v.turnPts > 0 then
-      if isRoomOccupied(v) == false then -- use a door if on one and the current room is unoccupied
+      if isRoomOccupied(v.room, v.seen) == false then -- use a door if on one and the current room is unoccupied
         newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
         if newPos ~= nil then
           v.room, v.x, v.y = newPos.room, newPos.x, newPos.y
@@ -16,8 +29,13 @@ function enemyactor_update(dt)
           moveEnemy(i, v) -- check if enemy should move once in new room
         end
       end
-      v.turnPts = 0 -- TEMPORARY UNTIL COMBAT IS ADDED
-      nextTurn = false -- dont end enemies turn if orders need to be given
+      local result = enemyAttack(i, v)
+      if result == false and playerTurn == false then
+        v.turnPts = 0
+        nextTurn = true
+      else
+        nextTurn = false -- dont end enemies turn if orders need to be given
+      end
     end
   end
 
@@ -26,9 +44,9 @@ function enemyactor_update(dt)
   end
 end
 
-function isRoomOccupied(enemy)
+function isRoomOccupied(room, seen)
   for i, v in ipairs(currentLevel.actors) do -- sees if any players are in the room
-    if v.room == enemy.room and enemy.seen[i] == true then
+    if v.room == room and seen[i] == true then
       return true
     end
   end
@@ -36,7 +54,7 @@ function isRoomOccupied(enemy)
 end
 
 function arePlayersSeen(enemy)
-  for i = 1, #currentLevel.actors do
+  for i = 1, #levels[currentLevelNum].actors do
     if enemy.seen[i] == true then
       return true
     end
@@ -70,7 +88,7 @@ end
 
 function isPlayerVisible(player, num)
   for i, v in ipairs(currentLevel.enemyActors) do
-    if v.room == player.room and v.seen[num] == true then
+    if v.seen[num] == true then
       return true
     end
   end
@@ -84,11 +102,24 @@ function giveEnemyActorsTurnPts()
 end
 
 function moveEnemy(enemyNum, enemy)
-  enemy.path.tiles = findEnemyPath(enemyNum, enemy)
-  if #enemy.path.tiles > 0 then -- if the best course of action is to move
-    enemy.turnPts = enemy.turnPts - (#enemy.path.tiles-1)
-    enemy.path.tiles = simplifyPath(enemy.path.tiles)
-    enemy.move = true
+  if arePlayersSeen(enemy) == true then
+    enemy.path.tiles = findEnemyPath(enemyNum, enemy)
+    if #enemy.path.tiles > 0 then -- if the best course of action is to move
+      enemy.turnPts = enemy.turnPts - (#enemy.path.tiles-1)
+      enemy.path.tiles = simplifyPath(enemy.path.tiles)
+      enemy.move = true
+    end
+  end
+end
+
+function enemyAttack(enemyNum, enemy) -- damages player, returns true if it attacks, false if it doesn't
+  local target = findEnemyTarget(enemyNum, enemy)
+  if target > 0 then
+    hitscan(enemy, currentLevel.actors[target])
+    enemy.turnPts = enemy.turnPts - weapons[enemy.weapon].cost
+    return true
+  else
+    return false
   end
 end
 
@@ -97,15 +128,18 @@ function startEnemyTurn()
   giveEnemyActorsTurnPts()
   revealPlayers()
   for i, v in ipairs(currentLevel.enemyActors) do
-    if arePlayersSeen(v) == true then
-      moveEnemy(i, v)
-    end
+    moveEnemy(i, v)
   end
 end
 
 function findEnemyPath(i, v)
   local potentialTiles = rankTiles(i, v)
   return chooseTile(i, v, potentialTiles)
+end
+
+function findEnemyTarget(i, v)
+  local potentialTargets = rankTargets(i, v)
+  return chooseTarget(i, v, potentialTargets)
 end
 
 function enemyFollowPath(i, v, dt)

@@ -21,13 +21,17 @@ function syncRooms()
   end
 end
 
+function nextActor()
+  if currentActorNum < #currentLevel.actors then
+    newCurrentActor(currentActorNum + 1)
+  else
+    newCurrentActor(1)
+  end
+end
+
 function actor_keypressed(key)
   if key == controls.switchActor then
-    if currentActorNum < #currentLevel.actors then
-      newCurrentActor(currentActorNum + 1)
-    else
-      newCurrentActor(1)
-    end
+    nextActor()
   elseif key == controls.endTurn then
     currentActor.turnPts = 0
   elseif key == controls.use and currentActor.move == false and currentActor.turnPts > 0 then

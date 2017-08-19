@@ -1,6 +1,7 @@
 function combat_load()
   weapons = {}
-  weapons[1] = {baseDmg = 5, idealDist = 48, rangePenalty = -.5, cost = 1}
+  weapons[1] = {baseDmg = 5, idealDist = 48, rangePenalty = -.04, cost = 1}
+  weapons[2] = {baseDmg = 1, idealDist = 48, rangePenalty = -.04, cost = 1}
 end
 
 function hitscan(a, b) -- a is shooter, b is target, dmg is damage to deal
@@ -10,20 +11,37 @@ end
 
 function getDamage(a, b) -- entity a is attacking entity b
   local dmg = weapons[a.weapon].baseDmg
-  dmg = dmg + math.abs(weapons[a.weapon].idealDist - getDistance(a, b))/tileSize * weapons[a.weapon].rangePenalty
+  local dist = getDistance(a, b) -  weapons[a.weapon].idealDist
+  if dist < 0 then
+    dist = 0
+  end
+  dmg = dmg + dist * weapons[a.weapon].rangePenalty
   if isUnderCover(b, a, rooms[a.room]) == true then
     dmg = dmg / 2
   end
-  return dmg
+  if dmg > 0 then
+    return dmg
+  else
+    return 0
+  end
 end
 
 function combat_update()
   for i, v in ipairs(currentLevel.actors) do
     if v.health <= 0 then
       currentLevel.actors[i] = nil
+      for j, k in ipairs(currentLevel.enemyActors) do
+        k.seen[i] = false
+      end
+      if i == currentActorNum then
+        nextActor()
+      end
     end
   end
   currentLevel.actors = removeNil(currentLevel.actors)
+  if #currentLevel.actors == 0 then
+    love.event.quit()
+  end
   for i, v in ipairs(currentLevel.enemyActors) do
     if v.health <= 0 then
       currentLevel.enemyActors[i] = nil
