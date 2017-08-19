@@ -2,7 +2,6 @@ function combat_load()
   weapons = {}
   weapons[1] = {baseDmg = 5, idealDist = 48, rangePenalty = -.04, cost = 1}
   weapons[2] = {baseDmg = 1, idealDist = 48, rangePenalty = -.04, cost = 1}
-  weapons[3] = {baseDmg = .01, idealDist = 48, rangePenalty = -.005, cost = 1}
 end
 
 function hitscan(a, b) -- a is shooter, b is target, dmg is damage to deal
@@ -30,7 +29,7 @@ end
 function combat_update()
   for i, v in ipairs(currentLevel.actors) do
     if v.health <= 0 then
-      currentLevel.actors[i] = nil
+      v.dead = true
       for j, k in ipairs(currentLevel.enemyActors) do
         k.seen[i] = false
       end
@@ -47,7 +46,7 @@ function combat_update()
   currentLevel.actors = removeNil(currentLevel.actors)
   for i, v in ipairs(currentLevel.enemyActors) do
     if v.health <= 0 then
-      currentLevel.enemyActors[i] = nil
+      v.dead = true
     end
   end
   currentLevel.enemyActors = removeNil(currentLevel.enemyActors)

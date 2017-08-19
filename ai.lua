@@ -1,7 +1,7 @@
 function ai_load()
-  local coverPoints = 1
-  local effectiveCoverPoints = 1
-  local singlePlayerPoints = 2
+  local coverPoints = .5
+  local effectiveCoverPoints = 2
+  local singlePlayerPoints =4
   local extraPlayerPoints = -1
 
   enemyMoveAIs = {}
@@ -14,12 +14,11 @@ function ai_load()
     local playersInSight = 0
     local distanceToPlayers = {}
     for i, v in ipairs(currentLevel.actors) do
-      if v.room == enemy.room and enemy.seen[i] == true then
-        local tX, tY = coordToTile(v.x, v.y)
-        if LoS({x = across, y = down}, {x = tX, y = tY}, map) == true then
+      if v.room == enemy.room and v.dead == false and enemy.seen[i] == true then
+        if LoS({x = x, y = y}, {x = v.x, y = v.y}, map) == true then
           playersInSight = playersInSight + 1
           distanceToPlayers[#distanceToPlayers + 1] = getDistance({x = x, y = y}, {x = v.x, y = v.y}) -- gets distance from tile to player
-          if isUnderCover({x = x, y = y}, {x = v.x, y = v.y}, map) == true then -- add a point if enemy is under cover from player
+          if isUnderCover({x = x, y = y}, {x = v.x, y = v.y}, map) == true then -- add points if enemy is under cover from player
             score = score + effectiveCoverPoints
           end
         end
@@ -35,10 +34,8 @@ function ai_load()
     local idealDist = weapons[enemy.weapon].idealDist
     score = score + math.abs(idealDist - averageDist) * distDiffPoints-- subtrace points based on how close it is to desired distance
 
-    if playersInSight == 1 then -- add points based on how exposed enemy is
-      score = score + singlePlayerPoints
-    elseif playersInSight > 1 then
-      score = score + singlePlayerPoints + playersInSight*extraPlayerPoints
+    if playersInSight > 0 then -- add points based on how exposed enemy is
+      score = score + singlePlayerPoints + (playersInSight-1)*extraPlayerPoints
     end
 
     -- add points based on how much cover and walls are nearby

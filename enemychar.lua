@@ -2,7 +2,7 @@ function enemychar_load()
   enemyActors = {}
   enemyActors[1] = {}
   enemyActors[1][1] = {speed = 30, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10}
-  enemyActors[1][2] = {speed = 120, turnPts = 50, moveAI = 1, combatAI = 1, eyesight = 164, health = 10}
+  enemyActors[1][2] = {speed = 120, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10}
   enemyHeight = 32
 end
 

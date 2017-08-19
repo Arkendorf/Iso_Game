@@ -22,11 +22,17 @@ function syncRooms()
 end
 
 function nextActor()
-  if currentActorNum < #currentLevel.actors then
-    newCurrentActor(currentActorNum + 1)
-  else
-    newCurrentActor(1)
+  local newActorNum = currentActorNum + 1
+  if newActorNum > #currentLevel.actors then
+    newActorNum = 1
   end
+  while currentLevel.actors[newActorNum].dead == true do
+    newActorNum = newActorNum+1
+    if newActorNum > #currentLevel.actors then
+      newActorNum = 1
+    end
+  end
+  newCurrentActor(newActorNum)
 end
 
 function actor_keypressed(key)
@@ -43,15 +49,19 @@ function actor_keypressed(key)
     end
   elseif key == controls.mode1 then
     if currentActor.mode == 1 then
+      startRoom(2)
+      currentRoom = 2
       currentActor.mode = 0
     else
+      startRoom(1)
+      currentRoom = 1
       currentActor.mode = 1
     end
   end
 end
 
-function findTarget(tX1, tY1, room, table)
-  for i, v in ipairs(table) do
+function findTarget(tX1, tY1, room)
+  for i, v in ipairs(currentLevel.enemyActors) do
     tX2, tY2 = coordToTile(v.x, v.y)
     if v.room == room and tX1 == tX2 and tY1 == tY2 then
       return i
@@ -63,7 +73,7 @@ end
 function targetIsValid(target, actor)
   if target > 0 and actor.turnPts >= weapons[actor.weapon].cost then
     local enemy = currentLevel.enemyActors[target]
-    if enemy.room == actor.room and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true then
+    if enemy.room == actor.room and enemy.dead == false and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true then
       return true
     else
       return false
@@ -88,11 +98,13 @@ function actor_update(dt)
   if playerTurn == true then
     local nextTurn = true
     for i, v in ipairs(currentLevel.actors) do
-      if v.move == true then
-        nextTurn = false -- don't end players turn if actors are still moving
-        followPath(i, v, dt)
-      elseif v.turnPts > 0 then
-        nextTurn = false -- dont end players turn if orders need to be given
+      if v.dead == false then
+        if v.move == true then
+          nextTurn = false -- don't end players turn if actors are still moving
+          followPath(i, v, dt)
+        elseif v.turnPts > 0 then
+          nextTurn = false -- dont end players turn if orders need to be given
+        end
       end
     end
 

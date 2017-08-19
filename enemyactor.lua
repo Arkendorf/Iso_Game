@@ -4,7 +4,7 @@ end
 function enemyTargetIsValid(target, actor)
   if target > 0 and actor.turnPts >= weapons[actor.weapon].cost then
     local player = currentLevel.actors[target]
-    if player.room == actor.room and LoS({x = actor.x, y = actor.y}, {x = player.x, y = player.y}, rooms[actor.room]) == true then
+    if player.room == actor.room and player.dead == false and LoS({x = actor.x, y = actor.y}, {x = player.x, y = player.y}, rooms[actor.room]) == true then
       return true
     else
       return false
@@ -18,23 +18,25 @@ function enemyactor_update(dt)
   if playerTurn == false then
     local nextTurn = true
     for i, v in ipairs(currentLevel.enemyActors) do
-      if v.move == true then
-        nextTurn = false -- don't end enemies turn if actors are still moving
-        enemyFollowPath(i, v, dt)
-      elseif v.turnPts > 0 then
-        if isRoomOccupied(v.room, v.seen) == false then -- use a door if on one and the current room is unoccupied
-          newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
-          if newPos ~= nil then
-            v.room, v.x, v.y = newPos.room, newPos.x, newPos.y
-            v.turnPts = v.turnPts - 1
-            moveEnemy(i, v) -- check if enemy should move once in new room
+      if v.dead == false then
+        if v.move == true then
+          nextTurn = false -- don't end enemies turn if actors are still moving
+          enemyFollowPath(i, v, dt)
+        elseif v.turnPts > 0 then
+          if isRoomOccupied(v.room, v.seen) == false then -- use a door if on one and the current room is unoccupied
+            newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
+            if newPos ~= nil then
+              v.room, v.x, v.y = newPos.room, newPos.x, newPos.y
+              v.turnPts = v.turnPts - 1
+              moveEnemy(i, v) -- check if enemy should move once in new room
+            end
           end
-        end
-        local result = enemyAttack(i, v)
-        if result == false then
-          v.turnPts = 0
-        else
-          nextTurn = false -- dont end enemies turn if orders need to be given
+          local result = enemyAttack(i, v)
+          if result == false then
+            v.turnPts = 0
+          else
+            nextTurn = false -- dont end enemies turn if orders need to be given
+          end
         end
       end
     end
@@ -47,7 +49,7 @@ end
 
 function isRoomOccupied(room, seen)
   for i, v in ipairs(currentLevel.actors) do -- sees if any players are in the room
-    if v.room == room and seen[i] == true then
+    if v.room == room and seen[i] == true and v.dead == false then
       return true
     end
   end
@@ -55,8 +57,8 @@ function isRoomOccupied(room, seen)
 end
 
 function arePlayersSeen(enemy)
-  for i = 1, #levels[currentLevelNum].actors do
-    if enemy.seen[i] == true then
+  for i, v in ipairs(currentLevel.actors) do
+    if enemy.seen[i] == true and v.dead == false then
       return true
     end
   end
@@ -64,10 +66,9 @@ function arePlayersSeen(enemy)
 end
 
 function revealPlayers()
-  local occupiedRooms = {}
   for i, v in ipairs(currentLevel.enemyActors) do
     for j, k in ipairs(currentLevel.actors) do
-      if v.room == k.room and getDistance({x = v.x, y = v.y}, {x = k.x, y = k.y}) <= enemyActors[currentLevel.type][v.actor].eyesight and LoS({x = v.x, y = v.y}, {x = k.x, y = k.y}, rooms[v.room]) == true then
+      if v.room == k.room and k.dead == false and getDistance({x = v.x, y = v.y}, {x = k.x, y = k.y}) <= enemyActors[currentLevel.type][v.actor].eyesight and LoS({x = v.x, y = v.y}, {x = k.x, y = k.y}, rooms[v.room]) == true then
         v.seen[j] = true
       end
     end
@@ -78,7 +79,7 @@ end
 function sharePlayerLocation(enemy) -- share seen players with rest of room
   for i, v in ipairs(currentLevel.enemyActors) do
     if v.room == enemy.room then
-      for j = 1, #levels[currentLevelNum].actors do
+      for j = 1, #currentLevel.actors do
         if enemy.seen[j] == true then
           v.seen[j] = true
         end
@@ -89,7 +90,7 @@ end
 
 function isPlayerVisible(player, num)
   for i, v in ipairs(currentLevel.enemyActors) do
-    if v.seen[num] == true then
+    if v.seen[num] == true and player.dead == false then
       return true
     end
   end
