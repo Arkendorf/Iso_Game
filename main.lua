@@ -57,7 +57,7 @@ function love.draw()
   love.graphics.pop()
   hud_draw()
   infobox_draw()
-  love.graphics.print(tostring(love.timer.getFPS()), 100, 0)
+  love.graphics.print(tostring(playerTurn), 100, 0)
 end
 
 function love.keypressed(key)

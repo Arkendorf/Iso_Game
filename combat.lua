@@ -2,6 +2,7 @@ function combat_load()
   weapons = {}
   weapons[1] = {baseDmg = 5, idealDist = 48, rangePenalty = -.04, cost = 1}
   weapons[2] = {baseDmg = 1, idealDist = 48, rangePenalty = -.04, cost = 1}
+  weapons[3] = {baseDmg = .01, idealDist = 48, rangePenalty = -.005, cost = 1}
 end
 
 function hitscan(a, b) -- a is shooter, b is target, dmg is damage to deal
@@ -34,14 +35,16 @@ function combat_update()
         k.seen[i] = false
       end
       if i == currentActorNum then
-        nextActor()
+        if #currentLevel.actors > 1 then
+          nextActor()
+        else
+          love.event.quit()
+          break
+        end
       end
     end
   end
   currentLevel.actors = removeNil(currentLevel.actors)
-  if #currentLevel.actors == 0 then
-    love.event.quit()
-  end
   for i, v in ipairs(currentLevel.enemyActors) do
     if v.health <= 0 then
       currentLevel.enemyActors[i] = nil

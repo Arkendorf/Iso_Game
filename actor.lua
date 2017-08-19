@@ -84,18 +84,21 @@ function actor_update(dt)
       currentActor.target.valid = targetIsValid(currentActor.target.num, currentActor)
     end
   end
-  local nextTurn = true
-  for i, v in ipairs(currentLevel.actors) do
-    if v.move == true then
-      nextTurn = false -- don't end players turn if actors are still moving
-      followPath(i, v, dt)
-    elseif v.turnPts > 0 then
-      nextTurn = false -- dont end players turn if orders need to be given
-    end
-  end
 
-  if nextTurn == true and playerTurn == true then
-    startEnemyTurn()
+  if playerTurn == true then
+    local nextTurn = true
+    for i, v in ipairs(currentLevel.actors) do
+      if v.move == true then
+        nextTurn = false -- don't end players turn if actors are still moving
+        followPath(i, v, dt)
+      elseif v.turnPts > 0 then
+        nextTurn = false -- dont end players turn if orders need to be given
+      end
+    end
+
+    if nextTurn == true then
+      startEnemyTurn()
+    end
   end
 end
 

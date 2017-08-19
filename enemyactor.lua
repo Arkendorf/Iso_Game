@@ -15,32 +15,33 @@ function enemyTargetIsValid(target, actor)
 end
 
 function enemyactor_update(dt)
-  local nextTurn = true
-  for i, v in ipairs(currentLevel.enemyActors) do
-    if v.move == true then
-      nextTurn = false -- don't end enemies turn if actors are still moving
-      enemyFollowPath(i, v, dt)
-    elseif v.turnPts > 0 then
-      if isRoomOccupied(v.room, v.seen) == false then -- use a door if on one and the current room is unoccupied
-        newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
-        if newPos ~= nil then
-          v.room, v.x, v.y = newPos.room, newPos.x, newPos.y
-          v.turnPts = v.turnPts - 1
-          moveEnemy(i, v) -- check if enemy should move once in new room
+  if playerTurn == false then
+    local nextTurn = true
+    for i, v in ipairs(currentLevel.enemyActors) do
+      if v.move == true then
+        nextTurn = false -- don't end enemies turn if actors are still moving
+        enemyFollowPath(i, v, dt)
+      elseif v.turnPts > 0 then
+        if isRoomOccupied(v.room, v.seen) == false then -- use a door if on one and the current room is unoccupied
+          newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
+          if newPos ~= nil then
+            v.room, v.x, v.y = newPos.room, newPos.x, newPos.y
+            v.turnPts = v.turnPts - 1
+            moveEnemy(i, v) -- check if enemy should move once in new room
+          end
+        end
+        local result = enemyAttack(i, v)
+        if result == false then
+          v.turnPts = 0
+        else
+          nextTurn = false -- dont end enemies turn if orders need to be given
         end
       end
-      local result = enemyAttack(i, v)
-      if result == false and playerTurn == false then
-        v.turnPts = 0
-        nextTurn = true
-      else
-        nextTurn = false -- dont end enemies turn if orders need to be given
-      end
     end
-  end
 
-  if nextTurn == true and playerTurn == false then
-    startPlayerTurn()
+    if nextTurn == true then
+      startPlayerTurn()
+    end
   end
 end
 
@@ -77,7 +78,7 @@ end
 function sharePlayerLocation(enemy) -- share seen players with rest of room
   for i, v in ipairs(currentLevel.enemyActors) do
     if v.room == enemy.room then
-      for j = 1, #currentLevel.actors do
+      for j = 1, #levels[currentLevelNum].actors do
         if enemy.seen[j] == true then
           v.seen[j] = true
         end
