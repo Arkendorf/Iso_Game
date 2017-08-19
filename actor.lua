@@ -49,12 +49,8 @@ function actor_keypressed(key)
     end
   elseif key == controls.mode1 then
     if currentActor.mode == 1 then
-      startRoom(2)
-      currentRoom = 2
       currentActor.mode = 0
     else
-      startRoom(1)
-      currentRoom = 1
       currentActor.mode = 1
     end
   end

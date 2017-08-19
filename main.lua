@@ -57,7 +57,6 @@ function love.draw()
   love.graphics.pop()
   hud_draw()
   infobox_draw()
-  love.graphics.print(tostring(isUnderCover({x = currentLevel.enemyActors[3].x, y = currentLevel.enemyActors[3].y},{x = currentLevel.actors[1].x, y = currentLevel.actors[1].y},  rooms[1])), 100, 0)
 end
 
 function love.keypressed(key)
