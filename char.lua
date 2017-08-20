@@ -9,8 +9,7 @@ end
 function queueChars(room)
   for i, v in ipairs(currentLevel.actors) do
     if room == v.room then
-      local canvas = love.graphics.newCanvas(tileSize*2, charHeight)
-      local oldCanvas = love.graphics.getCanvas()
+      local canvas, oldCanvas = startNewCanvas(tileSize*2, charHeight)
       love.graphics.setCanvas(canvas)
       love.graphics.clear()
       love.graphics.setColor(255, 255, 255)
@@ -30,8 +29,7 @@ end
 function queueScanChars(room)
   for i, v in ipairs(currentLevel.actors) do
     if room == v.room then
-      local canvas = love.graphics.newCanvas(tileSize*2, charHeight)
-      local oldCanvas = love.graphics.getCanvas()
+      local canvas, oldCanvas = startNewCanvas(tileSize*2, charHeight)
       love.graphics.setCanvas(canvas)
       love.graphics.clear()
       love.graphics.setColor(511, 511, 511)

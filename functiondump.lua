@@ -183,3 +183,11 @@ function removeNil(t)
   end
   return ans
 end
+
+function startNewCanvas(width, height)
+  local newCanvas = love.graphics.newCanvas(width, height)
+  local oldCanvas = love.graphics.getCanvas()
+  love.graphics.setCanvas(newCanvas)
+  love.graphics.clear()
+  return newCanvas, oldCanvas
+end

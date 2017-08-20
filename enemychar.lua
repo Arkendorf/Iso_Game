@@ -9,10 +9,7 @@ end
 function queueEnemyChars(room)
   for i, v in ipairs(currentLevel.enemyActors) do
     if room == v.room then
-      local canvas = love.graphics.newCanvas(tileSize*2, enemyHeight+4)
-      local oldCanvas = love.graphics.getCanvas()
-      love.graphics.setCanvas(canvas)
-      love.graphics.clear()
+      local canvas, oldCanvas = startNewCanvas(tileSize*2, enemyHeight+4)
 
       local tX, tY = coordToTile(v.x, v.y)
       if cursorPos.tX == tX and cursorPos.tY == tY and currentActor.mode == 1 then
@@ -43,8 +40,7 @@ end
 function queueScanEnemyChars(room)
   for i, v in ipairs(currentLevel.enemyActors) do
     if room == v.room then
-      local canvas = love.graphics.newCanvas(tileSize*2, enemyHeight+4)
-      local oldCanvas = love.graphics.getCanvas()
+      local canvas, oldCanvas = startNewCanvas(tileSize*2, enemyHeight+4)
       love.graphics.setCanvas(canvas)
       love.graphics.clear()
 
@@ -61,9 +57,7 @@ function queueScanEnemyChars(room)
         love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
       end
 
-      local canvas2 = love.graphics.newCanvas(tileSize*2, enemyHeight)
-      love.graphics.setCanvas(canvas2)
-      love.graphics.clear()
+      local canvas2 = startNewCanvas(tileSize*2, enemyHeight)
       love.graphics.setColor(511, 511, 511)
       love.graphics.draw(wallImg, -cameraPos.x, -cameraPos.y)
 

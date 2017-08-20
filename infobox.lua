@@ -1,50 +1,3 @@
-function drawInfoBox(str)
-  local width = math.ceil(screen.w/40)*10
-  local __, lines = font:getWrap(str, width)
-  local borderW = 2
-  local infoBox = love.graphics.newCanvas(width+borderW*2, #lines * 10+borderW*2)
-  love.graphics.setCanvas(infoBox)
-  love.graphics.clear()
-  for i, v in ipairs(lines) do
-    if i == 1 then
-      love.graphics.draw(infoBoxImg, infoBoxQuad[1], 0, (i-1) * 10)
-      for j = 1, math.ceil((width-24)/10) do
-        love.graphics.draw(infoBoxImg, infoBoxQuad[2], j * 10+borderW, (i-1) * 10)
-      end
-      love.graphics.draw(infoBoxImg, infoBoxQuad[3], width-10+borderW, (i-1) * 10)
-    elseif i == #lines then
-      love.graphics.draw(infoBoxImg, infoBoxQuad[7], 0, (i-1) * 10+borderW)
-      for j = 1, math.ceil((width-24)/10) do
-        love.graphics.draw(infoBoxImg, infoBoxQuad[8], j * 10+borderW, (i-1) * 10+borderW)
-      end
-      love.graphics.draw(infoBoxImg, infoBoxQuad[9], width-10+borderW, (i-1) * 10+borderW)
-    else
-      love.graphics.draw(infoBoxImg, infoBoxQuad[4], 0, (i-1) * 10+borderW)
-      for j = 1, math.ceil((width-24)/10) do
-        love.graphics.draw(infoBoxImg, infoBoxQuad[5], j * 10+borderW, (i-1) * 10+borderW)
-      end
-      love.graphics.draw(infoBoxImg, infoBoxQuad[6], width-10+borderW, (i-1) * 10+borderW)
-    end
-    if #lines == 1 then -- complete border if there is only one line of text
-      love.graphics.draw(infoBoxImg, infoBoxQuad[10], 0, 12)
-      for j = 1, math.ceil((width-24)/10) do
-        love.graphics.draw(infoBoxImg, infoBoxQuad[11], j * 10+borderW, 12)
-      end
-      love.graphics.draw(infoBoxImg, infoBoxQuad[12], width-10+borderW, 12)
-    end
-
-    --love.graphics.setColor(255, 255, 255)
-    love.graphics.print(v, borderW+1, (i-1) * 10+3)
-    --love.graphics.setColor(255, 255, 255)
-  end
-  love.graphics.setCanvas()
-  return infoBox
-end
-
-function getWrapSize(str, limit)
-  local width, lines = font:getWrap(str, limit)
-  return #lines * font:getHeight()
-end
 
 function infobox_load()
   infoboxes = {{x = 0, y = 0, w = 32+font:getWidth(text[1]), h = 16, str = text[6]}, {x =0, y = 16, w = 32+font:getWidth(text[2]), h = 16, str = text[7]}, {x = 0, y = 32, w = 32+font:getWidth(text[3]), h = 16, str = text[8]}, {x = 0, y = 48, w = 32+font:getWidth(text[4]), h = 16, str = text[9]}, {x = 0, y = 64, w = 32+font:getWidth(text[5]), h = 16, str = text[10]}}
@@ -97,4 +50,63 @@ function infobox_draw()
 
   love.graphics.draw(currentInfoBox.box.canvas, math.floor(x), math.floor(y))
   love.graphics.setColor(255, 255, 255, 255)
+end
+
+function drawInfoBox(str)
+  local preferredWidth = screen.w/4
+  local __, lines = font:getWrap(str, preferredWidth)
+
+  local infoBox, oldCanvas = startNewCanvas(preferredWidth+4, #lines * 10+5)
+  love.graphics.setCanvas(infoBox)
+  love.graphics.clear()
+
+  local width = 0
+  for i, v in ipairs(lines) do
+    local newWidth = font:getWidth(v)
+    if string.sub(v, -1, -1) == " " then
+      newWidth = newWidth - font:getWidth(" ")
+    end
+    if newWidth > width then
+      width = newWidth
+    end
+  end
+  love.graphics.draw(drawBox(width+1, font:getHeight()*#lines+1, 1))
+  love.graphics.printf(str, 3, 3, width, "left")
+
+  love.graphics.setCanvas(oldCanvas)
+  return infoBox
+end
+
+function drawBox(width, height, type)
+  local box, oldCanvas = startNewCanvas(width+4, height+4)
+
+  local layer1 = startNewCanvas(width+2, height+2)
+  for down = 0, math.ceil(height/20)-1 do
+    for across = 0, math.ceil(width/20)-1 do
+      love.graphics.draw(boxImg, boxQuad[type].pattern, 2 + across * 20, 2 + down * 20)
+      if down == 0 then
+        love.graphics.draw(boxImg, boxQuad[type].top, 2+across * 20, 0)
+      end
+    end
+    love.graphics.draw(boxImg, boxQuad[type].left, 0, 2 + down * 20)
+  end
+  love.graphics.draw(boxImg, boxQuad[type].topLeft)
+
+  local layer2 = startNewCanvas(width+2, height+2)
+  for across = 0, math.ceil(width/20)-1 do
+    love.graphics.draw(boxImg, boxQuad[type].bottom, width-across*20-26, height-1)
+  end
+  for down = 0, math.ceil(height/20)-1 do
+    love.graphics.draw(boxImg, boxQuad[type].right, width-1, height-down*20-26)
+  end
+  love.graphics.draw(boxImg, boxQuad[type].bottomRight, width-1, height-1)
+
+  love.graphics.setCanvas(box)
+  love.graphics.draw(layer1, 0, 0)
+  love.graphics.draw(layer2, 2, 2)
+  love.graphics.draw(boxImg, boxQuad[type].topRight, width+1, 0)
+  love.graphics.draw(boxImg, boxQuad[type].bottomLeft, 0, height+1)
+
+  love.graphics.setCanvas(oldCanvas)
+  return box
 end
