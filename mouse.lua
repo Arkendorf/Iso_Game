@@ -3,8 +3,9 @@ function mouse_load()
 end
 
 function mouse_update(dt)
-  mouse.x, mouse.y = love.mouse.getPosition()
-  mouse.transX, mouse.transY = love.mouse.getPosition()
+  mouse.x = love.mouse.getX() / screen.scale
+  mouse.y = love.mouse.getY() / screen.scale
+  mouse.transX, mouse.transY = mouse.x, mouse.y
   mouse.transX = mouse.transX-cameraPos.x
   mouse.transY = mouse.transY-cameraPos.y
   cursorPos = roomNodes[1]

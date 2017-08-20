@@ -1,5 +1,5 @@
 function drawInfoBox(str)
-  local width = 200
+  local width = math.ceil(screen.w/40)*10
   local __, lines = font:getWrap(str, width)
   local borderW = 2
   local infoBox = love.graphics.newCanvas(width+borderW*2, #lines * 10+borderW*2)
@@ -95,6 +95,6 @@ function infobox_draw()
     y = screen.h-currentInfoBox.box.canvas:getHeight()
   end
 
-  love.graphics.draw(currentInfoBox.box.canvas, x, y)
+  love.graphics.draw(currentInfoBox.box.canvas, math.floor(x), math.floor(y))
   love.graphics.setColor(255, 255, 255, 255)
 end

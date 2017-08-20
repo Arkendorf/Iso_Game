@@ -10,6 +10,7 @@ function queueEnemyChars(room)
   for i, v in ipairs(currentLevel.enemyActors) do
     if room == v.room then
       local canvas = love.graphics.newCanvas(tileSize*2, enemyHeight+4)
+      local oldCanvas = love.graphics.getCanvas()
       love.graphics.setCanvas(canvas)
       love.graphics.clear()
 
@@ -31,7 +32,7 @@ function queueEnemyChars(room)
 
       love.graphics.setColor(200, 100, 100)
       love.graphics.draw(wallImg, -cameraPos.x, 4-cameraPos.y)
-      love.graphics.setCanvas()
+      love.graphics.setCanvas(oldCanvas)
 
       local x, y = coordToIso(v.x, v.y)
       drawQueue[#drawQueue + 1] = {img = canvas, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize+4}
@@ -43,6 +44,7 @@ function queueScanEnemyChars(room)
   for i, v in ipairs(currentLevel.enemyActors) do
     if room == v.room then
       local canvas = love.graphics.newCanvas(tileSize*2, enemyHeight+4)
+      local oldCanvas = love.graphics.getCanvas()
       love.graphics.setCanvas(canvas)
       love.graphics.clear()
 
@@ -68,7 +70,7 @@ function queueScanEnemyChars(room)
       love.graphics.setCanvas(canvas)
       love.graphics.setColor(palette.red)
       love.graphics.draw(canvas2, -cameraPos.x, 4-cameraPos.y)
-      love.graphics.setCanvas()
+      love.graphics.setCanvas(oldCanvas)
 
       local x, y = coordToIso(v.x, v.y)
       drawQueue[#drawQueue + 1] = {img = canvas, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize+4}

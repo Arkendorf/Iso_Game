@@ -10,12 +10,13 @@ function queueChars(room)
   for i, v in ipairs(currentLevel.actors) do
     if room == v.room then
       local canvas = love.graphics.newCanvas(tileSize*2, charHeight)
+      local oldCanvas = love.graphics.getCanvas()
       love.graphics.setCanvas(canvas)
       love.graphics.clear()
       love.graphics.setColor(255, 255, 255)
 
       love.graphics.draw(wallImg, -cameraPos.x, -cameraPos.y)
-      love.graphics.setCanvas()
+      love.graphics.setCanvas(oldCanvas)
 
       local x, y = coordToIso(v.x, v.y)
       drawQueue[#drawQueue + 1] = {img = canvas, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize, r = 100, g = 200, b = 100}
@@ -30,12 +31,13 @@ function queueScanChars(room)
   for i, v in ipairs(currentLevel.actors) do
     if room == v.room then
       local canvas = love.graphics.newCanvas(tileSize*2, charHeight)
+      local oldCanvas = love.graphics.getCanvas()
       love.graphics.setCanvas(canvas)
       love.graphics.clear()
       love.graphics.setColor(511, 511, 511)
 
       love.graphics.draw(wallImg, -cameraPos.x, -cameraPos.y)
-      love.graphics.setCanvas()
+      love.graphics.setCanvas(oldCanvas)
 
       local x, y = coordToIso(v.x, v.y)
       drawQueue[#drawQueue + 1] = {img = canvas, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize, r = palette.green[1], g = palette.green[2], b = palette.green[3]}

@@ -1,6 +1,10 @@
 function graphics_load()
+  love.graphics.setDefaultFilter("nearest", "nearest")
+
   screen = {}
-  screen.w, screen.h = love.graphics.getDimensions()
+  screen.scale = 2
+  screen.w = love.graphics.getWidth() / screen.scale
+  screen.h = love.graphics.getHeight() / screen.scale
   --font = love.graphics.newFont(12)
   font = love.graphics.newImageFont("font.png",
   " abcdefghijklmnopqrstuvwxyz" ..

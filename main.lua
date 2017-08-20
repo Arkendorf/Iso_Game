@@ -54,12 +54,19 @@ function love.update(dt)
 end
 
 function love.draw()
+  local window = love.graphics.newCanvas(screen.w, screen.h)
+  love.graphics.setCanvas(window)
+  love.graphics.clear()
+
   love.graphics.push()
   love.graphics.translate(cameraPos.x, cameraPos.y)
   rooms_draw()
   love.graphics.pop()
   hud_draw()
   infobox_draw()
+
+  love.graphics.setCanvas()
+  love.graphics.draw(window, 0, 0, 0, 2, 2)
 end
 
 function love.keypressed(key)

@@ -45,11 +45,10 @@ function drawEnemyHud()
   for i, v in ipairs(currentLevel.enemyActors) do
     enemyHudInfo.turnPts = enemyHudInfo.turnPts + v.turnPts
   end
-  love.graphics.print(text[12], (screen.w-font:getWidth(text[12]))/2, 200-9)
-  --love.graphics.rectangle("fill", 200, 200, 128, 6)
+  love.graphics.print(text[12], (screen.w-font:getWidth(text[12]))/2, screen.h/4-9)
   love.graphics.setColor(palette.turnPts)
   enemyHudInfo.displayTurnPts = enemyHudInfo.displayTurnPts - (enemyHudInfo.displayTurnPts-enemyHudInfo.turnPts)/10
-  love.graphics.rectangle("fill", screen.w/2-enemyHudInfo.displayTurnPts/enemyHudInfo.maxTurnPts*128, 200, enemyHudInfo.displayTurnPts/enemyHudInfo.maxTurnPts*256, 10)
+  love.graphics.rectangle("fill", screen.w/2-enemyHudInfo.displayTurnPts/enemyHudInfo.maxTurnPts*128, screen.h/4, enemyHudInfo.displayTurnPts/enemyHudInfo.maxTurnPts*256, 10)
 
 end
 

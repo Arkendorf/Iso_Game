@@ -34,9 +34,8 @@ function combat_update()
         k.seen[i] = false
       end
       if i == currentActorNum then
-        if #currentLevel.actors > 1 then
-          nextActor()
-        else
+        nextActor()
+        if i == currentActorNum then
           love.event.quit()
           break
         end

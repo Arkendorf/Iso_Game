@@ -31,6 +31,9 @@ function nextActor()
     if newActorNum > #currentLevel.actors then
       newActorNum = 1
     end
+    if currentActorNum == newActorNum then
+      break
+    end
   end
   newCurrentActor(newActorNum)
 end
