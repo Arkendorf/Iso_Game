@@ -14,7 +14,7 @@ function queueEnemyChars(room)
       love.graphics.clear()
 
       local tX, tY = coordToTile(v.x, v.y)
-      if cursorPos.tX == tX and cursorPos.tY == tY and currentActor.mode == 1 and currentActor.move == false then
+      if cursorPos.tX == tX and cursorPos.tY == tY and currentActor.mode == 1 then
         if currentActor.target.num == i and currentActor.target.valid == true then
           love.graphics.setColor(gradient(5, palette.health))
           love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
