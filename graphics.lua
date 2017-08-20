@@ -21,13 +21,13 @@ function graphics_load()
   tileSize = 16
 
   pathImg = love.graphics.newImage("path.png")
-  pathQuad = createSpriteSheet(pathImg, 2, 3, 32, 16, 0, 0)
+  pathQuad = createSpriteSheet(pathImg, 2, 3, 32, 16)
 
   scanBorderImg = love.graphics.newImage("scanborder.png")
-  scanBorderQuad = createSpriteSheet(scanBorderImg, 4, 5, 32, 16, 0, 0)
+  scanBorderQuad = createSpriteSheet(scanBorderImg, 4, 5, 32, 16)
 
   scanIconImg = love.graphics.newImage("scanicons.png")
-  scanIconQuad = createSpriteSheet(scanIconImg, 5, 1, 32, 16, 0, 0)
+  scanIconQuad = createSpriteSheet(scanIconImg, 5, 1, 32, 16)
 
   infoBoxImg = love.graphics.newImage("infobox.png")
   infoBoxQuad = {love.graphics.newQuad(0, 0, 12, 12, infoBoxImg:getDimensions()),
@@ -44,11 +44,20 @@ function graphics_load()
                  love.graphics.newQuad(22, 32, 12, 2, infoBoxImg:getDimensions())}
 
   statusEffectImg = love.graphics.newImage("statuseffecticons.png")
-  statusEffectQuad = createSpriteSheet(statusEffectImg, 3, 1, 20, 20, 0, 0)
+  statusEffectQuad = createSpriteSheet(statusEffectImg, 3, 1, 10, 10)
+
+  combatButtonImg = love.graphics.newImage("combatbuttons.png")
+  combatButtonQuad = createSpriteSheet(combatButtonImg, 2, 5, 38, 18)
 end
 
 
 function createSpriteSheet(a, b, c, d, e, f, g) -- tiles across, tiles down, tile width, tile height, x offset, y offset
+if f == nil then
+  f = 0
+end
+if g == nil then
+  g = 0
+end
 local spriteSheet = {}
 for i = 1, c do
   for k = 1, b do

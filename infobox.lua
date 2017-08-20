@@ -33,9 +33,9 @@ function drawInfoBox(str)
       love.graphics.draw(infoBoxImg, infoBoxQuad[12], width-10+borderW, 12)
     end
 
-    love.graphics.setColor(palette.cyan)
+    --love.graphics.setColor(255, 255, 255)
     love.graphics.print(v, borderW+1, (i-1) * 10+3)
-    love.graphics.setColor(255, 255, 255)
+    --love.graphics.setColor(255, 255, 255)
   end
   love.graphics.setCanvas()
   return infoBox

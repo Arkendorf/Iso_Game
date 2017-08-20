@@ -5,7 +5,7 @@ end
 
 function hud_update(dt)
   if isPlayerVisible(currentActor, currentActorNum) == true then
-    statusEffectInfoboxNums[1] = createInfoBox(130, screen.h-20, 20, 20, text[11])
+    statusEffectInfoboxNums[1] = createInfoBox(182, screen.h-40, 10, 10, text[11])
   elseif statusEffectInfoboxNums[1] ~= nil then
     deleteInfoBox(statusEffectInfoboxNums[1])
     statusEffectInfoboxNums[1] = nil
@@ -76,9 +76,9 @@ function drawScanreaderHud()
 end
 
 function drawPlayerInfoHud()
-  love.graphics.print(playerActors[currentLevel.type][currentActor.actor].name, 1, screen.h-9-font:getHeight())
+  love.graphics.print(playerActors[currentLevel.type][currentActor.actor].name, 1, screen.h-29-font:getHeight())
   love.graphics.setColor(palette.health)
-  love.graphics.rectangle("fill", 1, screen.h-9, currentActor.displayHealth/playerActors[currentLevel.type][currentActor.actor].health*128, 3)--health
+  love.graphics.rectangle("fill", 1, screen.h-29, currentActor.displayHealth/playerActors[currentLevel.type][currentActor.actor].health*190, 3)--health
 
 
   local num = 0 -- set what is being subtracted from turnPts
@@ -93,16 +93,24 @@ function drawPlayerInfoHud()
 
   if currentActor.move == true or valid == false then
     love.graphics.setColor(palette.turnPts)
-    love.graphics.rectangle("fill", 1, screen.h-4, currentActor.displayTurnPts/playerActors[currentLevel.type][currentActor.actor].turnPts*128, 3)--turnPts
+    love.graphics.rectangle("fill", 1, screen.h-24, currentActor.displayTurnPts/playerActors[currentLevel.type][currentActor.actor].turnPts*190, 3)--turnPts
   else
     love.graphics.setColor(gradient(5, palette.turnPts))
-    love.graphics.rectangle("fill", 1, screen.h-4, currentActor.displayTurnPts/playerActors[currentLevel.type][currentActor.actor].turnPts*128, 3)-- current quantity of turnPts
+    love.graphics.rectangle("fill", 1, screen.h-24, currentActor.displayTurnPts/playerActors[currentLevel.type][currentActor.actor].turnPts*190, 3)-- current quantity of turnPts
     love.graphics.setColor(palette.turnPts)
-    love.graphics.rectangle("fill", 1, screen.h-4, (currentActor.turnPts-num)/playerActors[currentLevel.type][currentActor.actor].turnPts*128, 3)--turnPts left after subtraction
+    love.graphics.rectangle("fill", 1, screen.h-24, (currentActor.turnPts-num)/playerActors[currentLevel.type][currentActor.actor].turnPts*190, 3)--turnPts left after subtraction
   end
   love.graphics.setColor(255, 255, 255)
   if isPlayerVisible(currentActor, currentActorNum) == true then
-    love.graphics.draw(statusEffectImg, statusEffectQuad[1], 130, screen.h-20)
+    love.graphics.draw(statusEffectImg, statusEffectQuad[1], 182, screen.h-40)
+  end
+
+  for i = 1, 5 do
+    if currentActor.mode == i then
+      love.graphics.draw(combatButtonImg, combatButtonQuad[i*2-1], -37+i*38, screen.h-19)
+    else
+      love.graphics.draw(combatButtonImg, combatButtonQuad[i*2], -37+i*38, screen.h-19)
+    end
   end
 end
 
