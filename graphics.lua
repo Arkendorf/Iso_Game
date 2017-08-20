@@ -29,20 +29,6 @@ function graphics_load()
   scanIconImg = love.graphics.newImage("scanicons.png")
   scanIconQuad = createSpriteSheet(scanIconImg, 5, 1, 32, 16)
 
-  infoBoxImg = love.graphics.newImage("infobox.png")
-  infoBoxQuad = {love.graphics.newQuad(0, 0, 12, 12, infoBoxImg:getDimensions()),
-                 love.graphics.newQuad(12, 0, 10, 12, infoBoxImg:getDimensions()),
-                 love.graphics.newQuad(22, 0, 12, 12, infoBoxImg:getDimensions()),
-                 love.graphics.newQuad(0, 12, 12, 10, infoBoxImg:getDimensions()),
-                 love.graphics.newQuad(12, 12, 10, 10, infoBoxImg:getDimensions()),
-                 love.graphics.newQuad(22, 12, 12, 10, infoBoxImg:getDimensions()),
-                 love.graphics.newQuad(0, 22, 12, 12, infoBoxImg:getDimensions()),
-                 love.graphics.newQuad(12, 22, 10, 12, infoBoxImg:getDimensions()),
-                 love.graphics.newQuad(22, 22, 12, 12, infoBoxImg:getDimensions()),
-                 love.graphics.newQuad(0, 32, 12, 2, infoBoxImg:getDimensions()),
-                 love.graphics.newQuad(12, 32, 10, 2, infoBoxImg:getDimensions()),
-                 love.graphics.newQuad(22, 32, 12, 2, infoBoxImg:getDimensions())}
-
   statusEffectImg = love.graphics.newImage("statuseffecticons.png")
   statusEffectQuad = createSpriteSheet(statusEffectImg, 3, 1, 10, 10)
 
