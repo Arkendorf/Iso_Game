@@ -38,15 +38,15 @@ function graphics_load()
   boxImg = love.graphics.newImage("box.png")
   boxQuad = {{}, {}, {}, {}}
   for i, v in ipairs(boxQuad) do
-    v.topLeft = love.graphics.newQuad(0, 0, 3, 3, boxImg:getDimensions())
-    v.topRight = love.graphics.newQuad(3, 0, 3, 3, boxImg:getDimensions())
-    v.bottomLeft = love.graphics.newQuad(0, 3, 3, 3, boxImg:getDimensions())
-    v.bottomRight = love.graphics.newQuad(3, 3, 3, 3, boxImg:getDimensions())
-    v.top = love.graphics.newQuad(6, 0, 26, 3, boxImg:getDimensions())
-    v.bottom = love.graphics.newQuad(6, 3, 26, 3, boxImg:getDimensions())
-    v.left = love.graphics.newQuad(0, 6, 3, 26, boxImg:getDimensions())
-    v.right = love.graphics.newQuad(3, 6, 3, 26, boxImg:getDimensions())
-    v.pattern = love.graphics.newQuad(6, 6, 20, 20, boxImg:getDimensions())
+    v.topLeft = love.graphics.newQuad(0+(i-1)*32, 0, 3, 3, boxImg:getDimensions())
+    v.topRight = love.graphics.newQuad(3+(i-1)*32, 0, 3, 3, boxImg:getDimensions())
+    v.bottomLeft = love.graphics.newQuad(0+(i-1)*32, 3, 3, 3, boxImg:getDimensions())
+    v.bottomRight = love.graphics.newQuad(3+(i-1)*32, 3, 3, 3, boxImg:getDimensions())
+    v.top = love.graphics.newQuad(6+(i-1)*32, 0, 26, 3, boxImg:getDimensions())
+    v.bottom = love.graphics.newQuad(6+(i-1)*32, 3, 26, 3, boxImg:getDimensions())
+    v.left = love.graphics.newQuad(0+(i-1)*32, 6, 3, 26, boxImg:getDimensions())
+    v.right = love.graphics.newQuad(3+(i-1)*32, 6, 3, 26, boxImg:getDimensions())
+    v.pattern = love.graphics.newQuad(6+(i-1)*32, 6, 20, 20, boxImg:getDimensions())
   end
 end
 
