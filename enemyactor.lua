@@ -132,6 +132,7 @@ function startEnemyTurn()
   for i, v in ipairs(currentLevel.enemyActors) do
     moveEnemy(i, v)
   end
+  startEnemyHud()
 end
 
 function findEnemyPath(i, v)

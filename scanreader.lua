@@ -1,7 +1,6 @@
 function scanreader_load()
   scanning = false
   scanFloors = {}
-  palette = {green = {0, 255, 33}, yellow = {255, 216, 0}, blue = {0, 38, 255}, cyan = {0, 200, 255}, purple = {178, 0, 255}, red = {255, 0, 110}}
 end
 
 function drawScannedRoom()

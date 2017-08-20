@@ -16,16 +16,16 @@ function queueEnemyChars(room)
       local tX, tY = coordToTile(v.x, v.y)
       if cursorPos.tX == tX and cursorPos.tY == tY and currentActor.mode == 1 and currentActor.move == false then
         if currentActor.target.num == i and currentActor.target.valid == true then
-          love.graphics.setColor(gradient({200, 0, 0}, {100, 0, 0}, 5))
-          love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, v.health/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
-          love.graphics.setColor(255, 0, 0)
+          love.graphics.setColor(gradient(5, palette.health))
+          love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
+          love.graphics.setColor(palette.health)
           local dmgEstimate = getDamage(currentActor, v)
-          if (v.health- dmgEstimate) > 0 then
+          if (v.displayHealth- dmgEstimate) > 0 then
             love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, (v.health- dmgEstimate)/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
           end
         else
-          love.graphics.setColor(255, 0, 0)
-          love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, v.health/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
+          love.graphics.setColor(palette.health)
+          love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
         end
       end
 
@@ -47,16 +47,16 @@ function queueScanEnemyChars(room)
       love.graphics.clear()
 
       if currentActor.mode == 1 and currentActor.target.num == i and currentActor.target.valid == true then
-        love.graphics.setColor(gradient({200, 0, 0}, {100, 0, 0}, 5))
-        love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, v.health/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
-        love.graphics.setColor(255, 0, 0)
+          love.graphics.setColor(gradient(5, palette.health))
+        love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
+        love.graphics.setColor(palette.health)
         local dmgEstimate = getDamage(currentActor, v)
-        if (v.health-dmgEstimate) > 0 then
+        if (v.displayHealth-dmgEstimate) > 0 then
           love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, (v.health-dmgEstimate)/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
         end
       else
-        love.graphics.setColor(255, 0, 0)
-        love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, v.health/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
+        love.graphics.setColor(palette.health)
+        love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
       end
 
       local canvas2 = love.graphics.newCanvas(tileSize*2, enemyHeight)

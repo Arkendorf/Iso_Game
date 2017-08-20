@@ -23,6 +23,9 @@ function love.load()
   for line in love.filesystem.lines("text.txt") do
   table.insert(text, line)
   end
+  palette = {green = {0, 255, 33}, yellow = {255, 216, 0}, blue = {0, 38, 255}, cyan = {0, 200, 255}, purple = {178, 0, 255}, red = {255, 0, 110},
+             health = {255, 0, 0}, turnPts = {0, 255, 255}}
+
 
   graphics_load()
   scanreader_load()

@@ -18,7 +18,9 @@ function startLevel(level)
 
   for i, v in ipairs(currentLevel.actors) do
     v.turnPts = playerActors[currentLevel.type][v.actor].turnPts
+    v.displayTurnPts = v.turnPts
     v.health = playerActors[currentLevel.type][v.actor].health
+    v.displayHealth = v.health
     v.mode = 0
     v.target = {valid = false, num = 0}
     v.path = {}
@@ -27,7 +29,9 @@ function startLevel(level)
   end
   for i, v in ipairs(currentLevel.enemyActors) do
     v.turnPts = 0
+    v.displayTurnPts = v.turnPts
     v.health = enemyActors[currentLevel.type][v.actor].health
+    v.displayHealth = v.health
     v.seen = {}
     v.path = {}
     v.move = false
