@@ -71,42 +71,10 @@ function drawInfoBox(str)
     end
   end
   love.graphics.draw(drawBox(width+1, font:getHeight()*#lines+1, 1))
+  love.graphics.setColor(100, 100, 100)
   love.graphics.printf(str, 3, 3, width, "left")
+  love.graphics.setColor(255, 255, 255)
 
   love.graphics.setCanvas(oldCanvas)
   return infoBox
-end
-
-function drawBox(width, height, type)
-  local box, oldCanvas = startNewCanvas(width+4, height+4)
-
-  local layer1 = startNewCanvas(width+2, height+2)
-  for down = 0, math.ceil(height/20)-1 do
-    for across = 0, math.ceil(width/20)-1 do
-      love.graphics.draw(boxImg, boxQuad[type].pattern, 2 + across * 20, 2 + down * 20)
-      if down == 0 then
-        love.graphics.draw(boxImg, boxQuad[type].top, 2+across * 20, 0)
-      end
-    end
-    love.graphics.draw(boxImg, boxQuad[type].left, 0, 2 + down * 20)
-  end
-  love.graphics.draw(boxImg, boxQuad[type].topLeft)
-
-  local layer2 = startNewCanvas(width+2, height+2)
-  for across = 0, math.ceil(width/20)-1 do
-    love.graphics.draw(boxImg, boxQuad[type].bottom, width-across*20-26, height-1)
-  end
-  for down = 0, math.ceil(height/20)-1 do
-    love.graphics.draw(boxImg, boxQuad[type].right, width-1, height-down*20-26)
-  end
-  love.graphics.draw(boxImg, boxQuad[type].bottomRight, width-1, height-1)
-
-  love.graphics.setCanvas(box)
-  love.graphics.draw(layer1, 0, 0)
-  love.graphics.draw(layer2, 2, 2)
-  love.graphics.draw(boxImg, boxQuad[type].topRight, width+1, 0)
-  love.graphics.draw(boxImg, boxQuad[type].bottomLeft, 0, height+1)
-
-  love.graphics.setCanvas(oldCanvas)
-  return box
 end
