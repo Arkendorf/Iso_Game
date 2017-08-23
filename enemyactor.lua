@@ -23,7 +23,7 @@ function enemyactor_update(dt)
           nextTurn = false -- don't end enemies turn if actors are still moving
           enemyFollowPath(i, v, dt)
         elseif v.turnPts > 0 then
-          if isRoomOccupied(v.room, v.seen) == false then -- use a door if on one and the current room is unoccupied
+          if isRoomOccupied(v.room, v.seen) == false and arePlayersSeen(v) then -- use a door if on one and the current room is unoccupied
             newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
             if newPos ~= nil then
               v.room, v.x, v.y = newPos.room, newPos.x, newPos.y
@@ -77,7 +77,7 @@ function revealPlayers()
 end
 
 function isPlayerInView(enemy, player)
-  if enemy.room == player.room and player.dead == false and getDistance({x = enemy.x, y = enemy.y}, {x = player.x, y = player.y}) <= enemyActors[currentLevel.type][enemy.actor].eyesight and LoS({x = enemy.x, y = enemy.y}, {x = player.x, y = player.y}, rooms[enemy.room]) == true then
+  if enemy.room == player.room and player.dead == false and enemy.dead == false and getDistance({x = enemy.x, y = enemy.y}, {x = player.x, y = player.y}) <= enemyActors[currentLevel.type][enemy.actor].eyesight and LoS({x = enemy.x, y = enemy.y}, {x = player.x, y = player.y}, rooms[enemy.room]) == true then
     return true
   else
     return false
