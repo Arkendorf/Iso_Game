@@ -68,11 +68,19 @@ end
 function revealPlayers()
   for i, v in ipairs(currentLevel.enemyActors) do
     for j, k in ipairs(currentLevel.actors) do
-      if v.room == k.room and k.dead == false and getDistance({x = v.x, y = v.y}, {x = k.x, y = k.y}) <= enemyActors[currentLevel.type][v.actor].eyesight and LoS({x = v.x, y = v.y}, {x = k.x, y = k.y}, rooms[v.room]) == true then
+      if isPlayerInView(v, k) == true then
         v.seen[j] = true
       end
     end
     sharePlayerLocation(v)
+  end
+end
+
+function isPlayerInView(enemy, player)
+  if enemy.room == player.room and player.dead == false and getDistance({x = enemy.x, y = enemy.y}, {x = player.x, y = player.y}) <= enemyActors[currentLevel.type][enemy.actor].eyesight and LoS({x = enemy.x, y = enemy.y}, {x = player.x, y = player.y}, rooms[enemy.room]) == true then
+    return true
+  else
+    return false
   end
 end
 

@@ -102,10 +102,7 @@ function drawPlayerInfoHud()
     love.graphics.rectangle("fill", 4, screen.h-34, (currentActor.turnPts-num)/playerActors[currentLevel.type][currentActor.actor].turnPts*214, 3)--turnPts left after subtraction
   end
   love.graphics.setColor(255, 255, 255)
-  if isPlayerVisible(currentActor, currentActorNum) == true then
-    love.graphics.draw(statusEffectImg, statusEffectQuad[1], 209, screen.h-49)
-  end
-
+  
   for i = 1, 5 do
     if currentActor.mode == i then
       love.graphics.draw(combatButtonImg, combatButtonQuad[i*2-1], -43+i*44, screen.h-25)

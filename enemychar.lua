@@ -9,30 +9,47 @@ end
 function queueEnemyChars(room)
   for i, v in ipairs(currentLevel.enemyActors) do
     if room == v.room then
-      local canvas, oldCanvas = startNewCanvas(tileSize*2, enemyHeight+4)
+      local canvas, oldCanvas = startNewCanvas(tileSize*2, enemyHeight+9)
 
-      local tX, tY = coordToTile(v.x, v.y)
-      if cursorPos.tX == tX and cursorPos.tY == tY and currentActor.mode == 1 then
-        if currentActor.target.num == i and currentActor.target.valid == true then
-          love.graphics.setColor(gradient(5, palette.health))
-          love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
-          love.graphics.setColor(palette.health)
-          local dmgEstimate = getDamage(currentActor, v)
-          if (v.displayHealth- dmgEstimate) > 0 then
-            love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, (v.health- dmgEstimate)/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
+      -- draw enemy
+      love.graphics.setColor(200, 100, 100)
+      love.graphics.draw(wallImg, -cameraPos.x, 9-cameraPos.y)
+
+      -- draw hud
+      if v.dead == false then
+        local tX, tY = coordToTile(v.x, v.y)
+        if cursorPos.tX == tX and cursorPos.tY == tY and currentActor.mode == 1 then
+          if currentActor.target.num == i and currentActor.target.valid == true then
+            love.graphics.setColor(gradient(5, palette.health))
+            love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
+            love.graphics.setColor(palette.health)
+            local dmgEstimate = getDamage(currentActor, v)
+            if (v.displayHealth- dmgEstimate) > 0 then
+              love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, (v.health- dmgEstimate)/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
+            end
+          else
+            love.graphics.setColor(palette.health)
+            love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
           end
         else
-          love.graphics.setColor(palette.health)
-          love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
+          local x, y = tileToCoord(cursorPos.tX, cursorPos.tY)
+          if v.seen[currentActorNum] == true then
+            love.graphics.setColor(255, 0, 0)
+            love.graphics.draw(spottedImg, tileSize-4-cameraPos.x, -cameraPos.y)
+          elseif currentActor.mode == 0 and isPlayerInView(v, {x = x, y = y, dead = currentActor.dead, room = currentActor.room}) == true then
+            love.graphics.setColor(255, 127, 0)
+            love.graphics.draw(spottedImg, tileSize-4-cameraPos.x, -cameraPos.y)
+          elseif currentActor.mode ~= 0 and isPlayerInView(v, currentActor) == true then
+            love.graphics.setColor(255, 127, 0)
+            love.graphics.draw(spottedImg, tileSize-4-cameraPos.x, -cameraPos.y)
+          end
         end
       end
 
-      love.graphics.setColor(200, 100, 100)
-      love.graphics.draw(wallImg, -cameraPos.x, 4-cameraPos.y)
       love.graphics.setCanvas(oldCanvas)
 
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {img = canvas, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize+4}
+      drawQueue[#drawQueue + 1] = {img = canvas, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize+9}
     end
   end
 end
@@ -40,34 +57,53 @@ end
 function queueScanEnemyChars(room)
   for i, v in ipairs(currentLevel.enemyActors) do
     if room == v.room then
-      local canvas, oldCanvas = startNewCanvas(tileSize*2, enemyHeight+4)
+      local canvas, oldCanvas = startNewCanvas(tileSize*2, enemyHeight+9)
       love.graphics.setCanvas(canvas)
       love.graphics.clear()
 
-      if currentActor.mode == 1 and currentActor.target.num == i and currentActor.target.valid == true then
-          love.graphics.setColor(gradient(5, palette.health))
-        love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
-        love.graphics.setColor(palette.health)
-        local dmgEstimate = getDamage(currentActor, v)
-        if (v.displayHealth-dmgEstimate) > 0 then
-          love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, (v.health-dmgEstimate)/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
-        end
-      else
-        love.graphics.setColor(palette.health)
-        love.graphics.rectangle("fill", -cameraPos.x, -cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 3)
-      end
-
+      -- draw enemy
       local canvas2 = startNewCanvas(tileSize*2, enemyHeight)
       love.graphics.setColor(511, 511, 511)
       love.graphics.draw(wallImg, -cameraPos.x, -cameraPos.y)
-
       love.graphics.setCanvas(canvas)
       love.graphics.setColor(palette.red)
-      love.graphics.draw(canvas2, -cameraPos.x, 4-cameraPos.y)
+      love.graphics.draw(canvas2, -cameraPos.x, 9-cameraPos.y)
+
+      -- draw hud
+      if v.dead == false then
+        local tX, tY = coordToTile(v.x, v.y)
+        if cursorPos.tX == tX and cursorPos.tY == tY and currentActor.mode == 1 then
+          if currentActor.target.num == i and currentActor.target.valid == true then
+            love.graphics.setColor(gradient(5, palette.health))
+            love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
+            love.graphics.setColor(palette.health)
+            local dmgEstimate = getDamage(currentActor, v)
+            if (v.displayHealth- dmgEstimate) > 0 then
+              love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, (v.health- dmgEstimate)/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
+            end
+          else
+            love.graphics.setColor(palette.health)
+            love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
+          end
+        else
+          local x, y = tileToCoord(cursorPos.tX, cursorPos.tY)
+          if v.seen[currentActorNum] == true then
+            love.graphics.setColor(255, 0, 0)
+            love.graphics.draw(spottedImg, tileSize-4-cameraPos.x, -cameraPos.y)
+          elseif currentActor.mode == 0 and isPlayerInView(v, {x = x, y = y, dead = currentActor.dead, room = currentActor.room}) == true then
+            love.graphics.setColor(255, 127, 0)
+            love.graphics.draw(spottedImg, tileSize-4-cameraPos.x, -cameraPos.y)
+          elseif currentActor.mode ~= 0 and isPlayerInView(v, currentActor) == true then
+            love.graphics.setColor(255, 127, 0)
+            love.graphics.draw(spottedImg, tileSize-4-cameraPos.x, -cameraPos.y)
+          end
+        end
+      end
+
       love.graphics.setCanvas(oldCanvas)
 
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {img = canvas, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize+4}
+      drawQueue[#drawQueue + 1] = {img = canvas, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize+9}
     end
   end
 end

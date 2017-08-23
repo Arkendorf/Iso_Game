@@ -29,8 +29,7 @@ function graphics_load()
   scanIconImg = love.graphics.newImage("scanicons.png")
   scanIconQuad = createSpriteSheet(scanIconImg, 5, 1, 32, 16)
 
-  statusEffectImg = love.graphics.newImage("statuseffecticons.png")
-  statusEffectQuad = createSpriteSheet(statusEffectImg, 3, 1, 10, 10)
+  spottedImg = love.graphics.newImage("statuseffecticons.png")
 
   combatButtonImg = love.graphics.newImage("combatbuttons.png")
   combatButtonQuad = createSpriteSheet(combatButtonImg, 2, 5, 44, 24)
