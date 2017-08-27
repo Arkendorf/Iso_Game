@@ -50,11 +50,11 @@ function actor_keypressed(key)
       syncRooms()
       currentActor.turnPts = currentActor.turnPts - 1
     end
-  elseif key == controls.mode1 then
-    if currentActor.mode == 1 then
-      currentActor.mode = 0
-    else
-      currentActor.mode = 1
+  else
+    for i = 1, 5 do
+      if key == controls.modes[i] then
+        button_toggleMode(i)
+      end
     end
   end
 end
@@ -124,10 +124,13 @@ function actor_mousepressed(x, y, button)
     currentActor.move = true
     currentActor.path.tiles = simplifyPath(currentActor.path.tiles)
     currentActor.path.valid = false
+    return true
   elseif button == 1 and currentActor.mode == 1 and currentActor.target.valid == true then
     hitscan(currentActor, currentLevel.enemyActors[currentActor.target.num])
     currentActor.turnPts = currentActor.turnPts - weapons[currentActor.weapon].cost
+    return true
   end
+  return false
 end
 
 function followPath(i, v, dt)

@@ -16,9 +16,10 @@ require("enemychar")
 require("enemyactor")
 require("ai")
 require("combat")
+require("button")
 
 function love.load()
-  controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, scanreader = "tab", switchActor = "q", use = "e", endTurn = "space", mode1 = "1"}
+  controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, scanreader = "tab", switchActor = "q", use = "e", endTurn = "space", modes = {"1", "2", "3", "4", "5"}}
   text = {}
   for line in love.filesystem.lines("text.txt") do
   table.insert(text, line)
@@ -41,6 +42,7 @@ function love.load()
   ai_load()
   hud_load()
   combat_load()
+  button_load()
 end
 
 function love.update(dt)
@@ -75,5 +77,8 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y, button)
-  actor_mousepressed(x, y, button)
+  local clickUsed = button_mousepressed(mouse.x, mouse.y, button)
+  if clickUsed == false then
+    local clickUsed = actor_mousepressed(mouse.x, mouse.y, button)
+  end
 end
