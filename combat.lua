@@ -7,6 +7,14 @@ end
 function hitscan(a, b) -- a is shooter, b is target, dmg is damage to deal
   local dmg = getDamage(a, b)
   b.health = b.health - dmg
+
+  -- particle stuff
+  local x1, y1 = coordToIso(a.x, a.y)
+  local x2, y2 = coordToIso(b.x, b.y)
+  local angle = getAngle({x = x1, y = y1}, {x = x2, y = y2})
+  local xOffset, yOffset = (tileSize*math.cos(angle)), (tileSize/2*math.sin(angle))
+  particles[#particles + 1] = {x = x1+tileSize+xOffset, y = y1+tileSize/2+yOffset, img = muzzleFlashImg, quad = muzzleFlashQuad, time = .3, maxFrame = 3, frame = 1, speed = 10, z = 8, dir = angle}
+  particles[#particles + 1] = {x = x2+tileSize-xOffset, y = y2+tileSize/2-yOffset, img = bloodImg, quad = bloodQuad, time = .3, maxFrame = 3, frame = 1, speed = 10, z = 8, dir = angle+math.pi}
 end
 
 function getDamage(a, b) -- entity a is attacking entity b
@@ -42,11 +50,9 @@ function combat_update()
       end
     end
   end
-  currentLevel.actors = removeNil(currentLevel.actors)
   for i, v in ipairs(currentLevel.enemyActors) do
     if v.health <= 0 then
       v.dead = true
     end
   end
-  currentLevel.enemyActors = removeNil(currentLevel.enemyActors)
 end

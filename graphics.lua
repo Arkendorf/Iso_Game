@@ -49,10 +49,16 @@ function graphics_load()
   end
 
   playerHudBoxImg = drawBox(216, 21, 2)
+
+  muzzleFlashImg = love.graphics.newImage("muzzleflash.png")
+  muzzleFlashQuad = createSpriteSheet(muzzleFlashImg, 3, 1, 16, 16)
+
+  bloodImg = love.graphics.newImage("blood.png")
+  bloodQuad = createSpriteSheet(bloodImg, 3, 1, 16, 16)
 end
 
 
-function createSpriteSheet(a, b, c, d, e, f, g) -- tiles across, tiles down, tile width, tile height, x offset, y offset
+function createSpriteSheet(a, b, c, d, e, f, g) -- image, tiles across, tiles down, tile width, tile height, x offset, y offset
 if f == nil then
   f = 0
 end

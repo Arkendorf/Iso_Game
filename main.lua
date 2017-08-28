@@ -17,6 +17,7 @@ require("enemyactor")
 require("ai")
 require("combat")
 require("button")
+require("particle")
 
 function love.load()
   controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, scanreader = "tab", switchActor = "q", use = "e", endTurn = "space", modes = {"1", "2", "3", "4", "5"}}
@@ -43,6 +44,7 @@ function love.load()
   hud_load()
   combat_load()
   button_load()
+  particle_load()
 end
 
 function love.update(dt)
@@ -53,6 +55,7 @@ function love.update(dt)
   infobox_update(dt)
   hud_update(dt)
   combat_update(dt)
+  particle_update(dt)
 end
 
 function love.draw()
