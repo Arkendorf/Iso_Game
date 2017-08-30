@@ -81,8 +81,10 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y, button)
-  local clickUsed = button_mousepressed(mouse.x, mouse.y, button)
+  x = x / screen.scale
+  y = y / screen.scale
+  local clickUsed = button_mousepressed(x, y, button)
   if clickUsed == false then
-    local clickUsed = actor_mousepressed(mouse.x, mouse.y, button)
+    local clickUsed = actor_mousepressed(x, y, button)
   end
 end

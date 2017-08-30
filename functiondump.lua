@@ -97,42 +97,63 @@ function pathIsValid(path, room, turnPts)
 end
 
 function isUnderCover(a, b, map) -- a is object under attack
-  local angle = math.deg(math.atan2(a.y-b.y, a.x-b.x))
+  local dir = getDirection(a, b)
   local tX, tY = coordToTile(a.x, a.y)
-  if angle > 45 and angle < 135 then
+  if dir.x == 0 and dir.y == -1 then
     if tY > 1 and tileType[map[tY-1][tX]] == 3 then
       return true
     end
-  elseif (angle > 135 and angle <= 180) or (angle >= -180 and angle < -135) then
+  elseif dir.x == 1 and dir.y == 0 then
     if tX < #map[1] and tileType[map[tY][tX+1]] == 3 then
       return true
     end
-  elseif angle > -135 and angle < -45 then
+  elseif dir.x == 0 and dir.y == 1 then
     if tY < #map and tileType[map[tY+1][tX]] == 3 then
       return true
     end
-  elseif angle > -45 and angle < 45 then
+  elseif dir.x == -1 and dir.y == 0 then
     if tX > 1 and tileType[map[tY][tX-1]] == 3 then
       return true
     end
-  elseif angle == 45 then
+  elseif dir.x == -1 and dir.y == -1 then
     if (tX > 1 and tileType[map[tY][tX-1]] == 3) or (tY > 1 and tileType[map[tY-1][tX]] == 3) then
       return true
     end
-  elseif  angle == 135 then
+  elseif dir.x == 1 and dir.y == -1 then
     if (tY > 1 and tileType[map[tY-1][tX]] == 3) or (tX < #map[1] and tileType[map[tY][tX+1]] == 3) then
       return true
     end
-  elseif angle == -135 then
+  elseif dir.x == 1 and dir.y == 1 then
     if( tX < #map[1] and tileType[map[tY][tX+1]] == 3) or (tY < #map and tileType[map[tY+1][tX]] == 3) then
       return true
     end
-  elseif angle == -45 then
+  elseif dir.x == -1 and dir.y == 1 then
     if (tX > 1 and tileType[map[tY][tX-1]] == 3) or (tY < #map and tileType[map[tY+1][tX]] == 3) then
       return true
     end
   end
   return false
+end
+
+function getDirection(a, b)
+  local angle = math.deg(math.atan2(a.y-b.y, a.x-b.x))
+  if angle > 45 and angle < 135 then
+    return {x = 0, y = -1}
+  elseif (angle > 135 and angle <= 180) or (angle >= -180 and angle < -135) then
+    return {x = 1, y = 0}
+  elseif angle > -135 and angle < -45 then
+    return {x = 0, y = 1}
+  elseif angle > -45 and angle < 45 then
+    return {x = -1, y = 0}
+  elseif angle == 45 then
+    return {x = -1, y = -1}
+  elseif  angle == 135 then
+    return {x = 1, y = -1}
+  elseif angle == -135 then
+    return {x = 1, y = 1}
+  elseif angle == -45 then
+    return {x =-1, y = 1}
+  end
 end
 
 function getDistance(a, b)
