@@ -69,6 +69,7 @@ function love.draw()
   love.graphics.pop()
   hud_draw()
   infobox_draw()
+  love.graphics.print(love.timer.getFPS())
 
   love.graphics.setCanvas()
   love.graphics.draw(window, 0, 0, 0, 2, 2)

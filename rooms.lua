@@ -44,6 +44,7 @@ function drawRoom()
   queueChars(currentRoom)
   queueEnemyChars(currentRoom)
   queueParticles(currentRoom)
+  queueProjectiles(currentRoom)
   table.sort(drawQueue, function(a, b) return a.y < b.y end) -- sort queue to ensure proper layering
   drawItemsInQueue() -- draw items in queue
 end
@@ -56,7 +57,7 @@ function drawItemsInQueue()
       love.graphics.setColor(255, 255, 255)
     end
 
-    if v.type == "particle" then
+    if v.type == 2 then
       local x, y, w, h = v.quad:getViewport()
       love.graphics.draw(v.img, v.quad, v.x, v.y-v.z, v.dir, 1, 1, w/2, h/2)
     else
@@ -71,7 +72,7 @@ function queueWalls(room)
     for j, t in ipairs(v) do
       if tileType[rooms[room][i][j]] == 2 then
         local x, y = tileToIso(j, i)
-        drawQueue[#drawQueue + 1] = {type = "wall", img = wallImg, x = x, y = y, z= wallImg:getHeight()-tileSize}
+        drawQueue[#drawQueue + 1] = {type = 1, img = wallImg, x = x, y = y, z= wallImg:getHeight()-tileSize}
       end
     end
   end
@@ -82,7 +83,7 @@ function queueCover(room)
     for j, t in ipairs(v) do
       if tileType[rooms[room][i][j]] == 3 then
         local x, y = tileToIso(j, i)
-        drawQueue[#drawQueue + 1] = {type = "cover", img = coverImg, x = x, y = y, z= coverImg:getHeight()-tileSize}
+        drawQueue[#drawQueue + 1] = {type = 1, img = coverImg, x = x, y = y, z= coverImg:getHeight()-tileSize}
       end
     end
   end

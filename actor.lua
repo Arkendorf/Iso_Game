@@ -126,7 +126,7 @@ function actor_mousepressed(x, y, button)
     currentActor.path.valid = false
     return true
   elseif button == 1 and currentActor.mode == 1 and currentActor.target.valid == true then
-    hitscan(currentActor, currentLevel.enemyActors[currentActor.target.num])
+    attack(currentActor, currentLevel.enemyActors[currentActor.target.num])
     currentActor.turnPts = currentActor.turnPts - weapons[currentActor.weapon].cost
     return true
   end
