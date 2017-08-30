@@ -99,40 +99,11 @@ end
 function isUnderCover(a, b, map) -- a is object under attack
   local dir = getDirection(a, b)
   local tX, tY = coordToTile(a.x, a.y)
-  if dir.x == 0 and dir.y == -1 then
-    if tY > 1 and tileType[map[tY-1][tX]] == 3 then
-      return true
-    end
-  elseif dir.x == 1 and dir.y == 0 then
-    if tX < #map[1] and tileType[map[tY][tX+1]] == 3 then
-      return true
-    end
-  elseif dir.x == 0 and dir.y == 1 then
-    if tY < #map and tileType[map[tY+1][tX]] == 3 then
-      return true
-    end
-  elseif dir.x == -1 and dir.y == 0 then
-    if tX > 1 and tileType[map[tY][tX-1]] == 3 then
-      return true
-    end
-  elseif dir.x == -1 and dir.y == -1 then
-    if (tX > 1 and tileType[map[tY][tX-1]] == 3) or (tY > 1 and tileType[map[tY-1][tX]] == 3) then
-      return true
-    end
-  elseif dir.x == 1 and dir.y == -1 then
-    if (tY > 1 and tileType[map[tY-1][tX]] == 3) or (tX < #map[1] and tileType[map[tY][tX+1]] == 3) then
-      return true
-    end
-  elseif dir.x == 1 and dir.y == 1 then
-    if( tX < #map[1] and tileType[map[tY][tX+1]] == 3) or (tY < #map and tileType[map[tY+1][tX]] == 3) then
-      return true
-    end
-  elseif dir.x == -1 and dir.y == 1 then
-    if (tX > 1 and tileType[map[tY][tX-1]] == 3) or (tY < #map and tileType[map[tY+1][tX]] == 3) then
-      return true
-    end
+  if tX+dir.x >= 1 and tX+dir.x <= #map[1] and tY+dir.y >= 1 and tY+dir.y <=#map and tileType[map[tY+dir.y][tX+dir.x]] == 3 then
+    return true
+  else
+    return false
   end
-  return false
 end
 
 function getDirection(a, b)

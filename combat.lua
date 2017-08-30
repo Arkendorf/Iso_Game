@@ -18,12 +18,10 @@ function hitscan(a, b) -- a is shooter, b is target, dmg is damage to deal
   b.health = b.health - dmg
 
   -- particle stuff
-  local x1, y1 = coordToIso(a.x, a.y)
-  local x2, y2 = coordToIso(b.x, b.y)
   local displayAngle = getAngle({x = x1, y = y1}, {x = x2, y = y2})
   local xOffset, yOffset = (tileSize*math.cos(displayAngle)), (tileSize/2*math.sin(displayAngle))
-  particles[#particles + 1] = {room = a.room, x = x1+tileSize+xOffset, y = y1+tileSize/2+yOffset, img = muzzleFlashImg, quad = muzzleFlashQuad, time = .3, maxFrame = 3, frame = 1, speed = 10, z = 8, dir = displayAngle}
-  particles[#particles + 1] = {room = a.room, x = x2+tileSize-xOffset, y = y2+tileSize/2-yOffset, img = bloodImg, quad = bloodQuad, time = .3, maxFrame = 3, frame = 1, speed = 10, z = 8, dir = displayAngle+math.pi}
+  particles[#particles + 1] = {room = a.room, x = x1+tileSize+xOffset, y = y1+tileSize/2+yOffset, img = muzzleFlashImg, quad = muzzleFlashQuad, time = .3, maxFrame = 3, frame = 1, speed = 10, z = 8, angle = displayAngle}
+  particles[#particles + 1] = {room = a.room, x = x2+tileSize-xOffset, y = y2+tileSize/2-yOffset, img = bloodImg, quad = bloodQuad, time = .3, maxFrame = 3, frame = 1, speed = 10, z = 8, angle = displayAngle+math.pi}
 end
 
 function projectile(a, b)
@@ -36,8 +34,9 @@ function projectile(a, b)
   local displayAngle = getAngle({x = x1, y = y1}, {x = x2, y = y2})
   local xOffset, yOffset = (tileSize*math.cos(displayAngle)), (tileSize/2*math.sin(displayAngle))
 
-  projectiles[#projectiles + 1] = {room = a.room, x = a.x, y = a.y, z = 8, dX = b.x, dY = b.y, speed = speed, dir = displayAngle, angle = getAngle({x = a.x, y = a.y}, {x = b.x, y = b.y})}
-  particles[#particles + 1] = {room = a.room, x = x1+tileSize+xOffset, y = y1+tileSize/2+yOffset, img = muzzleFlashImg, quad = muzzleFlashQuad, time = .3, maxFrame = 3, frame = 1, speed = 10, z = 8, dir = displayAngle}
+  projectiles[#projectiles + 1] = {room = a.room, x = a.x, y = a.y, z = 8, dX = b.x, dY = b.y, speed = speed, displayAngle = displayAngle, angle = getAngle({x = a.x, y = a.y}, {x = b.x, y = b.y})}
+  particles[#particles + 1] = {room = a.room, x = x1+tileSize+xOffset, y = y1+tileSize/2+yOffset, img = muzzleFlashImg, quad = muzzleFlashQuad, time = .3, maxFrame = 3, frame = 1, speed = 10, z = 8, angle = displayAngle}
+  particles[#particles + 1] = {room = a.room, x = x2+tileSize-xOffset, y = y2+tileSize/2-yOffset, img = bloodImg, quad = bloodQuad, time = .3, maxFrame = 3, frame = 1, speed = 10, z = 8, angle = displayAngle+math.pi}
 end
 
 function getDamage(a, b) -- entity a is attacking entity b
@@ -80,8 +79,10 @@ function combat_update(dt)
   end
 
   for i, v in ipairs(projectiles) do
-    local distance = getDistance({x = v.x, y = v.y}, {x = v.dX, y = v.dY})
-    if distance <= v.speed or v.x < 0 or v.x > #rooms[v.room][1]*tileSize or v.y < 0 or v.y > #rooms[v.room]*tileSize then
+    if v.dir == nil then
+      v.dir = getDirection({x = v.x, y = v.y}, {x = v.dX, y = v.dY})
+    end
+    if (v.dX - v.x)*v.dir.x <= 0 and (v.dY - v.y)*v.dir.y <= 0 then
       projectiles[i] = nil
     else
       v.x = v.x + v.speed*dt*60*math.cos(v.angle)
@@ -96,7 +97,7 @@ function queueProjectiles(room)
   for i, v in ipairs(projectiles) do
     if v.room == room then
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {type = 2, img = bloodImg, quad = bloodQuad[2], x = x+tileSize, y = y+tileSize/2, z = v.z, dir = v.dir}
+      drawQueue[#drawQueue + 1] = {type = 2, img = bloodImg, quad = bloodQuad[2], x = x+tileSize, y = y+tileSize/2, z = v.z, angle = v.displayAngle}
     end
   end
 end

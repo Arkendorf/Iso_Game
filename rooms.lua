@@ -57,11 +57,11 @@ function drawItemsInQueue()
       love.graphics.setColor(255, 255, 255)
     end
 
-    if v.type == 2 then
-      local x, y, w, h = v.quad:getViewport()
-      love.graphics.draw(v.img, v.quad, v.x, v.y-v.z, v.dir, 1, 1, w/2, h/2)
-    else
+    if v.type == 1 then
       love.graphics.draw(v.img, v.x, v.y-v.z)
+    elseif v.type == 2 then
+      local x, y, w, h = v.quad:getViewport()
+      love.graphics.draw(v.img, v.quad, v.x, v.y-v.z, v.angle, 1, 1, w/2, h/2)
     end
   end
   love.graphics.setColor(225, 255, 255)
