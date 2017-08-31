@@ -55,6 +55,8 @@ function graphics_load()
 
   bloodImg = love.graphics.newImage("blood.png")
   bloodQuad = createSpriteSheet(bloodImg, 3, 1, 16, 16)
+
+  laserImg = love.graphics.newImage("laser.png")
 end
 
 

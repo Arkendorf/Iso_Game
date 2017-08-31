@@ -58,10 +58,19 @@ function drawItemsInQueue()
     end
 
     if v.type == 1 then
-      love.graphics.draw(v.img, v.x, v.y-v.z)
+      if v.quad == nil then
+        love.graphics.draw(v.img, v.x, v.y-v.z)
+      else
+        love.graphics.draw(v.img, v.quad, v.x, v.y-v.z)
+      end
     elseif v.type == 2 then
-      local x, y, w, h = v.quad:getViewport()
-      love.graphics.draw(v.img, v.quad, v.x, v.y-v.z, v.angle, 1, 1, w/2, h/2)
+      if v.quad == nil then
+        local w, h = v.img:getDimensions()
+        love.graphics.draw(v.img, v.x, v.y-v.z, v.angle, 1, 1, math.floor(w/2), math.floor(h/2))
+      else
+        local x, y, w, h = v.quad:getViewport()
+        love.graphics.draw(v.img, v.quad, v.x, v.y-v.z, v.angle, 1, 1, math.floor(w/2), math.floor(h/2))
+      end
     end
   end
   love.graphics.setColor(225, 255, 255)
