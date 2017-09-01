@@ -14,6 +14,9 @@ function coordToIso(x, y)
   return (x-y+#rooms[currentRoom]-1)*tileSize, (y+x)*tileSize/2
 end
 
+function mapToIso(x, y)
+  return (x-y+#rooms[currentRoom]-1)*mapTileSize, (y+x-2)*mapTileSize/2
+end
 function tileToCoord(x, y)
   return (x-1)*tileSize, (y-1)*tileSize
 end

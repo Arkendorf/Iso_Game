@@ -20,11 +20,7 @@ function rooms_load()
 end
 
 function rooms_draw()
-  if scanning == false then
-    drawRoom()
-  else
-    drawScannedRoom()
-  end
+  drawRoom()
 
   mouse_draw()
   love.graphics.setColor(255, 255, 255)
@@ -105,9 +101,6 @@ end
 function startRoom(room)
   if floors[room] == nil then
     floors[room] = drawFloor(room)
-  end
-  if scanFloors[room] == nil then
-    scanFloors[room] = drawScanFloor(room)
   end
   roomNodes = createIsoNodes(room)
 end

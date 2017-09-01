@@ -24,6 +24,9 @@ function hud_draw()
   -- Tile Info
   drawScanreaderHud()
 
+  map_draw()
+
+
   -- Player Info
   drawPlayerInfoHud()
 

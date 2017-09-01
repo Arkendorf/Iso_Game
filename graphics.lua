@@ -50,6 +50,9 @@ function graphics_load()
 
   playerHudBoxImg = drawBox(216, 21, 2)
 
+  mapBoxImg = drawBox(64, 64, 2)
+  mapTileImg = love.graphics.newImage("maptile.png")
+
   muzzleFlashImg = love.graphics.newImage("muzzleflash.png")
   muzzleFlashQuad = createSpriteSheet(muzzleFlashImg, 3, 1, 16, 16)
 
