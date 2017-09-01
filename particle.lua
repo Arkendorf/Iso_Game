@@ -63,16 +63,22 @@ function particle_load()
         v.frame = 3
       end
     end
+    v.alpha = (v.time/particleTypes[v.type].time)*255
   end
 end
 
 function particle_update(dt)
   local removeNils = false
   for i, v in ipairs(particles) do
-    particleAIs[particleTypes[v.type].ai](v, dt)
+    if v.alpha == nil then
+      v.alpha = 255
+    end
     if v.time == nil then
       v.time = particleTypes[v.type].time
     end
+
+    particleAIs[particleTypes[v.type].ai](v, dt)
+
     v.time = v.time - dt
     if v.time <= 0 then
       particles[i] = nil
@@ -88,11 +94,10 @@ function queueParticles(room)
   for i, v in ipairs(particles) do
     if v.room == room then
       local x, y = coordToIso(v.x, v.y)
-
       if particleTypes[v.type].quad == nil then
-        drawQueue[#drawQueue + 1] = {type = 2, img = particleTypes[v.type].img, x = x + tileSize, y = y+tileSize/2, z = v.z, angle = v.displayAngle}
+        drawQueue[#drawQueue + 1] = {type = 2, img = particleTypes[v.type].img, x = x + tileSize, y = y+tileSize/2, z = v.z, angle = v.displayAngle, alpha = v.alpha}
       else
-        drawQueue[#drawQueue + 1] = {type = 2, img = particleTypes[v.type].img, quad = particleTypes[v.type].quad[math.floor(v.frame)], x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle}
+        drawQueue[#drawQueue + 1] = {type = 2, img = particleTypes[v.type].img, quad = particleTypes[v.type].quad[math.floor(v.frame)], x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle, alpha = v.alpha}
       end
     end
   end

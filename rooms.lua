@@ -51,11 +51,15 @@ end
 
 function drawItemsInQueue()
   for i, v in ipairs(drawQueue) do
-    if v.r ~= nil and v.g ~= nil and v.b ~= nil then -- set the color if a color is given
-      love.graphics.setColor(v.r, v.g, v.b)
-    else
-      love.graphics.setColor(255, 255, 255)
+    if v.r == nil or v.g == nil or v.b == nil then -- set the color if a color is given
+      v.r = 255
+      v.g = 255
+      v.b = 255
     end
+    if v.alpha == nil then
+      v.alpha = 255
+    end
+    love.graphics.setColor(v.r, v.g, v.b, v.alpha)
 
     if v.type == 1 then
       if v.quad == nil then
