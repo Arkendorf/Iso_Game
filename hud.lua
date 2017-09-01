@@ -25,7 +25,7 @@ function hud_draw()
   drawScanreaderHud()
 
   -- Draw minimap
-  drawMap(0, 0)
+  drawMap(1, 1)
 
 
   -- Player Info

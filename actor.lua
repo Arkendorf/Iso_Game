@@ -60,7 +60,7 @@ end
 function findTarget(tX1, tY1, room)
   for i, v in ipairs(currentLevel.enemyActors) do
     tX2, tY2 = coordToTile(v.x, v.y)
-    if v.room == room and tX1 == tX2 and tY1 == tY2 then
+    if v.room == room and v.dead == false and tX1 == tX2 and tY1 == tY2 then
       return i
     end
   end
