@@ -20,7 +20,7 @@ require("particle")
 require("map")
 
 function love.load()
-  controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, scanreader = "tab", switchActor = "q", use = "e", endTurn = "space", modes = {"1", "2", "3", "4", "5"}}
+  controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, switchActor = "q", use = "e", endTurn = "space", modes = {"1", "2", "3", "4", "5"}}
   text = {}
   for line in love.filesystem.lines("text.txt") do
   table.insert(text, line)

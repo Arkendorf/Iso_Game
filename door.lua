@@ -1,24 +1,24 @@
-function drawDoors(room)
-  for i, v in ipairs(currentLevel.doors) do
-    if v.room1 == room then
-      if isDoorObstructed(i, 1) == true then
-        love.graphics.setColor(palette.red)
-      else
-        love.graphics.setColor(palette.purple)
-      end
-      love.graphics.draw(scanBorderImg, scanBorderQuad[bitmaskFromDoors(room, v.tX1, v.tY1)], tileToIso(v.tX1, v.tY1))
-      love.graphics.draw(scanIconImg, scanIconQuad[4], tileToIso(v.tX1, v.tY1))
-    elseif v.room2 == room then
-      if isDoorObstructed(i, 2) == true then
-        love.graphics.setColor(palette.red)
-      else
-        love.graphics.setColor(palette.purple)
-      end
-      love.graphics.draw(scanBorderImg, scanBorderQuad[bitmaskFromDoors(room, v.tX2, v.tY2)], tileToIso(v.tX2, v.tY2))
-      love.graphics.draw(scanIconImg, scanIconQuad[4], tileToIso(v.tX2, v.tY2))
-    end
-  end
-end
+-- function drawDoors(room)
+--   for i, v in ipairs(currentLevel.doors) do
+--     if v.room1 == room then
+--       if isDoorObstructed(i, 1) == true then
+--         love.graphics.setColor(palette.red)
+--       else
+--         love.graphics.setColor(palette.purple)
+--       end
+--       love.graphics.draw(scanBorderImg, scanBorderQuad[bitmaskFromDoors(room, v.tX1, v.tY1)], tileToIso(v.tX1, v.tY1))
+--       love.graphics.draw(scanIconImg, scanIconQuad[4], tileToIso(v.tX1, v.tY1))
+--     elseif v.room2 == room then
+--       if isDoorObstructed(i, 2) == true then
+--         love.graphics.setColor(palette.red)
+--       else
+--         love.graphics.setColor(palette.purple)
+--       end
+--       love.graphics.draw(scanBorderImg, scanBorderQuad[bitmaskFromDoors(room, v.tX2, v.tY2)], tileToIso(v.tX2, v.tY2))
+--       love.graphics.draw(scanIconImg, scanIconQuad[4], tileToIso(v.tX2, v.tY2))
+--     end
+--   end
+-- end
 
 function tileDoorInfo(room, tX, tY)
   for i, v in ipairs(currentLevel.doors) do
