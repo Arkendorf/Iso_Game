@@ -9,7 +9,7 @@ end
 function queueEnemyChars(room)
   for i, v in ipairs(currentLevel.enemyActors) do
     if room == v.room then
-      local canvas, oldCanvas = startNewCanvas(tileSize*2, enemyHeight+9)
+      local canvas, oldCanvas = resumeCanvas(v.canvas)
 
       -- draw enemy
       love.graphics.setColor(200, 100, 100)
@@ -57,17 +57,11 @@ end
 function queueScanEnemyChars(room)
   for i, v in ipairs(currentLevel.enemyActors) do
     if room == v.room then
-      local canvas, oldCanvas = startNewCanvas(tileSize*2, enemyHeight+9)
-      love.graphics.setCanvas(canvas)
-      love.graphics.clear()
+      local canvas, oldCanvas = resumeCanvas(v.canvas)
+
 
       -- draw enemy
-      local canvas2 = startNewCanvas(tileSize*2, enemyHeight)
-      love.graphics.setColor(511, 511, 511)
       love.graphics.draw(wallImg, -cameraPos.x, -cameraPos.y)
-      love.graphics.setCanvas(canvas)
-      love.graphics.setColor(palette.red)
-      love.graphics.draw(canvas2, -cameraPos.x, 9-cameraPos.y)
 
       -- draw hud
       if v.dead == false then

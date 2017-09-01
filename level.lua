@@ -26,6 +26,7 @@ function startLevel(level)
     v.path = {}
     v.move = false
     v.dead = false
+    v.canvas = startNewCanvas(tileSize*2, charHeight)
   end
   for i, v in ipairs(currentLevel.enemyActors) do
     v.turnPts = 0
@@ -36,6 +37,7 @@ function startLevel(level)
     v.path = {}
     v.move = false
     v.dead = false
+    v.canvas = startNewCanvas(tileSize*2, enemyHeight+9)
   end
 
   startRoom(currentRoom)

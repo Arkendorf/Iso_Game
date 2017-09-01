@@ -57,8 +57,6 @@ function drawInfoBox(str)
   local __, lines = font:getWrap(str, preferredWidth)
 
   local infoBox, oldCanvas = startNewCanvas(preferredWidth+4, #lines * 10+5)
-  love.graphics.setCanvas(infoBox)
-  love.graphics.clear()
 
   local width = 0
   for i, v in ipairs(lines) do

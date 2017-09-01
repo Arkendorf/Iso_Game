@@ -187,3 +187,10 @@ function startNewCanvas(width, height)
   love.graphics.clear()
   return newCanvas, oldCanvas
 end
+
+function resumeCanvas(canvas)
+  local oldCanvas = love.graphics.getCanvas()
+  love.graphics.setCanvas(canvas)
+  love.graphics.clear()
+  return canvas, oldCanvas
+end

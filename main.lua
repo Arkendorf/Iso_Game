@@ -28,7 +28,6 @@ function love.load()
   palette = {green = {0, 255, 33}, yellow = {255, 216, 0}, blue = {0, 38, 255}, cyan = {0, 200, 255}, purple = {178, 0, 255}, red = {255, 0, 110},
              health = {255, 0, 0}, turnPts = {0, 255, 255}}
 
-
   graphics_load()
   scanreader_load()
   rooms_load()
@@ -45,6 +44,8 @@ function love.load()
   combat_load()
   button_load()
   particle_load()
+
+  window = love.graphics.newCanvas(screen.w, screen.h)
 end
 
 function love.update(dt)
@@ -59,9 +60,7 @@ function love.update(dt)
 end
 
 function love.draw()
-  local window = love.graphics.newCanvas(screen.w, screen.h)
-  love.graphics.setCanvas(window)
-  love.graphics.clear()
+  canvas, oldCanvas = resumeCanvas(window)
 
   love.graphics.push()
   love.graphics.translate(cameraPos.x, cameraPos.y)
@@ -71,7 +70,7 @@ function love.draw()
   infobox_draw()
   love.graphics.print(love.timer.getFPS())
 
-  love.graphics.setCanvas()
+  love.graphics.setCanvas(oldCanvas)
   love.graphics.draw(window, 0, 0, 0, 2, 2)
 end
 
