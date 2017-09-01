@@ -41,5 +41,5 @@ function startLevel(level)
   end
 
   startRoom(currentRoom)
-  centerCamOnRoom()
+  centerCamOnCoords(#rooms[currentRoom][1] * 16, #rooms[currentRoom] * 16)
 end
