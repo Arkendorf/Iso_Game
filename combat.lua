@@ -121,7 +121,7 @@ function queueProjectiles(room)
       if projectileTypes[v.type].quad == nil then
         drawQueue[#drawQueue + 1] = {type = 2, img = projectileTypes[v.type].img, x = x+tileSize, y = y+tileSize/2, z = v.z, angle = v.displayAngle}
       else
-        drawQueue[#drawQueue + 1] = {type = 2, img = projectileTypes[v.type].img, quad = projectileTypes[v.type].quad, x = x+tileSize, y = y+tileSize/2, z = v.z, angle = v.displayAngle}
+        drawQueue[#drawQueue + 1] = {type = 2, img = projectileTypes[v.type].img, quad = projectileTypes[v.type].quad, x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle}
       end
     end
   end

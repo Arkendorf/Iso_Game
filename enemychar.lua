@@ -49,7 +49,7 @@ function queueEnemyChars(room)
       love.graphics.setCanvas(oldCanvas)
 
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {type = 1, img = canvas, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize+9}
+      drawQueue[#drawQueue + 1] = {type = 1, img = canvas, x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z= charHeight-tileSize+9}
     end
   end
 end
@@ -103,7 +103,7 @@ function queueScanEnemyChars(room)
       love.graphics.setCanvas(oldCanvas)
 
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {type = 1, img = canvas, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize+9}
+      drawQueue[#drawQueue + 1] = {type = 1, img = canvas, x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z= charHeight-tileSize+9}
     end
   end
 end

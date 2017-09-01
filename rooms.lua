@@ -59,7 +59,7 @@ function drawItemsInQueue()
 
     if v.type == 1 then
       if v.quad == nil then
-        love.graphics.draw(v.img, v.x, v.y-v.z)
+        love.graphics.draw(v.img, v.x, v.y-v.z, 0, 1, 1, tileSize, tileSize/2)
       else
         love.graphics.draw(v.img, v.quad, v.x, v.y-v.z)
       end
@@ -81,7 +81,7 @@ function queueWalls(room)
     for j, t in ipairs(v) do
       if tileType[rooms[room][i][j]] == 2 then
         local x, y = tileToIso(j, i)
-        drawQueue[#drawQueue + 1] = {type = 1, img = wallImg, x = x, y = y, z= wallImg:getHeight()-tileSize}
+        drawQueue[#drawQueue + 1] = {type = 1, img = wallImg, x = x+tileSize, y = y+tileSize/2, z= wallImg:getHeight()-tileSize}
       end
     end
   end
@@ -92,7 +92,7 @@ function queueCover(room)
     for j, t in ipairs(v) do
       if tileType[rooms[room][i][j]] == 3 then
         local x, y = tileToIso(j, i)
-        drawQueue[#drawQueue + 1] = {type = 1, img = coverImg, x = x, y = y, z= coverImg:getHeight()-tileSize}
+        drawQueue[#drawQueue + 1] = {type = 1, img = coverImg, x = x+tileSize, y = y+tileSize/2, z= coverImg:getHeight()-tileSize}
       end
     end
   end

@@ -18,7 +18,7 @@ function queueChars(room)
       love.graphics.setCanvas(oldCanvas)
 
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {type = 1, img = canvas, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize, r = 100, g = 200, b = 100}
+      drawQueue[#drawQueue + 1] = {type = 1, img = canvas, x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z= charHeight-tileSize, r = 100, g = 200, b = 100}
     end
   end
 end
@@ -38,7 +38,7 @@ function queueScanChars(room)
       love.graphics.setCanvas(oldCanvas)
 
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {type = 1, img = canvas, x = math.floor(x), y = math.floor(y), z= charHeight-tileSize, r = palette.green[1], g = palette.green[2], b = palette.green[3]}
+      drawQueue[#drawQueue + 1] = {type = 1, img = canvas, x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z= charHeight-tileSize, r = palette.green[1], g = palette.green[2], b = palette.green[3]}
     end
   end
 end

@@ -2,7 +2,7 @@ function particle_load()
   particles = {}
   particleTypes = {}
   particleTypes[1] = {ai = 1, speed = 10, maxFrame = 3, time = .3, img = muzzleFlashImg, quad = muzzleFlashQuad}
-  particleTypes[2] = {ai = 2, zV = 2, xV = 4, yV = 4, time = 10, img = bloodImg, quad = bloodQuad}
+  particleTypes[2] = {ai = 2, zV = 2, xV = 3, yV = 3, time = 10, img = bloodImg, quad = bloodQuad}
   particleAIs = {}
 
   particleAIs[1] = function(v, dt)
@@ -40,10 +40,10 @@ function particle_load()
       v.zV = particleTypes[v.type].zV
     end
     if v.xV == nil then
-      v.xV = math.random(-particleTypes[v.type].xV, particleTypes[v.type].xV)
+      v.xV = math.random(-particleTypes[v.type].xV*10, particleTypes[v.type].xV*10)/10
     end
     if v.yV == nil then
-      v.yV = math.random(-particleTypes[v.type].yV, particleTypes[v.type].yV)
+      v.yV = math.random(-particleTypes[v.type].yV*10, particleTypes[v.type].yV*10)/10
     end
 
     if v.move == true then
@@ -92,7 +92,7 @@ function queueParticles(room)
       if particleTypes[v.type].quad == nil then
         drawQueue[#drawQueue + 1] = {type = 2, img = particleTypes[v.type].img, x = x + tileSize, y = y+tileSize/2, z = v.z, angle = v.displayAngle}
       else
-        drawQueue[#drawQueue + 1] = {type = 2, img = particleTypes[v.type].img, quad = particleTypes[v.type].quad[math.floor(v.frame)], x = x + tileSize, y = y+tileSize/2, z = v.z, angle = v.displayAngle}
+        drawQueue[#drawQueue + 1] = {type = 2, img = particleTypes[v.type].img, quad = particleTypes[v.type].quad[math.floor(v.frame)], x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle}
       end
     end
   end
