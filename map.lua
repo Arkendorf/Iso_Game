@@ -2,8 +2,18 @@
 
 
 function map_load()
-  map = love.graphics.newCanvas(64, 64)
+  map = {x = 1, y = 1, w = 64, h = 64}
+  map.canvas = love.graphics.newCanvas(map.w, map.h)
   mapTileSize = 8
+
+  mapBoxImg = drawBox(map.w+2, map.h+2+font:getHeight()*5, 2)
+
+  mapInfoBoxes = {}
+  mapInfoBoxes[1] = createInfoBox(map.x+3, map.y+map.h+6, font:getWidth(text[1]), font:getHeight(), text[6])
+  mapInfoBoxes[2] = createInfoBox(map.x+3, map.y+map.h+6+font:getHeight(), font:getWidth(text[2]), font:getHeight(), text[7])
+  mapInfoBoxes[3] = createInfoBox(map.x+3, map.y+map.h+6+font:getHeight()*2, font:getWidth(text[3]), font:getHeight(), text[8])
+  mapInfoBoxes[4] = createInfoBox(map.x+3, map.y+map.h+6+font:getHeight()*3, font:getWidth(text[4]), font:getHeight(), text[9])
+  mapInfoBoxes[5] = createInfoBox(map.x+3, map.y+map.h+6+font:getHeight()*4, font:getWidth(text[5]), font:getHeight(), text[10])
 end
 
 function drawMapTiles(room, size) -- what room to draw, size of tiles
@@ -63,15 +73,32 @@ function drawMapTiles(room, size) -- what room to draw, size of tiles
 end
 
 function drawMap(x, y)
-  local canvas, oldCanvas = resumeCanvas(map)
+  local canvas, oldCanvas = resumeCanvas(map.canvas)
   love.graphics.push()
 
-  love.graphics.translate(math.floor(32-currentActor.x/2-mapTileSize/2), math.floor(32-currentActor.y/2-mapTileSize/2))
+  love.graphics.translate(math.floor((map.w-currentActor.x-mapTileSize)/2), math.floor((map.h-currentActor.y-mapTileSize)/2))
   drawMapTiles(currentRoom, mapTileSize)
   love.graphics.pop()
 
   love.graphics.setCanvas(oldCanvas)
 
   love.graphics.draw(mapBoxImg, x, y)
-  love.graphics.draw(map, x+3, y+3)
+  love.graphics.draw(map.canvas, x+3, y+3)
+
+  -- key
+  love.graphics.setColor(palette.yellow)
+  love.graphics.print(text[1], 4, map.h+6)
+
+  love.graphics.setColor(palette.blue)
+  love.graphics.print(text[2], 4, map.h+6+font:getHeight())
+
+  love.graphics.setColor(palette.cyan)
+  love.graphics.print(text[3], 4, map.h+6+font:getHeight()*2)
+
+  love.graphics.setColor(palette.purple)
+  love.graphics.print(text[4], 4, map.h+6+font:getHeight()*3)
+
+  love.graphics.setColor(palette.red)
+  love.graphics.print(text[5], 4, map.h+6+font:getHeight()*4)
+  love.graphics.setColor(255, 255, 255)
 end

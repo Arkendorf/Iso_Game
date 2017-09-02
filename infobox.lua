@@ -1,6 +1,6 @@
 
 function infobox_load()
-  infoboxes = {{x = 0, y = 0, w = 32+font:getWidth(text[1]), h = 16, str = text[6]}, {x =0, y = 16, w = 32+font:getWidth(text[2]), h = 16, str = text[7]}, {x = 0, y = 32, w = 32+font:getWidth(text[3]), h = 16, str = text[8]}, {x = 0, y = 48, w = 32+font:getWidth(text[4]), h = 16, str = text[9]}, {x = 0, y = 64, w = 32+font:getWidth(text[5]), h = 16, str = text[10]}}
+  infoboxes = {}
   for i, v in ipairs(infoboxes) do
     v.canvas = drawInfoBox(v.str)
   end
@@ -17,7 +17,7 @@ function deleteInfoBox(num)
 end
 
 function infobox_update(dt)
-  if mouse.x >= currentInfoBox.box.x and mouse.x <= currentInfoBox.box.x + currentInfoBox.box.w and mouse.y >= currentInfoBox.box.y and mouse.y <= currentInfoBox.box.y + currentInfoBox.box.h then
+  if currentInfoBox.box ~= nil and mouse.x >= currentInfoBox.box.x and mouse.x <= currentInfoBox.box.x + currentInfoBox.box.w and mouse.y >= currentInfoBox.box.y and mouse.y <= currentInfoBox.box.y + currentInfoBox.box.h then
     if currentInfoBox.anim < 1 then
       currentInfoBox.anim = currentInfoBox.anim + dt
     elseif currentInfoBox.anim > 1 then
@@ -39,17 +39,19 @@ function infobox_update(dt)
 end
 
 function infobox_draw()
-  love.graphics.setColor(255, 255, 255, currentInfoBox.anim*255)
-  local x, y = mouse.x+12, mouse.y+12
-  if x+currentInfoBox.box.canvas:getWidth() > screen.w then
-    x = screen.w-currentInfoBox.box.canvas:getWidth()
-  end
-  if y+currentInfoBox.box.canvas:getHeight() > screen.h then
-    y = screen.h-currentInfoBox.box.canvas:getHeight()
-  end
+  if currentInfoBox.box ~= nil then
+    love.graphics.setColor(255, 255, 255, currentInfoBox.anim*255)
+    local x, y = mouse.x+12, mouse.y+12
+    if x+currentInfoBox.box.canvas:getWidth() > screen.w then
+      x = screen.w-currentInfoBox.box.canvas:getWidth()
+    end
+    if y+currentInfoBox.box.canvas:getHeight() > screen.h then
+      y = screen.h-currentInfoBox.box.canvas:getHeight()
+    end
 
-  love.graphics.draw(currentInfoBox.box.canvas, math.floor(x), math.floor(y))
-  love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.draw(currentInfoBox.box.canvas, math.floor(x), math.floor(y))
+    love.graphics.setColor(255, 255, 255, 255)
+  end
 end
 
 function drawInfoBox(str)

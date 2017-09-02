@@ -1,6 +1,8 @@
 function hud_load()
   statusEffectInfoboxNums = {}
   enemyHudInfo = {turnPts = 0, maxTurnPts = 0, displayTurnPts = 0}
+
+  playerHudBoxImg = drawBox(216, 21, 2)
 end
 
 function hud_update(dt)
@@ -21,11 +23,8 @@ function hud_update(dt)
 end
 
 function hud_draw()
-  -- Tile Info
-  drawMapKey()
-
   -- Draw minimap
-  drawMap(1, 1)
+  drawMap(map.x, map.y)
 
 
   -- Player Info

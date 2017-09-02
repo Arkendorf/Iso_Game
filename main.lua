@@ -29,6 +29,8 @@ function love.load()
              health = {255, 0, 0}, turnPts = {0, 255, 255}}
 
   graphics_load()
+  infobox_load()
+  map_load()
   rooms_load()
   char_load()
   enemychar_load()
@@ -37,13 +39,12 @@ function love.load()
   actor_load()
   enemyactor_load()
   mouse_load()
-  infobox_load()
   ai_load()
   hud_load()
   combat_load()
   button_load()
   particle_load()
-  map_load()
+
 
   window = love.graphics.newCanvas(screen.w, screen.h)
 end

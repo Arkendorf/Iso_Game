@@ -5,7 +5,7 @@ function graphics_load()
   screen.scale = 2
   screen.w = love.graphics.getWidth() / screen.scale
   screen.h = love.graphics.getHeight() / screen.scale
-  --font = love.graphics.newFont(12)
+
   font = love.graphics.newImageFont("font.png",
   " abcdefghijklmnopqrstuvwxyz" ..
   "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
@@ -41,10 +41,6 @@ function graphics_load()
     v.right = love.graphics.newQuad(3+(i-1)*32, 6, 3, 26, boxImg:getDimensions())
     v.pattern = love.graphics.newQuad(6+(i-1)*32, 6, 20, 20, boxImg:getDimensions())
   end
-
-  playerHudBoxImg = drawBox(216, 21, 2)
-
-  mapBoxImg = drawBox(66, 66, 2)
 
   muzzleFlashImg = love.graphics.newImage("muzzleflash.png")
   muzzleFlashQuad = createSpriteSheet(muzzleFlashImg, 3, 1, 16, 16)
