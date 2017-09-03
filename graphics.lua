@@ -1,5 +1,7 @@
 function graphics_load()
   love.graphics.setDefaultFilter("nearest", "nearest")
+  love.graphics.setLineStyle("rough")
+  love.graphics.setLineWidth(1)
 
   screen = {}
   screen.scale = 2
