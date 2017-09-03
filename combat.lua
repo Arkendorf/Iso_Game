@@ -4,7 +4,7 @@ function combat_load()
   weapons[2] = {type = 2, baseDmg = 1, idealDist = 48, rangePenalty = -.04, cost = 1, projectileType = 1}
   projectiles = {}
   projectileTypes = {}
-  projectileTypes[1] = {ai = 1, speed = .2, img = laserImg}
+  projectileTypes[1] = {ai = 1, speed = 10, img = laserImg}
 
   projectileAIs = {}
   projectileAIs[1] = function(v, dt)

@@ -1,4 +1,5 @@
 function enemyactor_load()
+  enemyTurnSpeed = 1
 end
 
 function enemyTargetIsValid(num, actor)
@@ -19,10 +20,12 @@ function enemyactor_update(dt)
     local nextTurn = true
     for i, v in ipairs(currentLevel.enemyActors) do
       if v.dead == false then
-        if v.move == true then
+        if v.wait == true then
+          nextTurn = false
+        elseif v.move == true then
           nextTurn = false -- don't end enemies turn if actors are still moving
           enemyFollowPath(i, v, dt)
-        elseif v.turnPts > 0 then
+        elseif v.turnPts > 0 and #v.path.tiles == 0 then
           if isRoomOccupied(v.room, v.seen) == false and arePlayersSeen(v) then -- use a door if on one and the current room is unoccupied
             newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
             if newPos ~= nil then
@@ -36,6 +39,8 @@ function enemyactor_update(dt)
             v.turnPts = 0
           else
             nextTurn = false -- dont end enemies turn if orders need to be given
+            v.wait = true
+            newDelay(enemyTurnSpeed*.5, function (enemy) enemy.wait = false end, {v})
           end
         end
       end
@@ -119,6 +124,8 @@ function moveEnemy(enemyNum, enemy)
       enemy.path.tiles = simplifyPath(enemy.path.tiles)
       enemy.move = true
     end
+    enemy.wait = true
+    newDelay((enemyNum-1)*enemyTurnSpeed*3, function (enemy) enemy.wait = false end, {enemy})
   end
 end
 

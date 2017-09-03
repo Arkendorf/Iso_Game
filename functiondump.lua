@@ -63,34 +63,38 @@ function setValidColor(bool)
   end
 end
 
-function pathIsValid(path, room, turnPts)
-  if #path-1 > turnPts then -- get rid of path if destination is too far away
+function pathIsValid(path, actor)
+  if #path-1 > actor.turnPts then -- get rid of path if destination is too far away
     return false
   else
     for i, v in ipairs(currentLevel.actors) do -- check if actors path is colliding with player actor
-      if room == v.room and v.dead == false then
-        if v.move == true then
-          if path[#path].x == v.path.tiles[#v.path.tiles].x and path[#path].y == v.path.tiles[#v.path.tiles].y then
-            return false
-          end
-        elseif  #path > 0 then
-          local x, y = tileToCoord(path[#path].x, path[#path].y)
-          if x == v.x and y == v.y then
-            return false
+      if v.x ~= actor.x or v.y ~= actor.y then
+        if actor.room == v.room and v.dead == false then
+          if v.path.tiles ~= nil and #v.path.tiles > 0 then
+            if path[#path].x == v.path.tiles[#v.path.tiles].x and path[#path].y == v.path.tiles[#v.path.tiles].y then
+              return false
+            end
+          elseif  #path > 0 then
+            local x, y = tileToCoord(path[#path].x, path[#path].y)
+            if x == v.x and y == v.y then
+              return false
+            end
           end
         end
       end
     end
     for i, v in ipairs(currentLevel.enemyActors) do -- check if actors path is colliding with player actor
-      if room == v.room and v.dead == false then
-        if v.move == true then
-          if path[#path].x == v.path.tiles[#v.path.tiles].x and path[#path].y == v.path.tiles[#v.path.tiles].y then
-            return false
-          end
-        elseif  #path > 0 then
-          local x, y = tileToCoord(path[#path].x, path[#path].y)
-          if x == v.x and y == v.y then
-            return false
+      if v.x ~= actor.x or v.y ~= actor.y then
+        if actor.room == v.room and v.dead == false then
+          if v.path.tiles ~= nil and #v.path.tiles > 0  then
+            if path[#path].x == v.path.tiles[#v.path.tiles].x and path[#path].y == v.path.tiles[#v.path.tiles].y then
+              return false
+            end
+          elseif  #path > 0 then
+            local x, y = tileToCoord(path[#path].x, path[#path].y)
+            if x == v.x and y == v.y then
+              return false
+            end
           end
         end
       end

@@ -85,7 +85,7 @@ function actor_update(dt)
     if currentActor.mode == 0 then
       local tX, tY = coordToTile(currentActor.x, currentActor.y)
       currentActor.path.tiles = newPath({x = tX, y = tY}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
-      currentActor.path.valid = pathIsValid(currentActor.path.tiles, currentActor.room, currentActor.turnPts)
+      currentActor.path.valid = pathIsValid(currentActor.path.tiles, currentActor)
     elseif currentActor.mode == 1 then
       currentActor.target.num = findTarget(cursorPos.tX, cursorPos.tY, currentActor.room, currentLevel.enemyActors)
       currentActor.target.valid = targetIsValid(currentActor.target.num, currentActor)

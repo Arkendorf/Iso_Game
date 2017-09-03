@@ -151,7 +151,7 @@ function chooseTile(enemyNum, enemy, tiles)
   for i, v in ipairs(tiles) do
     local tX, tY = coordToTile(enemy.x, enemy.y)
     v.path = newPath({x = tX, y = tY}, {x = v.tX, y = v.tY}, rooms[enemy.room])
-    if #v.path == 1 or (#v.path > 0 and pathIsValid(v.path, enemy.room, enemy.turnPts)) then
+    if #v.path == 1 or (#v.path > 0 and pathIsValid(v.path, enemy)) then
       local lengthPenalty = enemyActors[currentLevel.type][enemy.actor].turnPts / 2
       if currentTile.path == nil or v.score - #v.path/lengthPenalty > currentTile.score - #currentTile.path/lengthPenalty then
         currentTile = v
