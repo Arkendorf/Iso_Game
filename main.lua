@@ -18,6 +18,7 @@ require("combat")
 require("button")
 require("particle")
 require("map")
+require("delay")
 
 function love.load()
   controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, switchActor = "q", use = "e", endTurn = "space", modes = {"1", "2", "3", "4", "5"}}
@@ -44,12 +45,13 @@ function love.load()
   combat_load()
   button_load()
   particle_load()
-
+  delay_load()
 
   window = love.graphics.newCanvas(screen.w, screen.h)
 end
 
 function love.update(dt)
+  delay_update(dt)
   mouse_update(dt)
   camera_update(dt)
   actor_update(dt)

@@ -20,16 +20,18 @@ function queueEnemyChars(room)
         local tX, tY = coordToTile(v.x, v.y)
         if cursorPos.tX == tX and cursorPos.tY == tY and currentActor.mode == 1 then
           if currentActor.target.num == i and currentActor.target.valid == true then
-            love.graphics.setColor(gradient(5, palette.health))
+            love.graphics.setColor(gradient(5, palette.health)) -- current health
             love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
             love.graphics.setColor(palette.health)
             local dmgEstimate = getDamage(currentActor, v)
-            if (v.displayHealth- dmgEstimate) > 0 then
-              love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, (v.health- dmgEstimate)/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
+            if (v.displayHealth- dmgEstimate) > 0 then -- health after projectiles and possible current attack deal damage
+              love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, (v.futureHealth-dmgEstimate)/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
             end
           else
-            love.graphics.setColor(palette.health)
+            love.graphics.setColor(gradient(5, palette.health)) -- current health
             love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
+            love.graphics.setColor(palette.health) -- health after projectiles deal damage
+            love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, v.futureHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
           end
         else
           local x, y = tileToCoord(cursorPos.tX, cursorPos.tY)

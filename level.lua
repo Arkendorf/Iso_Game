@@ -21,6 +21,7 @@ function startLevel(level)
     v.displayTurnPts = v.turnPts
     v.health = playerActors[currentLevel.type][v.actor].health
     v.displayHealth = v.health
+    v.futureHealth = v.health
     v.mode = 0
     v.target = {valid = false, num = 0}
     v.path = {}
@@ -33,6 +34,7 @@ function startLevel(level)
     v.displayTurnPts = v.turnPts
     v.health = enemyActors[currentLevel.type][v.actor].health
     v.displayHealth = v.health
+    v.futureHealth = v.health
     v.seen = {}
     v.path = {}
     v.move = false

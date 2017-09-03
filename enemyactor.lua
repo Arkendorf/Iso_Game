@@ -1,10 +1,10 @@
 function enemyactor_load()
 end
 
-function enemyTargetIsValid(target, actor)
-  if target > 0 and actor.turnPts >= weapons[actor.weapon].cost then
-    local player = currentLevel.actors[target]
-    if player.room == actor.room and player.dead == false and LoS({x = actor.x, y = actor.y}, {x = player.x, y = player.y}, rooms[actor.room]) == true then
+function enemyTargetIsValid(num, actor)
+  if num > 0 and actor.turnPts >= weapons[actor.weapon].cost then
+    local player = currentLevel.actors[num]
+    if player.room == actor.room and player.dead == false and player.futureHealth > 0 and LoS({x = actor.x, y = actor.y}, {x = player.x, y = player.y}, rooms[actor.room]) == true then
       return true
     else
       return false
@@ -41,7 +41,7 @@ function enemyactor_update(dt)
       end
     end
 
-    if nextTurn == true then
+    if nextTurn == true and #projectiles == 0 then
       startPlayerTurn()
     end
   end

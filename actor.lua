@@ -67,10 +67,10 @@ function findTarget(tX1, tY1, room)
   return 0
 end
 
-function targetIsValid(target, actor)
-  if target > 0 and actor.turnPts >= weapons[actor.weapon].cost then
-    local enemy = currentLevel.enemyActors[target]
-    if enemy.room == actor.room and enemy.dead == false and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true then
+function targetIsValid(num, actor)
+  if num > 0 and actor.turnPts >= weapons[actor.weapon].cost then
+    local enemy = currentLevel.enemyActors[num]
+    if enemy.room == actor.room and enemy.dead == false and enemy.futureHealth > 0 and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true then
       return true
     else
       return false
@@ -105,7 +105,7 @@ function actor_update(dt)
       end
     end
 
-    if nextTurn == true then
+    if nextTurn == true and #projectiles == 0 then
       startEnemyTurn()
     end
   end

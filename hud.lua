@@ -52,7 +52,7 @@ function drawEnemyHud()
   love.graphics.setColor(palette.turnPts)
   enemyHudInfo.displayTurnPts = enemyHudInfo.displayTurnPts - (enemyHudInfo.displayTurnPts-enemyHudInfo.turnPts)/10
   love.graphics.rectangle("fill", screen.w/2-enemyHudInfo.displayTurnPts/enemyHudInfo.maxTurnPts*128, screen.h/4, enemyHudInfo.displayTurnPts/enemyHudInfo.maxTurnPts*256, 10)
-
+  love.graphics.setColor(255, 255, 255)
 end
 
 function drawMapKey()

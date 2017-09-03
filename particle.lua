@@ -7,10 +7,6 @@ function particle_load()
 
   particleAIs[1] = function(v, dt)
     -- set things to default if unspecified
-    if v.frame == nil then
-      v.frame = 1
-    end
-
     if v.maxFrame == nil then
       v.maxFrame = particleTypes[v.type].maxFrame
     end
@@ -29,9 +25,6 @@ function particle_load()
   end
 
   particleAIs[2] = function(v, dt)
-    if v.frame == nil then
-      v.frame = 1
-    end
     if v.move == nil then
       v.move = true
     end
@@ -75,6 +68,9 @@ function particle_update(dt)
     end
     if v.time == nil then
       v.time = particleTypes[v.type].time
+    end
+    if v.frame == nil then
+      v.frame = 1
     end
 
     particleAIs[particleTypes[v.type].ai](v, dt)
