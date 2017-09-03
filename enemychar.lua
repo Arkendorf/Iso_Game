@@ -12,7 +12,7 @@ function queueEnemyChars(room)
       local canvas, oldCanvas = resumeCanvas(v.canvas)
 
       -- draw enemy
-      love.graphics.setColor(255, 255, 255)
+      love.graphics.setColor(200, 100, 100)
       love.graphics.draw(wallImg, -cameraPos.x, 9-cameraPos.y)
 
       -- draw hud
@@ -51,7 +51,7 @@ function queueEnemyChars(room)
       love.graphics.setCanvas(oldCanvas)
 
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {type = 1, img = canvas, x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z= enemyHeight-tileSize+9, r = 200, g = 100, b = 100}
+      drawQueue[#drawQueue + 1] = {type = 1, img = canvas, x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z= enemyHeight-tileSize+9}
     end
   end
 end

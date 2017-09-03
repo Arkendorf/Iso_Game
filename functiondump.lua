@@ -70,7 +70,7 @@ function pathIsValid(path, actor)
     for i, v in ipairs(currentLevel.actors) do -- check if actors path is colliding with player actor
       if v.x ~= actor.x or v.y ~= actor.y then
         if actor.room == v.room and v.dead == false then
-          if v.path.tiles ~= nil and #v.path.tiles > 0 then
+          if v.move == true then
             if path[#path].x == v.path.tiles[#v.path.tiles].x and path[#path].y == v.path.tiles[#v.path.tiles].y then
               return false
             end
@@ -86,7 +86,7 @@ function pathIsValid(path, actor)
     for i, v in ipairs(currentLevel.enemyActors) do -- check if actors path is colliding with player actor
       if v.x ~= actor.x or v.y ~= actor.y then
         if actor.room == v.room and v.dead == false then
-          if v.path.tiles ~= nil and #v.path.tiles > 0  then
+          if v.move == true then
             if path[#path].x == v.path.tiles[#v.path.tiles].x and path[#path].y == v.path.tiles[#v.path.tiles].y then
               return false
             end
