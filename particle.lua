@@ -47,7 +47,7 @@ function particle_load()
       v.y = v.y + v.yV
       v.yV = v.yV * 0.9
 
-      local x, y = coordToTile(v.x, v.y)
+      local x, y = coordToTile(v.x+tileSize/2, v.y+tileSize/2)
       if v.z < 0 then
         v.move = false
         v.frame = 2
