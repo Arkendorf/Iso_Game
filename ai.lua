@@ -68,27 +68,47 @@ function ai_load()
 
 end
 
-function goToDoor(enemyNum, enemy)
+function rankPathToTile(enemyNum, enemy, list, x, y)
+  local tX, tY = coordToTile(enemy.x, enemy.y)
+  local path = newPath({x = tX, y = tY}, {x = x, y = y}, rooms[enemy.room])
+  for i, v in ipairs(path) do
+    list[#list + 1] = {tX = v.x, tY = v.y, score = i}
+  end
+  return list
+end
+
+function patrol(enemyNum, enemy)
   local potentialTiles = {}
   local tX, tY = coordToTile(enemy.x, enemy.y)
+  for i, v in ipairs(enemy.patrol.tiles) do
+    if v.x == tX and v.y == tY then
+      if i + 1 > #enemy.patrol.tiles then
+        potentialTiles = rankPathToTile(enemyNum, enemy, {}, enemy.patrol.tiles[1].x, enemy.patrol.tiles[1].y)
+      else
+        potentialTiles = rankPathToTile(enemyNum, enemy, {}, enemy.patrol.tiles[i+1].x, enemy.patrol.tiles[i+1].y)
+      end
+      break
+    else
+      potentialTiles = rankPathToTile(enemyNum, enemy, potentialTiles, v.x, v.y)
+    end
+  end
+  return potentialTiles
+end
+
+function goToDoor(enemyNum, enemy)
+  local potentialTiles = {}
   for i, v in ipairs(currentLevel.doors) do
     if enemy.room == v.room1 then
       for j, k in ipairs(currentLevel.actors) do
-        if k.room == v.room2 then
-          local path = newPath({x = tX, y = tY}, {x = v.tX1, y = v.tY1}, rooms[enemy.room])
-          for l, m in ipairs(path) do
-            potentialTiles[#potentialTiles + 1] = {tX = m.x, tY = m.y, score = l}
-          end
+        if k.room == v.room2 and enemy.seen[j] == true then
+          potentialTiles = rankPathToTile(enemyNum, enemy, potentialTiles, v.tX1, v.tX2)
           break
         end
       end
     elseif enemy.room == v.room2 then
       for j, k in ipairs(currentLevel.actors) do
-        if k.room == v.room1 then
-          local path = newPath({x = tX, y = tY}, {x = v.tX2, y = v.tY2}, rooms[enemy.room])
-          for l, m in ipairs(path) do
-            potentialTiles[#potentialTiles + 1] = {tX = m.x, tY = m.y, score = l}
-          end
+        if k.room == v.room1 and enemy.seen[j] == true then
+          potentialTiles = rankPathToTile(enemyNum, enemy, potentialTiles, v.tX1, v.tX2)
           break
         end
       end
@@ -122,16 +142,12 @@ function rankTiles(enemyNum, enemy)
 
 
   local potentialTiles = {}
-  if isRoomOccupied(enemy.room, enemy.seen) == true then -- if room has a player in it, perform normal AI behavior
-    for down = yMin, yMax do -- search room within range for potential tiles
-      for across = xMin, xMax do
-        if tileType[room[down][across]] == 1 then
-          potentialTiles[#potentialTiles + 1] = {tX = across, tY = down, score = enemyMoveAIs[enemyActors[currentLevel.type][enemy.actor].moveAI](enemyNum, enemy, across, down)}
-        end
+  for down = yMin, yMax do -- search room within range for potential tiles
+    for across = xMin, xMax do
+      if tileType[room[down][across]] == 1 then
+        potentialTiles[#potentialTiles + 1] = {tX = across, tY = down, score = enemyMoveAIs[enemyActors[currentLevel.type][enemy.actor].moveAI](enemyNum, enemy, across, down)}
       end
     end
-  else -- otherwise, find a door to a room with a player in it
-    potentialTiles = goToDoor(enemyNum, enemy)
   end
   return potentialTiles
 end

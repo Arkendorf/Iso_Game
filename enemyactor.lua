@@ -25,7 +25,7 @@ function enemyactor_update(dt)
         elseif v.move == true then
           nextTurn = false -- don't end enemies turn if actors are still moving
           enemyFollowPath(i, v, dt)
-        elseif v.turnPts > 0 and #v.path.tiles == 0 then
+        elseif v.turnPts > 0 then
           if isRoomOccupied(v.room, v.seen) == false and arePlayersSeen(v) then -- use a door if on one and the current room is unoccupied
             newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
             if newPos ~= nil then
@@ -117,15 +117,23 @@ function giveEnemyActorsTurnPts()
 end
 
 function moveEnemy(enemyNum, enemy)
-  if arePlayersSeen(enemy) == true then
-    enemy.path.tiles = findEnemyPath(enemyNum, enemy)
-    if #enemy.path.tiles > 0 then -- if the best course of action is to move
-      enemy.turnPts = enemy.turnPts - (#enemy.path.tiles-1)
-      enemy.path.tiles = simplifyPath(enemy.path.tiles)
-      enemy.move = true
-    end
+  enemy.wait = false
+  local move = false
+  if arePlayersSeen(enemy) == true and isRoomOccupied(enemy.room, enemy.seen) == true then -- if known players are in the room, perform normal behavior
+    enemy.path.tiles = chooseTile(enemyNum, enemy, rankTiles(enemyNum, enemy))
     enemy.wait = true
     newDelay((enemyNum-1)*enemyTurnSpeed*3, function (enemy) enemy.wait = false end, {enemy})
+  elseif arePlayersSeen(enemy) == true and isRoomOccupied(enemy.room, enemy.seen) == false then -- if no known players are in the room, but are elsewhere, find a door to them
+    enemy.path.tiles = chooseTile(enemyNum, enemy, goToDoor(enemyNum, enemy))
+  elseif enemy.patrol ~= nil and enemy.room == enemy.patrol.room then -- if there are no known players, patrol if enemy has a patrol
+    enemy.path.tiles = chooseTile(enemyNum, enemy, patrol(enemyNum, enemy))
+  else
+    enemy.path.tiles = {}
+  end
+  if #enemy.path.tiles > 0 then -- if the best course of action is to move
+    enemy.turnPts = enemy.turnPts - (#enemy.path.tiles-1)
+    enemy.path.tiles = simplifyPath(enemy.path.tiles)
+    enemy.move = true
   end
 end
 
@@ -145,14 +153,11 @@ function startEnemyTurn()
   giveEnemyActorsTurnPts()
   revealPlayers()
   for i, v in ipairs(currentLevel.enemyActors) do
-    moveEnemy(i, v)
+    if v.dead == false then
+      moveEnemy(i, v)
+    end
   end
   startEnemyHud()
-end
-
-function findEnemyPath(i, v)
-  local potentialTiles = rankTiles(i, v)
-  return chooseTile(i, v, potentialTiles)
 end
 
 function findEnemyTarget(i, v)
