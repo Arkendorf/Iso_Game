@@ -31,7 +31,7 @@ function enemyactor_update(dt)
             if newPos ~= nil then
               v.room, v.x, v.y = newPos.room, newPos.x, newPos.y
               v.turnPts = v.turnPts - 1
-              moveEnemy(i, v) -- check if enemy should move once in new room
+              moveEnemy(i, v, 0) -- check if enemy should move once in new room
             end
           end
           local result = enemyAttack(i, v)
@@ -116,13 +116,13 @@ function giveEnemyActorsTurnPts()
   end
 end
 
-function moveEnemy(enemyNum, enemy)
+function moveEnemy(enemyNum, enemy, delay)
   enemy.wait = false
   local move = false
   if arePlayersSeen(enemy) == true and isRoomOccupied(enemy.room, enemy.seen) == true then -- if known players are in the room, perform normal behavior
     enemy.path.tiles = chooseTile(enemyNum, enemy, rankTiles(enemyNum, enemy))
     enemy.wait = true
-    newDelay((enemyNum-1)*enemyTurnSpeed*3, function (enemy) enemy.wait = false end, {enemy})
+    newDelay(delay*enemyTurnSpeed*3, function (enemy) enemy.wait = false end, {enemy})
   elseif arePlayersSeen(enemy) == true and isRoomOccupied(enemy.room, enemy.seen) == false then -- if no known players are in the room, but are elsewhere, find a door to them
     enemy.path.tiles = chooseTile(enemyNum, enemy, goToDoor(enemyNum, enemy))
   elseif enemy.patrol ~= nil and enemy.room == enemy.patrol.room then -- if there are no known players, patrol if enemy has a patrol
@@ -152,9 +152,11 @@ function startEnemyTurn()
   playerTurn = false
   giveEnemyActorsTurnPts()
   revealPlayers()
+  local delay = 0
   for i, v in ipairs(currentLevel.enemyActors) do
     if v.dead == false then
-      moveEnemy(i, v)
+      moveEnemy(i, v, delay)
+      delay = delay + 1
     end
   end
   startEnemyHud()
