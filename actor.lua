@@ -105,7 +105,7 @@ function actor_update(dt)
       end
     end
 
-    if nextTurn == true and #projectiles == 0 then
+    if nextTurn == true and #projectileEntities == 0 then
       startEnemyTurn()
     end
   end

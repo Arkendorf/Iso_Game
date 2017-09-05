@@ -1,20 +1,22 @@
 function particle_load()
   particles = {}
-  particleTypes = {}
-  particleTypes[1] = {ai = 1, speed = 10, maxFrame = 3, time = .3, img = muzzleFlashImg, quad = muzzleFlashQuad}
-  particleTypes[2] = {ai = 2, zV = 2, xV = 3, yV = 3, time = 10, img = bloodImg, quad = bloodQuad}
+  particles[1] = {ai = 1, speed = 10, maxFrame = 3, time = .3, img = muzzleFlashImg, quad = muzzleFlashQuad}
+  particles[2] = {ai = 2, zV = 2, xV = 3, yV = 3, time = 10, img = bloodImg, quad = bloodQuad}
+  
+  particleEntities = {}
+
   particleAIs = {}
 
   particleAIs[1] = function(v, dt)
     -- set things to default if unspecified
     if v.maxFrame == nil then
-      v.maxFrame = particleTypes[v.type].maxFrame
+      v.maxFrame = particles[v.type].maxFrame
     end
     if v.speed == nil then
-      v.speed = particleTypes[v.type].speed
+      v.speed = particles[v.type].speed
     end
     if v.time == nil then
-      v.time = particleTypes[v.type].time
+      v.time = particles[v.type].time
     end
 
     -- ai stuff
@@ -30,13 +32,13 @@ function particle_load()
     end
 
     if v.zV == nil then
-      v.zV = particleTypes[v.type].zV
+      v.zV = particles[v.type].zV
     end
     if v.xV == nil then
-      v.xV = math.random(-particleTypes[v.type].xV*10, particleTypes[v.type].xV*10)/10
+      v.xV = math.random(-particles[v.type].xV*10, particles[v.type].xV*10)/10
     end
     if v.yV == nil then
-      v.yV = math.random(-particleTypes[v.type].yV*10, particleTypes[v.type].yV*10)/10
+      v.yV = math.random(-particles[v.type].yV*10, particles[v.type].yV*10)/10
     end
 
     if v.move == true then
@@ -56,44 +58,48 @@ function particle_load()
         v.frame = 3
       end
     end
-    v.alpha = (v.time/particleTypes[v.type].time)*255
+    v.alpha = (v.time/particles[v.type].time)*255
+  end
+end
+
+function newParticle(room, x, y, z, type, displayAngle, time, frame, alpha)
+  local i = #particleEntities + 1
+  particleEntities[i] = {room = room, x = x, y = y, type = type, z = z, displayAngle = displayAngle, time = time, frame = frame, alpha = alpha}
+  if alpha == nil then
+    particleEntities[i].alpha = 255
+  end
+  if time == nil then
+    particleEntities[i].time = particles[particleEntities[i].type].time
+  end
+  if frame == nil then
+    particleEntities[i].frame = 1
   end
 end
 
 function particle_update(dt)
   local removeNils = false
-  for i, v in ipairs(particles) do
-    if v.alpha == nil then
-      v.alpha = 255
-    end
-    if v.time == nil then
-      v.time = particleTypes[v.type].time
-    end
-    if v.frame == nil then
-      v.frame = 1
-    end
-
-    particleAIs[particleTypes[v.type].ai](v, dt)
+  for i, v in ipairs(particleEntities) do
+    particleAIs[particles[v.type].ai](v, dt)
 
     v.time = v.time - dt
     if v.time <= 0 then
-      particles[i] = nil
+      particleEntities[i] = nil
       removeNils = true
     end
   end
   if removeNils == true then
-    particles = removeNil(particles)
+    particleEntities = removeNil(particleEntities)
   end
 end
 
 function queueParticles(room)
-  for i, v in ipairs(particles) do
+  for i, v in ipairs(particleEntities) do
     if v.room == room then
       local x, y = coordToIso(v.x, v.y)
-      if particleTypes[v.type].quad == nil then
-        drawQueue[#drawQueue + 1] = {type = 2, img = particleTypes[v.type].img, x = x + tileSize, y = y+tileSize/2, z = v.z, angle = v.displayAngle, alpha = v.alpha}
+      if particles[v.type].quad == nil then
+        drawQueue[#drawQueue + 1] = {type = 2, img = particles[v.type].img, x = x + tileSize, y = y+tileSize/2, z = v.z, angle = v.displayAngle, alpha = v.alpha}
       else
-        drawQueue[#drawQueue + 1] = {type = 2, img = particleTypes[v.type].img, quad = particleTypes[v.type].quad[math.floor(v.frame)], x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle, alpha = v.alpha}
+        drawQueue[#drawQueue + 1] = {type = 2, img = particles[v.type].img, quad = particles[v.type].quad[math.floor(v.frame)], x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle, alpha = v.alpha}
       end
     end
   end

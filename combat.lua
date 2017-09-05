@@ -1,19 +1,16 @@
 function combat_load()
   weapons = {}
-  weapons[1] = {type = 2, baseDmg = 5, idealDist = 48, rangePenalty = -.04, cost = 1, projectileType = 1}
-  weapons[2] = {type = 2, baseDmg = 1, idealDist = 48, rangePenalty = -.04, cost = 1, projectileType = 1}
+  weapons[1] = {type = 2, baseDmg = 5, idealDist = 48, rangePenalty = -.04, cost = 1, projectile = 1}
+  weapons[2] = {type = 2, baseDmg = 1, idealDist = 48, rangePenalty = -.04, cost = 1, projectile = 1}
+
   projectiles = {}
-  projectileTypes = {}
-  projectileTypes[1] = {ai = 1, speed = 10, img = laserImg}
+  projectiles[1] = {ai = 1, speed = 10, img = laserImg}
+
+  projectileEntities = {}
+
 
   projectileAIs = {}
   projectileAIs[1] = function(v, dt)
-    if v.dir == nil then
-      v.dir = getDirection({x = v.x, y = v.y}, {x = v.dX, y = v.dY})
-    end
-    if v.speed == nil then
-      v.speed = projectileTypes[v.type].speed
-    end
     v.x = v.x + v.speed*dt*60*math.cos(v.angle)
     v.y = v.y + v.speed*dt*60*math.sin(v.angle)
   end
@@ -21,13 +18,13 @@ end
 
 function attack(a, b)
   if weapons[a.weapon].type == 1 then
-    hitscan(a, b)
+    hitscanAttack(a, b)
   elseif weapons[a.weapon].type == 2 then
-    projectile(a, b)
+    projectileAttack(a, b)
   end
 end
 
-function hitscan(a, b) -- a is shooter, b is target, dmg is damage to deal
+function hitscanAttack(a, b) -- a is shooter, b is target, dmg is damage to deal
   local dmg = getDamage(a, b)
   b.futureHealth = b.futureHealth - dmg
   damage(dmg, a, b)
@@ -39,10 +36,10 @@ function hitscan(a, b) -- a is shooter, b is target, dmg is damage to deal
   local angle = getAngle({x = a.x, y = a.y}, {x = b.x, y = b.y})
   local xOffset, yOffset = (tileSize/2*math.cos(angle)), (tileSize/2*math.sin(angle))
 
-  particles[#particles + 1] = {room = a.room, x = a.x+xOffset, y = a.y+yOffset, type = 1, z = 8, displayAngle = displayAngle}
+  newParticle(a.room, a.x+xOffset, a.y+yOffset, 8, 1, displayAngle)
 end
 
-function projectile(a, b)
+function projectileAttack(a, b)
   local dmg = getDamage(a, b)
   b.futureHealth = b.futureHealth - dmg
 
@@ -53,8 +50,13 @@ function projectile(a, b)
   local angle = getAngle({x = a.x, y = a.y}, {x = b.x, y = b.y})
   local xOffset, yOffset = (tileSize/2*math.cos(angle)), (tileSize/2*math.sin(angle))
 
-  projectiles[#projectiles + 1] = {dmg = dmg, b = b, a = a, x = a.x+xOffset, y = a.y+yOffset, z = 8, dX = b.x-xOffset, dY = b.y-yOffset, angle = angle, displayAngle = displayAngle}
-  particles[#particles + 1] = {room = a.room, x = a.x+xOffset, y = a.y+yOffset, type = 1, z = 8, displayAngle = displayAngle}
+  newProjectile(dmg, a, b, a.x+xOffset, a.y+yOffset, 8, b.x-xOffset, b.y-yOffset, displayAngle)
+  newParticle(a.room, a.x+xOffset, a.y+yOffset, 8, 1, displayAngle)
+end
+
+function newProjectile(dmg, a, b, x, y, z, dX, dY, displayAngle)
+  local type = weapons[a.weapon].projectile
+  projectileEntities[#projectileEntities + 1] = {dmg = dmg, b = b, a = a, x = x, y = y, z = z, dX = dX, dY = dY, angle = getAngle({x = x, y = y}, {x = dX, y = dY}), displayAngle = displayAngle, type = type, dir = getDirection({x = x, y = x}, {x = dX, y = dY}), speed = projectiles[type].speed}
 end
 
 function damage(dmg, a, b) -- a is damaging b
@@ -63,7 +65,7 @@ function damage(dmg, a, b) -- a is damaging b
   local xOffset, yOffset = (tileSize/2*math.cos(angle)), (tileSize/2*math.sin(angle))
 
   for i = 1, math.floor(dmg) do
-    particles[#particles + 1] = {room = a.room, x = b.x-xOffset, y = b.y-yOffset, type = 2, z = 8, displayAngle = 0}
+    newParticle(a.room, b.x-xOffset, b.y-yOffset, 8, 2, 0)
   end
 end
 
@@ -108,31 +110,28 @@ function combat_update(dt)
   end
 
   local removeNils = false
-  for i, v in ipairs(projectiles) do
-    if v.type == nil then
-      v.type = weapons[v.a.weapon].projectileType
-    end
-    projectileAIs[projectileTypes[v.type].ai](v, dt)
+  for i, v in ipairs(projectileEntities) do
+    projectileAIs[projectiles[v.type].ai](v, dt)
     if (v.dX - v.x)*v.dir.x <= 0 and (v.dY - v.y)*v.dir.y <= 0 then
       damage(v.dmg, v.a, v.b)
-      projectiles[i] = nil
+      projectileEntities[i] = nil
       removeNils = true
     end
   end
   if removeNils == true then
-    projectiles = removeNil(projectiles)
+    projectileEntities = removeNil(projectileEntities)
   end
 end
 
 
 function queueProjectiles(room)
-  for i, v in ipairs(projectiles) do
+  for i, v in ipairs(projectileEntities) do
     if v.a.room == room then
       local x, y = coordToIso(v.x, v.y)
-      if projectileTypes[v.type].quad == nil then
-        drawQueue[#drawQueue + 1] = {type = 2, img = projectileTypes[v.type].img, x = x+tileSize, y = y+tileSize/2, z = v.z, angle = v.displayAngle}
+      if projectiles[v.type].quad == nil then
+        drawQueue[#drawQueue + 1] = {type = 2, img = projectiles[v.type].img, x = x+tileSize, y = y+tileSize/2, z = v.z, angle = v.displayAngle}
       else
-        drawQueue[#drawQueue + 1] = {type = 2, img = projectileTypes[v.type].img, quad = projectileTypes[v.type].quad, x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle}
+        drawQueue[#drawQueue + 1] = {type = 2, img = projectiles[v.type].img, quad = projectiles[v.type].quad, x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle}
       end
     end
   end
