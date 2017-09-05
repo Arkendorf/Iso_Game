@@ -41,7 +41,8 @@ function drawMapTiles(room, size) -- what room to draw, size of tiles
       love.graphics.setColor(palette.purple)
       love.graphics.rectangle("fill", (v.tX1-1)*size, (v.tY1-1)*size, size-1, size-1)
       love.graphics.setColor(255, 255, 255)
-    elseif v.room2 == room then
+    end
+    if v.room2 == room then
       love.graphics.setColor(palette.purple)
       love.graphics.rectangle("fill", (v.tX2-1)*size, (v.tY2-1)*size, size-1, size-1)
       love.graphics.setColor(255, 255, 255)
