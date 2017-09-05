@@ -56,7 +56,7 @@ end
 
 function newProjectile(dmg, a, b, x, y, z, dX, dY, displayAngle)
   local type = weapons[a.weapon].projectile
-  projectileEntities[#projectileEntities + 1] = {dmg = dmg, b = b, a = a, x = x, y = y, z = z, dX = dX, dY = dY, angle = getAngle({x = x, y = y}, {x = dX, y = dY}), displayAngle = displayAngle, type = type, dir = getDirection({x = x, y = x}, {x = dX, y = dY}), speed = projectiles[type].speed}
+  projectileEntities[#projectileEntities + 1] = {dmg = dmg, b = b, a = a, x = x, y = y, z = z, dX = dX, dY = dY, angle = getAngle({x = x, y = y}, {x = dX, y = dY}), displayAngle = displayAngle, type = type, dir = getDirection({x = a.x, y = a.y}, {x = b.x, y = b.y}), speed = projectiles[type].speed}
 end
 
 function damage(dmg, a, b) -- a is damaging b

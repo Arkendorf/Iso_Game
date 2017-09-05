@@ -69,10 +69,11 @@ function ai_load()
 end
 
 function rankPathToTile(enemyNum, enemy, list, x, y)
+  local map = rooms[enemy.room]
   local tX, tY = coordToTile(enemy.x, enemy.y)
-  local path = newPath({x = tX, y = tY}, {x = x, y = y}, rooms[enemy.room])
+  local path = newPath({x = tX, y = tY}, {x = x, y = y}, map)
   for i, v in ipairs(path) do
-    list[#list + 1] = {tX = v.x, tY = v.y, score = i}
+    list[#list + 1] = {tX = v.x, tY = v.y, score = #map[1]*#map-#path+i}
   end
   return list
 end
