@@ -18,7 +18,7 @@ function queueEnemyChars(room)
       -- draw hud
       if v.dead == false then
         local tX, tY = coordToTile(v.x, v.y)
-        if (currentActor.mode == 1 and getDamage(currentActor, v) > 0) or (currentActor.mode > 1 and getDamage(currentActor, v) > 0) then -- second getDamage will need to be changed
+        if (currentActor.mode == 1 and verifyDamage(currentActor, v) > 0) or (currentActor.mode > 1 and verifyDamage(currentActor, v) > 0) then -- second getDamage will need to be changed
           love.graphics.setColor(gradient(5, palette.health)) -- current health
           love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
           love.graphics.setColor(palette.health)

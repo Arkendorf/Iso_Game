@@ -69,22 +69,26 @@ function damage(dmg, a, b) -- a is damaging b
   end
 end
 
-function getDamage(a, b) -- entity a is attacking entity b
+function verifyDamage(a, b)
   if a.target.item ~= nil and a.target.item.x == b.x and a.target.item.y == b.y then
-    local dmg = weapons[a.weapon].baseDmg
-    local dist = getDistance(a, b) - weapons[a.weapon].idealDist
-    if dist < 0 then
-      dist = 0
-    end
-    dmg = dmg + dist * weapons[a.weapon].rangePenalty
-    if isUnderCover(b, a, rooms[a.room]) == true then
-      dmg = dmg / 2
-    end
-    if dmg > 0 then
-      return dmg
-    else
-      return 0
-    end
+    return getDamage(a, b)
+  else
+    return 0
+  end
+end
+
+function getDamage(a, b) -- entity a is attacking entity b
+  local dmg = weapons[a.weapon].baseDmg
+  local dist = getDistance(a, b) - weapons[a.weapon].idealDist
+  if dist < 0 then
+    dist = 0
+  end
+  dmg = dmg + dist * weapons[a.weapon].rangePenalty
+  if isUnderCover(b, a, rooms[a.room]) == true then
+    dmg = dmg / 2
+  end
+  if dmg > 0 then
+    return dmg
   else
     return 0
   end
