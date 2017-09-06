@@ -118,9 +118,9 @@ function actor_update(dt)
       currentActor.currentCost = #currentActor.path.tiles-1
     else
       if currentActor.mode == 1 then
-        currentActor.currentCost = weapons[currentActor.weapon].cost
+        currentActor.currentCost = weapons[currentActor.actor.item.weapon].cost
       else
-        currentActor.currentCost = abilities[playerActors[currentLevel.type][currentActor.actor].abilities[currentActor.mode-1]].cost
+        currentActor.currentCost = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].cost
       end
       currentActor.target.item = findTargetFuncs[currentActor.targetMode](currentActor, cursorPos)
       currentActor.target.valid = targetValidFuncs[currentActor.targetMode](currentActor.target.item, currentActor)
@@ -148,7 +148,8 @@ end
 
 function startPlayerTurn()
   playerTurn = true
-  giveActorsTurnPts()
+  giveTurnPts(currentLevel.actors)
+  reduceCoolDowns(currentLevel.actors)
 end
 
 function actor_mousepressed(x, y, button)
@@ -162,9 +163,10 @@ function actor_mousepressed(x, y, button)
     attack(currentActor, currentActor.target.item, currentLevel.enemyActors)
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
     return true
-  elseif button ==1 and currentActor.mode > 1 and currentActor.target.valid == true then
-    useAbility(playerActors[currentLevel.type][currentActor.actor].abilities[currentActor.mode-1], currentActor, currentActor.target.item, currentLevel.enemyActors)
+  elseif button ==1 and currentActor.mode > 1 and currentActor.target.valid == true and currentActor.coolDowns[currentActor.mode-1] == 0 then
+    useAbility(currentActor.actor.item.abilities[currentActor.mode-1], currentActor, currentActor.target.item, currentLevel.enemyActors)
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
+    currentActor.coolDowns[currentActor.mode-1] = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].coolDown
   end
   return false
 end
@@ -178,7 +180,7 @@ function followPath(i, v, dt)
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)
-    local speed = playerActors[currentLevel.type][v.actor].speed
+    local speed = currentActor.actor.item.speed
     v.x = v.x + dir.x * dt * speed
     v.y = v.y + dir.y * dt * speed
     if (dir.x > 0 and v.x > path.x) or (dir.x < 0 and v.x < path.x) then
@@ -214,11 +216,5 @@ function drawPath(actor)
         love.graphics.draw(cursorImg, tileToIso(v.x, v.y))
       end
     end
-  end
-end
-
-function giveActorsTurnPts()
-  for i, v in ipairs(currentLevel.actors) do
-    v.turnPts = playerActors[currentLevel.type][v.actor].turnPts
   end
 end

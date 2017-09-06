@@ -18,13 +18,18 @@ function queueEnemyChars(room)
       -- draw hud
       if v.dead == false then
         local tX, tY = coordToTile(v.x, v.y)
-        if currentActor.target.valid == true and ((currentActor.mode == 1 and getDamage(currentActor, v, currentActor.target.item, weapons[currentActor.weapon].AOE, weapons[currentActor.weapon].falloff) > 0) or (currentActor.mode > 1 and getDamage(currentActor, v, currentActor.target.item, weapons[currentActor.weapon].AOE, weapons[currentActor.weapon].falloff) > 0)) then -- second getDamage will need to be changed
+        local dmgEstimate = 0
+        if currentActor.target.valid == true and currentActor.mode == 1 then
+          dmgEstimate = getDamage(currentActor, v, currentActor.target.item)
+        elseif currentActor.target.valid == true and currentActor.mode > 1 then
+          dmgEstimate = getDamage(currentActor, v, currentActor.target.item, abilities[currentActor.actor.item.abilities[currentActor.mode-1]].dmgInfo)
+        end
+        if dmgEstimate > 0 then -- second getDamage will need to be changed
           love.graphics.setColor(gradient(5, palette.health)) -- current health
-          love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
+          love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, v.displayHealth/v.actor.item.health*tileSize*2, 2)
           love.graphics.setColor(palette.health)
-          local dmgEstimate = getDamage(currentActor, v, currentActor.target.item, weapons[currentActor.weapon].AOE, weapons[currentActor.weapon].falloff)
           if (v.displayHealth- dmgEstimate) > 0 then -- health after projectiles and possible current attack deal damage
-            love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, (v.futureHealth-dmgEstimate)/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
+            love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, (v.futureHealth-dmgEstimate)/v.actor.item.health*tileSize*2, 2)
           end
         else
           local x, y = tileToCoord(cursorPos.tX, cursorPos.tY)

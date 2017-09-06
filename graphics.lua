@@ -14,6 +14,9 @@ function graphics_load()
   "123456789.,!?-+/():;%&`'*#=[]\"", 1)
   love.graphics.setFont(font)
 
+  buttonFont = love.graphics.newImageFont("buttonfont.png",
+  "1234567890", 1)
+
   tileImg = love.graphics.newImage("tile.png")
   wallImg = love.graphics.newImage("wall.png")
   coverImg = love.graphics.newImage("cover.png")
@@ -28,7 +31,11 @@ function graphics_load()
   spottedImg = love.graphics.newImage("statuseffecticons.png")
 
   combatButtonImg = love.graphics.newImage("combatbuttons.png")
-  combatButtonQuad = createSpriteSheet(combatButtonImg, 2, 5, 44, 24)
+  combatButtonQuad = createSpriteSheet(combatButtonImg, 2, 3, 44, 24)
+
+  combatIconImg = love.graphics.newImage("buttonicons.png")
+  combatIconOnQuad = createSpriteSheet(combatIconImg, 1, 3, 44, 24)
+  combatIconOffQuad = createSpriteSheet(combatIconImg, 1, 3, 44, 24, 44, 0)
 
   boxImg = love.graphics.newImage("box.png")
   boxQuad = {{}, {}, {}, {}}

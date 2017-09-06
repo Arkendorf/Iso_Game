@@ -62,6 +62,7 @@ function love.update(dt)
   hud_update(dt)
   combat_update(dt)
   particle_update(dt)
+  ability_update(dt)
 end
 
 function love.draw()

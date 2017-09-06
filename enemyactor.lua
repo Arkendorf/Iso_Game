@@ -3,7 +3,7 @@ function enemyactor_load()
 end
 
 function enemyTargetIsValid(num, actor)
-  if num > 0 and actor.turnPts >= weapons[actor.weapon].cost then
+  if num > 0 and actor.turnPts >= weapons[actor.actor.item.weapon].cost then
     local player = currentLevel.actors[num]
     if player.room == actor.room and player.dead == false and player.futureHealth > 0 and LoS({x = actor.x, y = actor.y}, {x = player.x, y = player.y}, rooms[actor.room]) == true then
       return true
@@ -82,7 +82,7 @@ function revealPlayers()
 end
 
 function isPlayerInView(enemy, player)
-  if enemy.room == player.room and player.dead == false and enemy.dead == false and getDistance({x = enemy.x, y = enemy.y}, {x = player.x, y = player.y}) <= enemyActors[currentLevel.type][enemy.actor].eyesight and LoS({x = enemy.x, y = enemy.y}, {x = player.x, y = player.y}, rooms[enemy.room]) == true then
+  if enemy.room == player.room and player.dead == false and enemy.dead == false and getDistance({x = enemy.x, y = enemy.y}, {x = player.x, y = player.y}) <= enemy.actor.item.eyesight and LoS({x = enemy.x, y = enemy.y}, {x = player.x, y = player.y}, rooms[enemy.room]) == true then
     return true
   else
     return false
@@ -110,12 +110,6 @@ function isPlayerVisible(player, num)
   return false
 end
 
-function giveEnemyActorsTurnPts()
-  for i, v in ipairs(currentLevel.enemyActors) do
-    v.turnPts = enemyActors[currentLevel.type][v.actor].turnPts
-  end
-end
-
 function moveEnemy(enemyNum, enemy, delay)
   enemy.wait = false
   local move = false
@@ -141,7 +135,7 @@ function enemyAttack(enemyNum, enemy) -- damages player, returns true if it atta
   local target = findEnemyTarget(enemyNum, enemy)
   if target > 0 then
     attack(enemy, currentLevel.actors[target], currentLevel.actors)
-    enemy.turnPts = enemy.turnPts - weapons[enemy.weapon].cost
+    enemy.turnPts = enemy.turnPts - weapons[enemy.actor.item.weapon].cost
     return true
   else
     return false
@@ -150,7 +144,7 @@ end
 
 function startEnemyTurn()
   playerTurn = false
-  giveEnemyActorsTurnPts()
+  giveTurnPts(currentLevel.enemyActors)
   revealPlayers()
   local delay = 0
   for i, v in ipairs(currentLevel.enemyActors) do
@@ -176,7 +170,7 @@ function enemyFollowPath(i, v, dt)
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)
-    local speed = enemyActors[currentLevel.type][v.actor].speed
+    local speed = v.actor.item.speed
     v.x = v.x + dir.x * dt * speed
     v.y = v.y + dir.y * dt * speed
     if (dir.x > 0 and v.x > path.x) or (dir.x < 0 and v.x < path.x) then

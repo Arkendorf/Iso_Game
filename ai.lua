@@ -31,8 +31,8 @@ function ai_load()
       averageDist = averageDist + v/#distanceToPlayers
     end
     averageDist = averageDist
-    local distDiffPoints = weapons[enemy.weapon].rangePenalty
-    local idealDist = weapons[enemy.weapon].idealDist
+    local distDiffPoints = weapons[enemy.actor.item.weapon].rangePenalty
+    local idealDist = weapons[enemy.actor.item.weapon].idealDist
     score = score - math.abs(idealDist - averageDist) * distDiffPoints-- subtrace points based on how close it is to desired distance
 
     if playersInSight > 0 then -- add points based on how exposed enemy is
@@ -59,7 +59,7 @@ function ai_load()
 
   enemyCombatAIs[1] = function (enemyNum, enemy, target)
     local score = 0
-    local dmg = getDamage(enemy, target, target, weapons[enemy.weapon].AOE, weapons[enemy.weapon].falloff)
+    local dmg = getDamage(enemy, target, target)
     score = score + dmg
     if target.health - dmg <= 0 then -- if enemy kills target, add a bonus
       score = score + killPoints
@@ -123,7 +123,7 @@ function rankTargets(enemyNum, enemy)
   local potentialTargets = {}
   for i, v in ipairs(currentLevel.actors) do
     if v.room == enemy.room and enemy.seen[i] == true then
-      potentialTargets[#potentialTargets+1] = {num = i, score = enemyCombatAIs[enemyActors[currentLevel.type][enemy.actor].combatAI](enemyNum, enemy, v)}
+      potentialTargets[#potentialTargets+1] = {num = i, score = enemyCombatAIs[enemy.actor.item.combatAI](enemyNum, enemy, v)}
     end
   end
   return potentialTargets
@@ -147,7 +147,7 @@ function rankTiles(enemyNum, enemy)
   for down = yMin, yMax do -- search room within range for potential tiles
     for across = xMin, xMax do
       if tileType[room[down][across]] == 1 then
-        potentialTiles[#potentialTiles + 1] = {tX = across, tY = down, score = enemyMoveAIs[enemyActors[currentLevel.type][enemy.actor].moveAI](enemyNum, enemy, across, down)}
+        potentialTiles[#potentialTiles + 1] = {tX = across, tY = down, score = enemyMoveAIs[enemy.actor.item.moveAI](enemyNum, enemy, across, down)}
       end
     end
   end
@@ -170,7 +170,7 @@ function chooseTile(enemyNum, enemy, tiles)
     local tX, tY = coordToTile(enemy.x, enemy.y)
     v.path = newPath({x = tX, y = tY}, {x = v.tX, y = v.tY}, rooms[enemy.room])
     if #v.path == 1 or (#v.path > 0 and pathIsValid(v.path, enemy)) then
-      local lengthPenalty = enemyActors[currentLevel.type][enemy.actor].turnPts / 2
+      local lengthPenalty = enemy.actor.item.turnPts / 2
       if currentTile.path == nil or v.score - #v.path/lengthPenalty > currentTile.score - #currentTile.path/lengthPenalty then
         currentTile = v
       end

@@ -29,6 +29,12 @@ function tileToIso(x, y)
   return (x-y+#rooms[currentRoom]-1)*tileSize, (y+x-2)*tileSize/2
 end
 
+function giveTurnPts(table)
+  for i, v in ipairs(table) do
+    v.turnPts = v.actor.item.turnPts
+  end
+end
+
 function simplifyPath(path)
   local simplePath = {path[1]}
   local oldDir = pathDirection(path[1], path[2])

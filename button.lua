@@ -4,11 +4,12 @@
        currentActor.mode = 0
        currentActor.targetMode = 0
      else
-       currentActor.mode = mode
        if mode == 1 then
-         currentActor.targetMode = weapons[currentActor.weapon].targetMode
-       else
-         currentActor.targetMode = abilities[playerActors[currentLevel.type][currentActor.actor].abilities[mode-1]].targetMode
+         currentActor.mode = mode
+         currentActor.targetMode = weapons[currentActor.actor.item.weapon].targetMode
+       elseif currentActor.coolDowns[mode-1] == 0 then
+         currentActor.mode = mode
+         currentActor.targetMode = abilities[currentActor.actor.item.abilities[mode-1]].targetMode
        end
      end
    end
