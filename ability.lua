@@ -5,11 +5,17 @@ function ability_load()
 
   abilityFuncs = {}
 
-  abilityFuncs[1] = function (a, b)
-    projectileAttack(a, b)
+  abilityFuncs[1] = function (a, b, enemies)
+    projectileAttack(a, b, enemies)
+  end
+
+  abilityDmgFuncs = {}
+
+  abilityDmgFuncs[1] = function (a, b)
+
   end
 end
 
-function useAbility(ability, a, b) -- ability, user, and target (not necessarily an enemy)
-  abilityFuncs[abilities[ability].func](a, b)
+function useAbility(ability, a, b, enemies) -- ability, user, and target (not necessarily an enemy), and rivals (for a player, it would be enemies)
+    abilityFuncs[abilities[ability].func](a, b, enemies)
 end

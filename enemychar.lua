@@ -1,8 +1,8 @@
 function enemychar_load()
   enemyActors = {}
   enemyActors[1] = {}
-  enemyActors[1][1] = {speed = 30, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10}
-  enemyActors[1][2] = {speed = 120, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10}
+  enemyActors[1][1] = {speed = 30, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2}
+  enemyActors[1][2] = {speed = 120, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2}
   enemyHeight = 32
 end
 
@@ -18,11 +18,11 @@ function queueEnemyChars(room)
       -- draw hud
       if v.dead == false then
         local tX, tY = coordToTile(v.x, v.y)
-        if (currentActor.mode == 1 and verifyDamage(currentActor, v) > 0) or (currentActor.mode > 1 and verifyDamage(currentActor, v) > 0) then -- second getDamage will need to be changed
+        if currentActor.target.valid == true and ((currentActor.mode == 1 and getDamage(currentActor, v, currentActor.target.item, weapons[currentActor.weapon].AOE, weapons[currentActor.weapon].falloff) > 0) or (currentActor.mode > 1 and getDamage(currentActor, v, currentActor.target.item, weapons[currentActor.weapon].AOE, weapons[currentActor.weapon].falloff) > 0)) then -- second getDamage will need to be changed
           love.graphics.setColor(gradient(5, palette.health)) -- current health
           love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, v.displayHealth/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
           love.graphics.setColor(palette.health)
-          local dmgEstimate = getDamage(currentActor, v)
+          local dmgEstimate = getDamage(currentActor, v, currentActor.target.item, weapons[currentActor.weapon].AOE, weapons[currentActor.weapon].falloff)
           if (v.displayHealth- dmgEstimate) > 0 then -- health after projectiles and possible current attack deal damage
             love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, (v.futureHealth-dmgEstimate)/enemyActors[currentLevel.type][v.actor].health*tileSize*2, 2)
           end

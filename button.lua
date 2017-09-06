@@ -6,7 +6,7 @@
      else
        currentActor.mode = mode
        if mode == 1 then
-         currentActor.targetMode = 1
+         currentActor.targetMode = weapons[currentActor.weapon].targetMode
        else
          currentActor.targetMode = abilities[playerActors[currentLevel.type][currentActor.actor].abilities[mode-1]].targetMode
        end

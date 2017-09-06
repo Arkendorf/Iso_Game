@@ -3,6 +3,7 @@ function ai_load()
   local effectiveCoverPoints = 2
   local singlePlayerPoints =4
   local extraPlayerPoints = -1
+  local killPoints = 5
 
   enemyMoveAIs = {}
 
@@ -32,7 +33,7 @@ function ai_load()
     averageDist = averageDist
     local distDiffPoints = weapons[enemy.weapon].rangePenalty
     local idealDist = weapons[enemy.weapon].idealDist
-    score = score + math.abs(idealDist - averageDist) * distDiffPoints-- subtrace points based on how close it is to desired distance
+    score = score - math.abs(idealDist - averageDist) * distDiffPoints-- subtrace points based on how close it is to desired distance
 
     if playersInSight > 0 then -- add points based on how exposed enemy is
       score = score + singlePlayerPoints + (playersInSight-1)*extraPlayerPoints
@@ -58,10 +59,10 @@ function ai_load()
 
   enemyCombatAIs[1] = function (enemyNum, enemy, target)
     local score = 0
-    local dmg = getDamage(enemy, target)
+    local dmg = getDamage(enemy, target, target, weapons[enemy.weapon].AOE, weapons[enemy.weapon].falloff)
     score = score + dmg
-    if target.health - dmg <= 0 then -- if enemy kills target, add damage target would have done to enemy to score
-      score = score + getDamage(target, enemy)
+    if target.health - dmg <= 0 then -- if enemy kills target, add a bonus
+      score = score + killPoints
     end
     return score
   end

@@ -16,7 +16,8 @@ function actor_load()
   end
 
   findTargetFuncs[2] = function (actor, cursorPos)
-    return {x = cursorPos.tX, y = cursorPos.tY}
+    local x, y = tileToCoord(cursorPos.tX, cursorPos.tY)
+    return {x = x, y = y, tX = cursorPos.tX, tY = cursorPos.tY}
   end
 
   findTargetFuncs[3] = function (actor, cursorPos)
@@ -39,14 +40,17 @@ function actor_load()
   end
 
   targetValidFuncs[2] = function (enemy, actor)
-    if actor.turnPts >= actor.currentCost then
+    if actor.turnPts >= actor.currentCost and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true  then
       return true
     end
     return false
   end
 
   targetValidFuncs[3] = function (enemy, actor)
-    return true
+    if actor.turnPts >= actor.currentCost then
+      return true
+    end
+    return false
   end
 
 end
@@ -155,11 +159,11 @@ function actor_mousepressed(x, y, button)
     currentActor.path.valid = false
     return true
   elseif button == 1 and currentActor.mode == 1 and currentActor.target.valid == true then
-    attack(currentActor, currentActor.target.item)
+    attack(currentActor, currentActor.target.item, currentLevel.enemyActors)
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
     return true
   elseif button ==1 and currentActor.mode > 1 and currentActor.target.valid == true then
-    useAbility(playerActors[currentLevel.type][currentActor.actor].abilities[currentActor.mode-1], currentActor, currentActor.target.item)
+    useAbility(playerActors[currentLevel.type][currentActor.actor].abilities[currentActor.mode-1], currentActor, currentActor.target.item, currentLevel.enemyActors)
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
   end
   return false

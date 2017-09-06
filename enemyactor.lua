@@ -140,7 +140,7 @@ end
 function enemyAttack(enemyNum, enemy) -- damages player, returns true if it attacks, false if it doesn't
   local target = findEnemyTarget(enemyNum, enemy)
   if target > 0 then
-    attack(enemy, currentLevel.actors[target])
+    attack(enemy, currentLevel.actors[target], currentLevel.actors)
     enemy.turnPts = enemy.turnPts - weapons[enemy.weapon].cost
     return true
   else
