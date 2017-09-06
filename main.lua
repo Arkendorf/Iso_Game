@@ -19,9 +19,10 @@ require("button")
 require("particle")
 require("map")
 require("delay")
+require("ability")
 
 function love.load()
-  controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, switchActor = "q", use = "e", endTurn = "space", modes = {"1", "2", "3", "4", "5"}}
+  controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, switchActor = "q", use = "e", endTurn = "space", modes = {"1", "2", "3"}}
   text = {}
   for line in love.filesystem.lines("text.txt") do
   table.insert(text, line)
@@ -46,6 +47,7 @@ function love.load()
   button_load()
   particle_load()
   delay_load()
+  ability_load()
 
   window = love.graphics.newCanvas(screen.w, screen.h)
 end

@@ -2,6 +2,53 @@ function actor_load()
   currentActorNum = 1
   currentActor = currentLevel.actors[currentActorNum]
   playerTurn = true
+
+  findTargetFuncs = {}
+
+  findTargetFuncs[1] = function (actor, cursorPos)
+    for i, v in ipairs(currentLevel.enemyActors) do
+      local tX, tY = coordToTile(v.x, v.y)
+      if v.room == actor.room and v.dead == false and cursorPos.tX == tX and cursorPos.tY == tY then
+        return v
+      end
+    end
+    return nil
+  end
+
+  findTargetFuncs[2] = function (actor, cursorPos)
+    return {x = cursorPos.tX, y = cursorPos.tY}
+  end
+
+  findTargetFuncs[3] = function (actor, cursorPos)
+    return nil
+  end
+
+
+  targetValidFuncs = {}
+
+  targetValidFuncs[1] = function (enemy, actor)
+    if enemy ~= nil and actor.turnPts >= actor.currentCost then
+      if enemy.room == actor.room and enemy.dead == false and enemy.futureHealth > 0 and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true then
+        return true
+      else
+        return false
+      end
+    else
+      return false
+    end
+  end
+
+  targetValidFuncs[2] = function (enemy, actor)
+    if actor.turnPts >= actor.currentCost then
+      return true
+    end
+    return false
+  end
+
+  targetValidFuncs[3] = function (enemy, actor)
+    return true
+  end
+
 end
 
 
@@ -57,38 +104,22 @@ function actor_keypressed(key)
   end
 end
 
-function findTarget(tX1, tY1, room)
-  for i, v in ipairs(currentLevel.enemyActors) do
-    tX2, tY2 = coordToTile(v.x, v.y)
-    if v.room == room and v.dead == false and tX1 == tX2 and tY1 == tY2 then
-      return i
-    end
-  end
-  return 0
-end
-
-function targetIsValid(num, actor)
-  if num > 0 and actor.turnPts >= weapons[actor.weapon].cost then
-    local enemy = currentLevel.enemyActors[num]
-    if enemy.room == actor.room and enemy.dead == false and enemy.futureHealth > 0 and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true then
-      return true
-    else
-      return false
-    end
-  else
-    return false
-  end
-end
-
 function actor_update(dt)
   if currentActor.move == false then
-    if currentActor.mode == 0 then
+    if currentActor.targetMode == 0 then
       local tX, tY = coordToTile(currentActor.x, currentActor.y)
       currentActor.path.tiles = newPath({x = tX, y = tY}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
       currentActor.path.valid = pathIsValid(currentActor.path.tiles, currentActor)
-    elseif currentActor.mode == 1 then
-      currentActor.target.num = findTarget(cursorPos.tX, cursorPos.tY, currentActor.room, currentLevel.enemyActors)
-      currentActor.target.valid = targetIsValid(currentActor.target.num, currentActor)
+      currentActor.dmg = 0
+      currentActor.currentCost = #currentActor.path.tiles-1
+    else
+      if currentActor.mode == 1 then
+        currentActor.currentCost = weapons[currentActor.weapon].cost
+      else
+        currentActor.currentCost = abilities[playerActors[currentLevel.type][currentActor.actor].abilities[currentActor.mode-1]].cost
+      end
+      currentActor.target.item = findTargetFuncs[currentActor.targetMode](currentActor, cursorPos)
+      currentActor.target.valid = targetValidFuncs[currentActor.targetMode](currentActor.target.item, currentActor)
     end
   end
 
@@ -118,15 +149,18 @@ end
 
 function actor_mousepressed(x, y, button)
   if button == 1 and currentActor.mode == 0 and currentActor.move == false and #currentActor.path.tiles > 1 and currentActor.path.valid then
-    currentActor.turnPts = currentActor.turnPts - (#currentActor.path.tiles-1) -- reduce turnPts based on how far the actor is moving
+    currentActor.turnPts = currentActor.turnPts - currentActor.currentCost -- reduce turnPts based on how far the actor is moving
     currentActor.move = true
     currentActor.path.tiles = simplifyPath(currentActor.path.tiles)
     currentActor.path.valid = false
     return true
   elseif button == 1 and currentActor.mode == 1 and currentActor.target.valid == true then
-    attack(currentActor, currentLevel.enemyActors[currentActor.target.num])
-    currentActor.turnPts = currentActor.turnPts - weapons[currentActor.weapon].cost
+    attack(currentActor, currentActor.target.item)
+    currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
     return true
+  elseif button ==1 and currentActor.mode > 1 and currentActor.target.valid == true then
+    useAbility(playerActors[currentLevel.type][currentActor.actor].abilities[currentActor.mode-1], currentActor, currentActor.target.item)
+    currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
   end
   return false
 end

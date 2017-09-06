@@ -24,11 +24,13 @@ function startLevel(level)
     v.displayHealth = v.health
     v.futureHealth = v.health
     v.mode = 0
-    v.target = {valid = false, num = 0}
+    v.target = {valid = false}
     v.path = {}
     v.move = false
     v.dead = false
     v.canvas = startNewCanvas(tileSize*2, charHeight)
+    v.targetMode = 0
+    v.currentCost = 0
   end
   for i, v in ipairs(currentLevel.enemyActors) do
     v.turnPts = 0

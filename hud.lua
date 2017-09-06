@@ -80,28 +80,18 @@ function drawPlayerInfoHud()
   love.graphics.rectangle("fill", 4, screen.h-39, currentActor.displayHealth/playerActors[currentLevel.type][currentActor.actor].health*214, 3)--health
 
 
-  local num = 0 -- set what is being subtracted from turnPts
-  local valid = false
-  if currentActor.mode == 0 then
-    num = #currentActor.path.tiles-1
-    valid = currentActor.path.valid
-  elseif currentActor.mode == 1 then
-    num = weapons[currentActor.weapon].cost
-    valid = currentActor.target.valid
-  end
-
-  if currentActor.move == true or valid == false then
+  if currentActor.move == true or (currentActor.target.valid == false and currentActor.path.valid == false) then
     love.graphics.setColor(palette.turnPts)
     love.graphics.rectangle("fill", 4, screen.h-34, currentActor.displayTurnPts/playerActors[currentLevel.type][currentActor.actor].turnPts*214, 3)--turnPts
   else
     love.graphics.setColor(gradient(5, palette.turnPts))
     love.graphics.rectangle("fill", 4, screen.h-34, currentActor.displayTurnPts/playerActors[currentLevel.type][currentActor.actor].turnPts*214, 3)-- current quantity of turnPts
     love.graphics.setColor(palette.turnPts)
-    love.graphics.rectangle("fill", 4, screen.h-34, (currentActor.turnPts-num)/playerActors[currentLevel.type][currentActor.actor].turnPts*214, 3)--turnPts left after subtraction
+    love.graphics.rectangle("fill", 4, screen.h-34, (currentActor.turnPts-currentActor.currentCost)/playerActors[currentLevel.type][currentActor.actor].turnPts*214, 3)--turnPts left after subtraction
   end
   love.graphics.setColor(255, 255, 255)
 
-  for i = 1, 5 do
+  for i = 1, 3 do
     if currentActor.mode == i then
       love.graphics.draw(combatButtonImg, combatButtonQuad[i*2-1], -43+i*44, screen.h-25)
     else

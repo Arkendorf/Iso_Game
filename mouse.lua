@@ -21,10 +21,10 @@ function distance(x1, y1, x2, y2)
 end
 
 function mouse_draw()
-  if currentActor.mode == 0 then
+  if currentActor.targetMode == 0 then
     setValidColor(currentActor.path.valid)
     love.graphics.draw(cursorImg, tileToIso(cursorPos.tX,cursorPos.tY))
-  else
+  elseif currentActor.targetMode ~= 3 then
     setValidColor(currentActor.target.valid)
     love.graphics.draw(targetImg, tileToIso(cursorPos.tX,cursorPos.tY))
   end
