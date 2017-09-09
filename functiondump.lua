@@ -32,6 +32,7 @@ end
 function giveTurnPts(table)
   for i, v in ipairs(table) do
     v.turnPts = v.actor.item.turnPts
+    v.displayTurnPts = v.turnPts
   end
 end
 

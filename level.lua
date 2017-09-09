@@ -33,6 +33,7 @@ function startLevel(level)
     v.targetMode = 0
     v.currentCost = 0
     v.coolDowns = {0, 0}
+    v.effects = {}
   end
   for i, v in ipairs(currentLevel.enemyActors) do
     v.actor.item = enemyActors[currentLevel.type][v.actor.num]
@@ -47,6 +48,7 @@ function startLevel(level)
     v.dead = false
     v.canvas = startNewCanvas(tileSize*2, enemyHeight+9)
     v.coolDowns = {0, 0}
+    v.effects = {}
   end
 
   startRoom(currentRoom)

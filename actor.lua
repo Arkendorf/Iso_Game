@@ -149,6 +149,7 @@ end
 function startPlayerTurn()
   playerTurn = true
   giveTurnPts(currentLevel.actors)
+  updateEffects(currentLevel.actors)
   reduceCoolDowns(currentLevel.actors)
 end
 

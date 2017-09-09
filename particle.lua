@@ -52,7 +52,7 @@ function particle_load()
   end
 end
 
-function newParticle(room, x, y, z, type, displayAngle, time, frame, alpha)
+function newParticle(room, x, y, z, type, displayAngle)
   particleEntities[#particleEntities + 1] = {room = room, x = x, y = y, type = type, z = z, displayAngle = displayAngle, time = particles[type].time, frame = 1, alpha = 255}
   particleStartAIs[particles[type].startAI](particleEntities[#particleEntities])
 end

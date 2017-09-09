@@ -84,6 +84,10 @@ function futureDamage(a, b, table, info)
 end
 
 function getDamage(a, b, pos, info)
+  if a.room ~= b.room then -- if target isnt in same room, no damage can be dealt
+    return 0
+  end
+
   if info == nil then -- if no info is given, default to attacker's weapon info
     info = weapons[a.actor.item.weapon]
   end

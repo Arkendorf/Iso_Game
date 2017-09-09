@@ -145,6 +145,7 @@ end
 function startEnemyTurn()
   playerTurn = false
   giveTurnPts(currentLevel.enemyActors)
+  updateEffects(currentLevel.enemyActors)
   revealPlayers()
   local delay = 0
   for i, v in ipairs(currentLevel.enemyActors) do
