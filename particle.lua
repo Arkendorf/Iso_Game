@@ -1,7 +1,8 @@
 function particle_load()
   particles = {}
-  particles[1] = {ai = 1, startAI = 1, time = .3, speed = 10, maxFrame = 3, img = muzzleFlashImg, quad = muzzleFlashQuad}
-  particles[2] = {ai = 2, startAI = 2, time = 10, zV = 2, xV = 3, yV = 3, img = bloodImg, quad = bloodQuad}
+  particles[1] = {ai = 1, startAI = 1, z = 8, time = .3, speed = 10, maxFrame = 3, img = muzzleFlashImg, quad = muzzleFlashQuad}
+  particles[2] = {ai = 2, startAI = 2, z = 8, time = 10, zV = 2, xV = 3, yV = 3, img = bloodImg, quad = bloodQuad}
+  particles[3] = {ai = 2, startAI = 2, z = 16, time = 10, zV = 0, xV = 1.5, yV = 1.5, img = goopImg, quad = goopQuad}
 
   particleEntities = {}
 
@@ -52,8 +53,8 @@ function particle_load()
   end
 end
 
-function newParticle(room, x, y, z, type, displayAngle)
-  particleEntities[#particleEntities + 1] = {room = room, x = x, y = y, type = type, z = z, displayAngle = displayAngle, time = particles[type].time, frame = 1, alpha = 255}
+function newParticle(room, x, y, type, displayAngle)
+  particleEntities[#particleEntities + 1] = {room = room, x = x, y = y, type = type, z = particles[type].z, displayAngle = displayAngle, time = particles[type].time, frame = 1, alpha = 255}
   particleStartAIs[particles[type].startAI](particleEntities[#particleEntities])
 end
 

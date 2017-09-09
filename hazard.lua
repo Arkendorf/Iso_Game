@@ -1,13 +1,34 @@
 function hazard_load()
   hazards = {}
-  hazards[1] = {img = hazardImg, func = 1, drawType = 1, length = 2, particle = 2}
+  hazards[1] = {img = hazardImg, drawType = 1, effect = 1}
 
-  hazardParticleChance = 32
+  effects = {}
+  effects[1] = {func = 1, length = 2, particle = 3, r = 255, g = 0, b = 255}
 
-  hazardFuncs = {}
+  effectParticleChance = 64
 
-  hazardFuncs[1] = function (v)
+  effectFuncs = {}
+
+  effectFuncs[1] = function (v)
     v.turnPts = v.turnPts / 2
+    v.displayTurnPts = v.turnPts
+  end
+end
+
+function hazard_update(dt)
+  for i, v in ipairs(currentLevel.actors) do
+    for j = 1, #effects do
+      if v.effects[j] ~= nil and math.random(1, effectParticleChance) == 1 then
+        newParticle(v.room, v.x, v.y, effects[j].particle, 0)
+      end
+    end
+  end
+  for i, v in ipairs(currentLevel.enemyActors) do
+    for j = 1, #effects do
+      if v.effects[j] ~= nil and math.random(1, effectParticleChance) == 1 then
+        newParticle(v.room, v.x, v.y, effects[j].particle, 0)
+      end
+    end
   end
 end
 
@@ -38,12 +59,12 @@ function updateEffects(table)
     for j, k in ipairs(currentLevel.hazards) do
       local x, y = tileToCoord(k.tX, k.tY)
       if v.x == x and v.y == y then
-        v.effects[k.type] = hazards[k.type].length + 1
+        v.effects[hazards[k.type].effect] = effects[hazards[k.type].effect].length + 1
       end
     end
-    for j = 1, #hazards do
+    for j = 1, #effects do
       if v.effects[j] ~= nil then
-        hazardFuncs[hazards[j].func](v)
+        effectFuncs[effects[j].func](v)
         v.effects[j] = v.effects[j] - 1
         if v.effects[j] <= 0 then
           v.effects[j] = nil

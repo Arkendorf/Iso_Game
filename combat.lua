@@ -4,7 +4,7 @@ function combat_load()
   weapons[2] = {type = 2, targetMode = 1, baseDmg = 1, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, AOE = 0, icon = 1}
 
   projectiles = {}
-  projectiles[1] = {ai = 1, speed = 10, img = laserImg}
+  projectiles[1] = {ai = 1, speed = 10, z = 8, img = laserImg}
 
   projectileEntities = {}
 
@@ -37,7 +37,7 @@ function hitscanAttack(a, b, table, info) -- a is shooter, b is target, table is
   local angle = getAngle({x = a.x, y = a.y}, {x = b.x, y = b.y})
   local xOffset, yOffset = (tileSize/2*math.cos(angle)), (tileSize/2*math.sin(angle))
 
-  newParticle(a.room, a.x+xOffset, a.y+yOffset, 8, 1, displayAngle)
+  newParticle(a.room, a.x+xOffset, a.y+yOffset, 1, displayAngle)
 end
 
 function projectileAttack(a, b, table, info)
@@ -50,13 +50,13 @@ function projectileAttack(a, b, table, info)
   local angle = getAngle({x = a.x, y = a.y}, {x = b.x, y = b.y})
   local xOffset, yOffset = (tileSize/2*math.cos(angle)), (tileSize/2*math.sin(angle))
 
-  newProjectile(table, info, a, b, a.x+xOffset, a.y+yOffset, 8, b.x-xOffset, b.y-yOffset, displayAngle)
-  newParticle(a.room, a.x+xOffset, a.y+yOffset, 8, 1, displayAngle)
+  newProjectile(table, info, a, b, a.x+xOffset, a.y+yOffset, b.x-xOffset, b.y-yOffset, displayAngle)
+  newParticle(a.room, a.x+xOffset, a.y+yOffset, 1, displayAngle)
 end
 
-function newProjectile(table, info, a, b, x, y, z, dX, dY, displayAngle)
+function newProjectile(table, info, a, b, x, y, dX, dY, displayAngle)
   local type = weapons[a.actor.item.weapon].projectile
-  projectileEntities[#projectileEntities + 1] = {table = table, info = info, b = b, a = a, x = x, y = y, z = z, dX = dX, dY = dY, angle = getAngle({x = x, y = y}, {x = dX, y = dY}), displayAngle = displayAngle, type = type, dir = getDirection({x = a.x, y = a.y}, {x = b.x, y = b.y}), speed = projectiles[type].speed}
+  projectileEntities[#projectileEntities + 1] = {table = table, info = info, b = b, a = a, x = x, y = y, z = projectiles[type].z, dX = dX, dY = dY, angle = getAngle({x = x, y = y}, {x = dX, y = dY}), displayAngle = displayAngle, type = type, dir = getDirection({x = a.x, y = a.y}, {x = b.x, y = b.y}), speed = projectiles[type].speed}
 end
 
 function damage(a, b, table, info)
@@ -68,7 +68,7 @@ function damage(a, b, table, info)
       local xOffset, yOffset = (tileSize/2*math.cos(angle)), (tileSize/2*math.sin(angle))
 
       for i = 1, math.floor(dmg) do
-        newParticle(a.room, v.x-xOffset, v.y-yOffset, 8, 2, 0)
+        newParticle(a.room, v.x-xOffset, v.y-yOffset, 2, 0)
       end
     end
   end

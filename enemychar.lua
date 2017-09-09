@@ -12,7 +12,32 @@ function queueEnemyChars(room)
       local canvas, oldCanvas = resumeCanvas(v.canvas)
 
       -- draw enemy
-      love.graphics.setColor(200, 100, 100)
+      local r, g, b = nil
+      for j = 1, #effects do -- change color based on current effects
+        if v.effects[j] ~= nil and effects[j].r ~= nil and effects[j].g ~= nil and effects[j].g ~= nil then
+          if r == nil then
+            r = effects[j].r
+          else
+            r = r * 0.5 + effects[j].r * 0.5
+          end
+          if g == nil then
+            g = effects[j].g
+          else
+            g = g * 0.5 + effects[j].g * 0.5
+          end
+          if b == nil then
+            b = effects[j].b
+          else
+             b = b * 0.5 + effects[j].b * 0.5
+          end
+        end
+      end
+      if r ~= nil and g ~= nil and g ~= nil then -- set color to effect color if it exists
+        love.graphics.setColor(r, g, b)
+      else
+        love.graphics.setColor(200, 100, 100)
+      end
+
       love.graphics.draw(wallImg, -cameraPos.x, 9-cameraPos.y)
 
       -- draw hud
