@@ -28,7 +28,11 @@ end
 
 function drawRoom()
   love.graphics.draw(floors[currentRoom]) -- floor is drawn first so it will be at the bottom
+
+  drawFlatHazards(currentRoom)
+
   setValidColor(currentActor.path.valid) -- sets color of path indicator
+
   if currentActor.mode == 0 then
     drawPath(currentActor) -- draws path indicator
   end

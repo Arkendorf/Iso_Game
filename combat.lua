@@ -168,11 +168,7 @@ function queueProjectiles(room)
   for i, v in ipairs(projectileEntities) do
     if v.a.room == room then
       local x, y = coordToIso(v.x, v.y)
-      if projectiles[v.type].quad == nil then
-        drawQueue[#drawQueue + 1] = {type = 2, img = projectiles[v.type].img, x = x+tileSize, y = y+tileSize/2, z = v.z, angle = v.displayAngle}
-      else
-        drawQueue[#drawQueue + 1] = {type = 2, img = projectiles[v.type].img, quad = projectiles[v.type].quad, x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle}
-      end
+      drawQueue[#drawQueue + 1] = {type = 2, img = projectiles[v.type].img, quad = projectiles[v.type].quad, x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle}
     end
   end
 end

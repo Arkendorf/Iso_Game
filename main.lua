@@ -48,6 +48,7 @@ function love.load()
   particle_load()
   delay_load()
   ability_load()
+  hazard_load()
 
   window = love.graphics.newCanvas(screen.w, screen.h)
 end

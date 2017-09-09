@@ -77,11 +77,7 @@ function queueParticles(room)
   for i, v in ipairs(particleEntities) do
     if v.room == room then
       local x, y = coordToIso(v.x, v.y)
-      if particles[v.type].quad == nil then
-        drawQueue[#drawQueue + 1] = {type = 2, img = particles[v.type].img, x = x + tileSize, y = y+tileSize/2, z = v.z, angle = v.displayAngle, alpha = v.alpha}
-      else
-        drawQueue[#drawQueue + 1] = {type = 2, img = particles[v.type].img, quad = particles[v.type].quad[math.floor(v.frame)], x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle, alpha = v.alpha}
-      end
+      drawQueue[#drawQueue + 1] = {type = 2, img = particles[v.type].img, quad = particles[v.type].quad[math.floor(v.frame)], x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle, alpha = v.alpha}
     end
   end
 end
