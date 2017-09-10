@@ -1,3 +1,0 @@
-1
-
-number is speed of animation
