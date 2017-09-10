@@ -2,57 +2,6 @@ function actor_load()
   currentActorNum = 1
   currentActor = currentLevel.actors[currentActorNum]
   playerTurn = true
-
-  findTargetFuncs = {}
-
-  findTargetFuncs[1] = function (actor, cursorPos)
-    for i, v in ipairs(currentLevel.enemyActors) do
-      local tX, tY = coordToTile(v.x, v.y)
-      if v.room == actor.room and v.dead == false and cursorPos.tX == tX and cursorPos.tY == tY then
-        return v
-      end
-    end
-    return nil
-  end
-
-  findTargetFuncs[2] = function (actor, cursorPos)
-    local x, y = tileToCoord(cursorPos.tX, cursorPos.tY)
-    return {x = x, y = y, tX = cursorPos.tX, tY = cursorPos.tY}
-  end
-
-  findTargetFuncs[3] = function (actor, cursorPos)
-    return nil
-  end
-
-
-  targetValidFuncs = {}
-
-  targetValidFuncs[1] = function (enemy, actor)
-    if enemy ~= nil and actor.turnPts >= actor.currentCost then
-      if enemy.room == actor.room and enemy.dead == false and enemy.futureHealth > 0 and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true then
-        return true
-      else
-        return false
-      end
-    else
-      return false
-    end
-  end
-
-  targetValidFuncs[2] = function (enemy, actor)
-    if actor.turnPts >= actor.currentCost and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true  then
-      return true
-    end
-    return false
-  end
-
-  targetValidFuncs[3] = function (enemy, actor)
-    if actor.turnPts >= actor.currentCost then
-      return true
-    end
-    return false
-  end
-
 end
 
 
@@ -122,8 +71,8 @@ function actor_update(dt)
       else
         currentActor.currentCost = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].cost
       end
-      currentActor.target.item = findTargetFuncs[currentActor.targetMode](currentActor, cursorPos)
-      currentActor.target.valid = targetValidFuncs[currentActor.targetMode](currentActor.target.item, currentActor)
+      currentActor.target.item = findTargetFuncs[currentActor.targetMode](currentActor, cursorPos, currentLevel.enemyActors)
+      currentActor.target.valid = targetValidFuncs[currentActor.targetMode](currentActor.target.item, currentActor, currentActor.currentCost)
     end
   end
 

@@ -1,7 +1,7 @@
 function combat_load()
   weapons = {}
-  weapons[1] = {type = 2, targetMode = 1, baseDmg = 5, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, AOE = 0, icon = 1}
-  weapons[2] = {type = 2, targetMode = 1, baseDmg = 1, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, AOE = 0, icon = 1}
+  weapons[1] = {type = 2, targetMode = 1, baseDmg = 5, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, icon = 1}
+  weapons[2] = {type = 2, targetMode = 1, baseDmg = 1, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, icon = 1}
   weapons[3] = {type = 2, targetMode = 2, baseDmg = 5, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, AOE = 4000, falloff = .04, icon = 1} -- example AOE weapon
 
   projectiles = {}
@@ -9,11 +9,62 @@ function combat_load()
 
   projectileEntities = {}
 
-
   projectileAIs = {}
   projectileAIs[1] = function(v, dt)
     v.x = v.x + v.speed*dt*60*math.cos(v.angle)
     v.y = v.y + v.speed*dt*60*math.sin(v.angle)
+  end
+
+  findTargetFuncs = {}
+
+  findTargetFuncs[1] = function (actor, cursorPos, table)
+    for i, v in ipairs(table) do
+      local tX, tY = coordToTile(v.x, v.y)
+      if v.room == actor.room and v.dead == false and cursorPos.tX == tX and cursorPos.tY == tY then
+        if actor.seen == nil or actor.seen[i] ~= nil then -- if enemy is finding target, make sure target is seen
+          return v
+        end
+      end
+    end
+    return nil
+  end
+
+  findTargetFuncs[2] = function (actor, cursorPos, table)
+    local x, y = tileToCoord(cursorPos.tX, cursorPos.tY)
+    return {x = x, y = y, tX = cursorPos.tX, tY = cursorPos.tY}
+  end
+
+  findTargetFuncs[3] = function (actor, cursorPos, table)
+    return actor
+  end
+
+
+  targetValidFuncs = {}
+
+  targetValidFuncs[1] = function (enemy, actor, cost)
+    if enemy ~= nil and actor.turnPts >= cost then
+      if enemy.room == actor.room and enemy.dead == false and enemy.futureHealth > 0 and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true then
+        return true
+      else
+        return false
+      end
+    else
+      return false
+    end
+  end
+
+  targetValidFuncs[2] = function (enemy, actor, cost)
+    if actor.turnPts >= cost and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true  then
+      return true
+    end
+    return false
+  end
+
+  targetValidFuncs[3] = function (enemy, actor, cost)
+    if actor.turnPts >= cost then
+      return true
+    end
+    return false
   end
 end
 

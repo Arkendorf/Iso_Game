@@ -57,12 +57,24 @@ function ai_load()
 
   enemyCombatAIs = {}
 
-  enemyCombatAIs[1] = function (enemyNum, enemy, target)
+  enemyCombatAIs[1] = function (enemyNum, enemy, target) -- for normal weapons
     local score = 0
-    local dmg = getDamage(enemy, target, target)
-    score = score + dmg
-    if target.health - dmg <= 0 then -- if enemy kills target, add a bonus
-      score = score + killPoints
+    if weapons[enemy.actor.item.weapon].AOE ~= nil then
+      for i, v in ipairs(currentLevel.actors) do
+        if v.dead == false and enemy.seen[i] == true then
+          local dmg = getDamage(enemy, v, target)
+          score = score + dmg
+          if v.health - dmg <= 0 then -- if enemy kills target, add a bonus
+            score = score + killPoints
+          end
+        end
+      end
+    else
+      local dmg = getDamage(enemy, target, target)
+      score = score + dmg
+      if target.health - dmg <= 0 then -- if enemy kills target, add a bonus
+        score = score + killPoints
+      end
     end
     return score
   end
@@ -121,9 +133,12 @@ end
 
 function rankTargets(enemyNum, enemy)
   local potentialTargets = {}
-  for i, v in ipairs(currentLevel.actors) do
-    if v.room == enemy.room and enemy.seen[i] == true then
-      potentialTargets[#potentialTargets+1] = {num = i, score = enemyCombatAIs[enemy.actor.item.combatAI](enemyNum, enemy, v)}
+  for i, v in ipairs(rooms[enemy.room]) do
+    for j, t in ipairs(v) do
+      local target = findTargetFuncs[weapons[enemy.actor.item.weapon].targetMode](enemy, {tX = j, tY = i}, currentLevel.actors) -- find target based on weapon targetMode
+      if target ~= nil then
+        potentialTargets[#potentialTargets+1] = {item = target, score = enemyCombatAIs[enemy.actor.item.combatAI](enemyNum, enemy, target)} -- score target based on weapon targetMode
+      end
     end
   end
   return potentialTargets
@@ -155,13 +170,13 @@ function rankTiles(enemyNum, enemy)
 end
 
 function chooseTarget(enemyNum, enemy, targets)
-  local currentTarget = {num = 0, score = 0}
+  local currentTarget = {item = nil, score = 0}
   for i, v in ipairs(targets) do
-    if v.score > currentTarget.score and enemyTargetIsValid(v.num, enemy) then
+    if v.score > currentTarget.score and targetValidFuncs[weapons[enemy.actor.item.weapon].targetMode](v.item, enemy, 0) == true then
       currentTarget = v
     end
   end
-  return currentTarget.num
+  return currentTarget.item
 end
 
 function chooseTile(enemyNum, enemy, tiles)
