@@ -23,7 +23,8 @@ function graphics_load()
   targetImg = love.graphics.newImage("target.png")
   tileSize = 16
 
-  tileImgs = loadFolder("tiles")
+  tiles = {}
+  tiles.img, tiles.height, tiles.quad, tiles.quadInfo = loadFolder("tiles")
 
   pathImg = love.graphics.newImage("path.png")
   pathQuad = createSpriteSheet(pathImg, 2, 3, 32, 16)
@@ -80,18 +81,31 @@ end
 return spriteSheet
 end
 
-function loadFolder(folder) -- tiles\1.png
+function loadFolder(folder)
   local imageList = {}
+  local heightList = {}
+  local quadList = {}
+  local quadInfoList = {}
   local i = 1
   while true do
     if love.filesystem.isFile(folder.."/"..tostring(i)..".png") == true then
       imageList[i] = love.graphics.newImage(folder.."/"..tostring(i)..".png")
+      heightList[i] = imageList[i]:getHeight()
+      local frames = math.floor(imageList[i]:getWidth()/(tileSize*2))
+      if frames > 1 then
+        quadList[i] = createSpriteSheet(imageList[i], frames, 1, tileSize*2, heightList[i])
+        local quadInfo = {}
+        for line in love.filesystem.lines(folder.."/"..tostring(i)..".txt") do
+          quadInfo[#quadInfo+1] = line
+        end
+        quadInfoList[i] = {frame = 1, maxFrame = quadInfo[1], speed = quadInfo[2]}
+      end
       i = i + 1
     else
       break
     end
   end
-  return imageList
+  return imageList, heightList, quadList, quadInfoList
 end
 
 function drawBox(width, height, type)

@@ -10,7 +10,7 @@ function particle_load()
 
   particleAIs[1] = function(v, dt)
     v.frame = v.frame + dt * v.speed
-    if v.frame > v.maxFrame+1 then
+    if v.frame >= v.maxFrame+1 then
       v.frame = 1
     end
   end

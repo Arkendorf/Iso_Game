@@ -12,22 +12,30 @@ function rooms_load()
               {1, 1, 2, 2, 1, 1},
               {1, 1, 2, 2, 1, 1},
               {1, 1, 1, 1, 1, 1}}
-  tileType = {[0] = 0, [1] = 1, [2] = 2, [3] = 3, [4] = 2, [5] = 3}
+  tileType = {[0] = 0, [1] = 1, [2] = 2, [3] = 3, [4] = 2, [5] = 1}
   floors = {}
   roomNodes = {}
 
   drawQueue = {}
 end
 
+function rooms_update(dt)
+  for i, v in pairs(tiles.quadInfo) do
+    v.frame = v.frame + dt * v.speed
+    if v.frame > v.maxFrame+1 then
+      v.frame = 1
+    end
+  end
+end
+
 function rooms_draw()
   drawRoom()
-
   mouse_draw()
   love.graphics.setColor(255, 255, 255)
 end
 
 function drawRoom()
-  love.graphics.draw(floors[currentRoom]) -- floor is drawn first so it will be at the bottom
+  drawFloor(currentRoom) -- floor is drawn first so it will be at the bottom
 
   drawFlatHazards(currentRoom)
 
@@ -65,7 +73,7 @@ function drawItemsInQueue()
       if v.quad == nil then
         love.graphics.draw(v.img, v.x, v.y-v.z, 0, 1, 1, tileSize, tileSize/2)
       else
-        love.graphics.draw(v.img, v.quad, v.x, v.y-v.z)
+        love.graphics.draw(v.img, v.quad, v.x, v.y-v.z, 0, 1, 1, tileSize, tileSize/2)
       end
     elseif v.type == 2 then
       if v.quad == nil then
@@ -85,8 +93,12 @@ function queueWalls(room)
     for j, t in ipairs(v) do
       if tileType[rooms[room][i][j]] == 2 then
         local x, y = tileToIso(j, i)
-        local img = tileImgs[rooms[room][i][j]]
-        drawQueue[#drawQueue + 1] = {type = 1, img = img, x = x+tileSize, y = y+tileSize/2, z = img:getHeight()-tileSize}
+        local tile = rooms[room][i][j]
+        if tiles.quad[tile] == nil then
+          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[tile], x = x+tileSize, y = y+tileSize/2, z = tiles.height[tile]-tileSize}
+        else
+          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[tile], quad = tiles.quad[tile][math.floor(tiles.quadInfo[tile].frame)], x = x+tileSize, y = y+tileSize/2, z = tiles.height[tile]-tileSize}
+        end
       end
     end
   end
@@ -97,33 +109,35 @@ function queueCover(room)
     for j, t in ipairs(v) do
       if tileType[rooms[room][i][j]] == 3 then
         local x, y = tileToIso(j, i)
-        local img = tileImgs[rooms[room][i][j]]
-        drawQueue[#drawQueue + 1] = {type = 1, img = img, x = x+tileSize, y = y+tileSize/2, z= img:getHeight()-tileSize}
+        local tile = rooms[room][i][j]
+        if tiles.quad[tile] == nil then
+          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[tile], x = x+tileSize, y = y+tileSize/2, z = tiles.height[tile]-tileSize}
+        else
+          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[tile], quad = tiles.quad[tile][math.floor(tiles.quadInfo[tile].frame)], x = x+tileSize, y = y+tileSize/2, z = tiles.height[tile]-tileSize}
+        end
       end
     end
   end
 end
 
 function startRoom(room)
-  if floors[room] == nil then
-    floors[room] = drawFloor(room)
-  end
   roomNodes = createIsoNodes(room)
 end
 
 function drawFloor(room)
-  local floor = love.graphics.newCanvas((#rooms[room][1]+1)*tileSize*2, (#rooms[room]+1)*tileSize)
-  love.graphics.setCanvas(floor)
-  love.graphics.clear()
   for i, v in ipairs(rooms[room]) do
     for j, t in ipairs(v) do
       if tileType[t] == 1 then
-        love.graphics.draw(tileImgs[rooms[room][i][j]], tileToIso(j, i))
+        local x, y = tileToIso(j, i)
+        local tile = rooms[room][i][j]
+        if tiles.quad[tile] == nil then
+          love.graphics.draw(tiles.img[tile], x, y-tiles.height[tile]+tileSize)
+        else
+          love.graphics.draw(tiles.img[tile], tiles.quad[tile][math.floor(tiles.quadInfo[tile].frame)], x, y-tiles.height[tile]+tileSize)
+        end
       end
     end
   end
-  love.graphics.setCanvas()
-  return floor
 end
 
 function createIsoNodes(room)

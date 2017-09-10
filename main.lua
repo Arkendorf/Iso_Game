@@ -25,7 +25,7 @@ function love.load()
   controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, switchActor = "q", use = "e", endTurn = "space", modes = {"1", "2", "3"}}
   text = {}
   for line in love.filesystem.lines("text.txt") do
-  table.insert(text, line)
+    text[#text+1] = line
   end
   palette = {green = {0, 255, 0}, yellow = {255, 255, 0}, blue = {0, 0, 255}, cyan = {0, 255, 255}, purple = {255, 0, 255}, red = {255, 0, 0},
              health = {255, 0, 0}, turnPts = {0, 255, 255}}
@@ -65,6 +65,7 @@ function love.update(dt)
   particle_update(dt)
   ability_update(dt)
   hazard_update(dt)
+  rooms_update(dt)
 end
 
 function love.draw()
