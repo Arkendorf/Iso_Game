@@ -1,18 +1,18 @@
 function rooms_load()
   rooms = {}
   rooms[1] = {{2, 1, 2, 1, 1, 1},
-              {2, 1, 2, 1, 1, 1},
+              {4, 1, 4, 1, 5, 1},
               {2, 1, 1, 3, 3, 1},
-              {2, 1, 1, 1, 1, 1},
-              {2, 1, 1, 2, 1, 1},
-              {2, 1, 2, 2, 1, 1}}
+              {2, 1, 5, 1, 5, 1},
+              {4, 1, 1, 2, 1, 5},
+              {4, 1, 2, 4, 5, 5}}
   rooms[2] = {{1, 1, 1, 1, 1, 1},
               {1, 1, 2, 2, 1, 1},
               {1, 1, 2, 2, 1, 1},
               {1, 1, 2, 2, 1, 1},
               {1, 1, 2, 2, 1, 1},
               {1, 1, 1, 1, 1, 1}}
-  tileType = {[0] = 0, [1] = 1, [2] = 2, [3] = 3}
+  tileType = {[0] = 0, [1] = 1, [2] = 2, [3] = 3, [4] = 2, [5] = 3}
   floors = {}
   roomNodes = {}
 
@@ -85,7 +85,8 @@ function queueWalls(room)
     for j, t in ipairs(v) do
       if tileType[rooms[room][i][j]] == 2 then
         local x, y = tileToIso(j, i)
-        drawQueue[#drawQueue + 1] = {type = 1, img = wallImg, x = x+tileSize, y = y+tileSize/2, z= wallImg:getHeight()-tileSize}
+        local img = tileImgs[rooms[room][i][j]]
+        drawQueue[#drawQueue + 1] = {type = 1, img = img, x = x+tileSize, y = y+tileSize/2, z = img:getHeight()-tileSize}
       end
     end
   end
@@ -96,7 +97,8 @@ function queueCover(room)
     for j, t in ipairs(v) do
       if tileType[rooms[room][i][j]] == 3 then
         local x, y = tileToIso(j, i)
-        drawQueue[#drawQueue + 1] = {type = 1, img = coverImg, x = x+tileSize, y = y+tileSize/2, z= coverImg:getHeight()-tileSize}
+        local img = tileImgs[rooms[room][i][j]]
+        drawQueue[#drawQueue + 1] = {type = 1, img = img, x = x+tileSize, y = y+tileSize/2, z= img:getHeight()-tileSize}
       end
     end
   end
@@ -116,12 +118,10 @@ function drawFloor(room)
   for i, v in ipairs(rooms[room]) do
     for j, t in ipairs(v) do
       if tileType[t] == 1 then
-        love.graphics.setColor(155, 155, 155)
-        love.graphics.draw(tileImg, tileToIso(j, i))
+        love.graphics.draw(tileImgs[rooms[room][i][j]], tileToIso(j, i))
       end
     end
   end
-  love.graphics.setColor(255, 255, 255)
   love.graphics.setCanvas()
   return floor
 end

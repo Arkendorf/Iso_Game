@@ -3,9 +3,7 @@ function hazard_load()
   hazards[1] = {img = hazardImg, drawType = 1, effect = 1}
 
   effects = {}
-  effects[1] = {func = 1, length = 2, particle = 3, r = 255, g = 0, b = 255}
-
-  effectParticleChance = 64
+  effects[1] = {func = 1, length = 2, particle = 3, r = 255, g = 0, b = 255, pChance = 64}
 
   effectFuncs = {}
 
@@ -18,14 +16,14 @@ end
 function hazard_update(dt)
   for i, v in ipairs(currentLevel.actors) do
     for j = 1, #effects do
-      if v.effects[j] ~= nil and math.random(1, effectParticleChance) == 1 then
+      if v.effects[j] ~= nil and math.random(1, effects[j].pChance) == 1 then
         newParticle(v.room, v.x, v.y, effects[j].particle, 0)
       end
     end
   end
   for i, v in ipairs(currentLevel.enemyActors) do
     for j = 1, #effects do
-      if v.effects[j] ~= nil and math.random(1, effectParticleChance) == 1 then
+      if v.effects[j] ~= nil and math.random(1, effects[j].pChance) == 1 then
         newParticle(v.room, v.x, v.y, effects[j].particle, 0)
       end
     end

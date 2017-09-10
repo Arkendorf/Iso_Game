@@ -17,13 +17,13 @@ function graphics_load()
   buttonFont = love.graphics.newImageFont("buttonfont.png",
   "1234567890", 1)
 
-  tileImg = love.graphics.newImage("tile.png")
   wallImg = love.graphics.newImage("wall.png")
-  coverImg = love.graphics.newImage("cover.png")
   hazardImg = love.graphics.newImage("hazard.png")
   cursorImg = love.graphics.newImage("cursor.png")
   targetImg = love.graphics.newImage("target.png")
   tileSize = 16
+
+  tileImgs = loadFolder("tiles")
 
   pathImg = love.graphics.newImage("path.png")
   pathQuad = createSpriteSheet(pathImg, 2, 3, 32, 16)
@@ -78,6 +78,20 @@ for i = 1, c do
   end
 end
 return spriteSheet
+end
+
+function loadFolder(folder) -- tiles\1.png
+  local imageList = {}
+  local i = 1
+  while true do
+    if love.filesystem.isFile(folder.."/"..tostring(i)..".png") == true then
+      imageList[i] = love.graphics.newImage(folder.."/"..tostring(i)..".png")
+      i = i + 1
+    else
+      break
+    end
+  end
+  return imageList
 end
 
 function drawBox(width, height, type)
