@@ -4,6 +4,7 @@ function ai_load()
   local singlePlayerPoints =4
   local extraPlayerPoints = -1
   local killPoints = 5
+  local hazardPoints = -4
 
   enemyMoveAIs = {}
 
@@ -37,6 +38,12 @@ function ai_load()
 
     if playersInSight > 0 then -- add points based on how exposed enemy is
       score = score + singlePlayerPoints + (playersInSight-1)*extraPlayerPoints
+    end
+
+    for i, v in ipairs(currentLevel.hazards) do
+      if v.tX == across and v.tY == down then
+        score = score + hazardPoints
+      end
     end
 
     -- add points based on how much cover and walls are nearby
@@ -135,9 +142,11 @@ function rankTargets(enemyNum, enemy)
   local potentialTargets = {}
   for i, v in ipairs(rooms[enemy.room]) do
     for j, t in ipairs(v) do
-      local target = findTargetFuncs[weapons[enemy.actor.item.weapon].targetMode](enemy, {tX = j, tY = i}, currentLevel.actors) -- find target based on weapon targetMode
-      if target ~= nil then
-        potentialTargets[#potentialTargets+1] = {item = target, score = enemyCombatAIs[enemy.actor.item.combatAI](enemyNum, enemy, target)} -- score target based on weapon targetMode
+      if tileType[t] == 1 then
+        local target = findTargetFuncs[weapons[enemy.actor.item.weapon].targetMode](enemy, {tX = j, tY = i}, currentLevel.actors) -- find target based on weapon targetMode
+        if target ~= nil then
+          potentialTargets[#potentialTargets+1] = {item = target, score = enemyCombatAIs[enemy.actor.item.combatAI](enemyNum, enemy, target)} -- score target based on weapon targetMode
+        end
       end
     end
   end
