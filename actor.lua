@@ -1,6 +1,5 @@
 function actor_load()
-  currentActorNum = 1
-  currentActor = currentLevel.actors[currentActorNum]
+  newCurrentActor(1)
   playerTurn = true
 end
 
@@ -14,9 +13,9 @@ end
 function syncRooms()
   if currentRoom ~= currentActor.room then
     currentRoom = currentActor.room
-    centerCamOnCoords(currentActor.x, currentActor.y)
     startRoom(currentRoom)
   end
+  centerCamOnCoords(currentActor.x, currentActor.y)
 end
 
 function nextActor()

@@ -1,5 +1,3 @@
-2
 1
 
-first number is number of frames,
-second number is speed of animation
+number is speed of animation

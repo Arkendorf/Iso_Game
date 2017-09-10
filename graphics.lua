@@ -98,7 +98,7 @@ function loadFolder(folder)
         for line in love.filesystem.lines(folder.."/"..tostring(i)..".txt") do
           quadInfo[#quadInfo+1] = line
         end
-        quadInfoList[i] = {frame = 1, maxFrame = quadInfo[1], speed = quadInfo[2]}
+        quadInfoList[i] = {frame = 1, maxFrame = frames, speed = quadInfo[1]}
       end
       i = i + 1
     else

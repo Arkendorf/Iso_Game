@@ -143,7 +143,7 @@ function rankTargets(enemyNum, enemy)
   for i, v in ipairs(rooms[enemy.room]) do
     for j, t in ipairs(v) do
       if tileType[t] == 1 then
-        local target = findTargetFuncs[weapons[enemy.actor.item.weapon].targetMode](enemy, {tX = j, tY = i}, currentLevel.actors) -- find target based on weapon targetMode
+        local target = findTargetFuncs[enemy.targetMode](enemy, {tX = j, tY = i}, currentLevel.actors) -- find target based on weapon targetMode
         if target ~= nil then
           potentialTargets[#potentialTargets+1] = {item = target, score = enemyCombatAIs[enemy.actor.item.combatAI](enemyNum, enemy, target)} -- score target based on weapon targetMode
         end
@@ -181,7 +181,7 @@ end
 function chooseTarget(enemyNum, enemy, targets)
   local currentTarget = {item = nil, score = 0}
   for i, v in ipairs(targets) do
-    if v.score > currentTarget.score and targetValidFuncs[weapons[enemy.actor.item.weapon].targetMode](v.item, enemy, 0) == true then
+    if v.score > currentTarget.score and targetValidFuncs[enemy.targetMode](v.item, enemy, 0) == true then
       currentTarget = v
     end
   end
