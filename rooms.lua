@@ -37,7 +37,8 @@ end
 function drawRoom()
   drawFloor(currentRoom) -- floor is drawn first so it will be at the bottom
 
-  drawFlatHazards(currentRoom)
+  drawFlatHazards(currentRoom) -- draw hazards that will be beneath everything regardless
+  drawFlatParticles(currentRoom)
 
   setValidColor(currentActor.path.valid) -- sets color of path indicator
 

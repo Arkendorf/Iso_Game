@@ -74,9 +74,27 @@ function particle_update(dt)
   end
 end
 
+function drawFlatParticles(room)
+  for i, v in ipairs(particleEntities) do
+    if v.room == room and v.z <= 0 then
+      local x, y = coordToIso(v.x, v.y)
+      if particles[v.type].quad == nil then
+        local w, h = v.img:getDimensions()
+        love.graphics.setColor(255, 255, 255, v.alpha)
+        love.graphics.draw(particles[v.type].img, math.floor(x)+tileSize, math.floor(y)+tileSize/2, v.displayAngle, 1, 1, math.floor(w/2), math.floor(h/2))
+      else
+        local quad = particles[v.type].quad[math.floor(v.frame)]
+        local _, _, w, h = quad:getViewport()
+        love.graphics.setColor(255, 255, 255, v.alpha)
+        love.graphics.draw(particles[v.type].img, quad, math.floor(x)+tileSize, math.floor(y)+tileSize/2, v.displayAngle, 1, 1, math.floor(w/2), math.floor(h/2))
+      end
+    end
+  end
+end
+
 function queueParticles(room)
   for i, v in ipairs(particleEntities) do
-    if v.room == room then
+    if v.room == room and v.z > 0 then
       local x, y = coordToIso(v.x, v.y)
       drawQueue[#drawQueue + 1] = {type = 2, img = particles[v.type].img, quad = particles[v.type].quad[math.floor(v.frame)], x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle, alpha = v.alpha}
     end
