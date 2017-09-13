@@ -119,7 +119,7 @@ function damage(a, b, table, info)
       local angle = getAngle({x = a.x, y = a.y}, {x = v.x, y = v.y})
       local xOffset, yOffset = (tileSize/2*math.cos(angle)), (tileSize/2*math.sin(angle))
 
-      for i = 1, math.floor(dmg) do
+      for i = 1, math.ceil(dmg) do
         newParticle(a.room, v.x-xOffset, v.y-yOffset, 2, 0)
       end
     end

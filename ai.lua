@@ -140,7 +140,7 @@ end
 
 function rankTargets(enemyNum, enemy)
   local potentialTargets = {}
-  for i, v in ipairs(rooms[enemy.room]) do
+  for i, v in ipairs(rooms[enemy.room]) do -- go through every tile and see if it is a valid target
     for j, t in ipairs(v) do
       if tileType[t] == 1 then
         local target = findTargetFuncs[enemy.targetMode](enemy, {tX = j, tY = i}, currentLevel.actors) -- find target based on weapon targetMode
