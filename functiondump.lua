@@ -71,7 +71,7 @@ function setValidColor(bool)
 end
 
 function pathIsValid(path, actor)
-  if #path-1 > actor.turnPts then -- get rid of path if destination is too far away
+  if #path-1 > actor.turnPts or #path < 2 then -- get rid of path if destination is too far away
     return false
   else
     for i, v in ipairs(currentLevel.actors) do -- check if actors path is colliding with player actor
@@ -81,7 +81,7 @@ function pathIsValid(path, actor)
             if path[#path].x == v.path.tiles[#v.path.tiles].x and path[#path].y == v.path.tiles[#v.path.tiles].y then
               return false
             end
-          elseif  #path > 0 then
+          else
             local x, y = tileToCoord(path[#path].x, path[#path].y)
             if x == v.x and y == v.y then
               return false
@@ -97,7 +97,7 @@ function pathIsValid(path, actor)
             if path[#path].x == v.path.tiles[#v.path.tiles].x and path[#path].y == v.path.tiles[#v.path.tiles].y then
               return false
             end
-          elseif  #path > 0 then
+          else
             local x, y = tileToCoord(path[#path].x, path[#path].y)
             if x == v.x and y == v.y then
               return false

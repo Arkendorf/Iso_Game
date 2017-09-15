@@ -27,7 +27,7 @@ function enemyactor_update(dt)
           enemyFollowPath(i, v, dt)
         elseif v.turnPts > 0 then
           if isRoomOccupied(v.room, v.seen) == false and arePlayersSeen(v) then -- use a door if on one and the current room is unoccupied
-            newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
+            local newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
             if newPos ~= nil then
               v.room, v.x, v.y = newPos.room, newPos.x, newPos.y
               v.turnPts = v.turnPts - 1
@@ -40,14 +40,14 @@ function enemyactor_update(dt)
           else
             nextTurn = false -- dont end enemies turn if orders need to be given
             v.wait = true
-            newDelay(enemyTurnSpeed*.5, function (enemy) enemy.wait = false end, {v})
+            newDelay(1/enemyTurnSpeed*.5, function (enemy) enemy.wait = false end, {v})
           end
         end
       end
     end
 
     if nextTurn == true and #projectileEntities == 0 then
-      startPlayerTurn()
+      --startPlayerTurn()
     end
   end
 end
@@ -116,7 +116,7 @@ function moveEnemy(enemyNum, enemy, delay)
   if arePlayersSeen(enemy) == true and isRoomOccupied(enemy.room, enemy.seen) == true then -- if known players are in the room, perform normal behavior
     enemy.path.tiles = chooseTile(enemyNum, enemy, rankTiles(enemyNum, enemy))
     enemy.wait = true
-    newDelay(delay*enemyTurnSpeed*3, function (enemy) enemy.wait = false end, {enemy})
+    newDelay(delay/enemyTurnSpeed*3, function (enemy) enemy.wait = false end, {enemy})
   elseif arePlayersSeen(enemy) == true and isRoomOccupied(enemy.room, enemy.seen) == false then -- if no known players are in the room, but are elsewhere, find a door to them
     enemy.path.tiles = chooseTile(enemyNum, enemy, goToDoor(enemyNum, enemy))
   elseif enemy.patrol ~= nil and enemy.room == enemy.patrol.room then -- if there are no known players, patrol if enemy has a patrol
@@ -171,7 +171,7 @@ function enemyFollowPath(i, v, dt)
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)
-    local speed = v.actor.item.speed
+    local speed = v.actor.item.speed*enemyTurnSpeed
     v.x = v.x + dir.x * dt * speed
     v.y = v.y + dir.y * dt * speed
     if (dir.x > 0 and v.x > path.x) or (dir.x < 0 and v.x < path.x) then

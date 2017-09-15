@@ -179,17 +179,16 @@ function rankTiles(enemyNum, enemy)
 end
 
 function chooseTarget(enemyNum, enemy, targets)
-  local currentTarget = {item = nil, score = 0}
+  table.sort(targets, function (a, b) return a.score > b.score end)
   for i, v in ipairs(targets) do
-    if v.score > currentTarget.score and targetValidFuncs[enemy.targetMode](v.item, enemy, 0) == true then
-      currentTarget = v
+    if targetValidFuncs[enemy.targetMode](v.item, enemy, 0) == true then
+      return v.item
     end
   end
-  return currentTarget.item
+  return nil
 end
 
 function chooseTile(enemyNum, enemy, tiles)
-  local currentTile = {}
   table.sort(tiles, function (a, b) return a.score > b.score end)
   for i, v in ipairs(tiles) do
     local tX, tY = coordToTile(enemy.x, enemy.y)
