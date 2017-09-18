@@ -208,3 +208,11 @@ function resumeCanvas(canvas)
   love.graphics.clear()
   return canvas, oldCanvas
 end
+
+function neighbors(a, b)
+  if (math.abs(b.x-a.x) <= 1 and math.abs(b.y-a.y) <= 1) then
+    return true
+  else
+    return false
+  end
+end

@@ -9,9 +9,18 @@ function mouse_update(dt)
   mouse.transX = mouse.transX-cameraPos.x
   mouse.transY = mouse.transY-cameraPos.y
   cursorPos = roomNodes[1]
-  for i, v in ipairs(roomNodes) do
-    if distance(v.x, v.y, mouse.transX, mouse.transY) < distance(cursorPos.x, cursorPos.y, mouse.transX, mouse.transY) then
-      cursorPos = v
+  if currentActor.targetMode == 4 then -- if targetMode == 4, only allow tiles Adjacent to player
+    for i, v in ipairs(roomNodes) do
+      local tX, tY = coordToTile(currentActor.x, currentActor.y)
+      if neighbors({x = v.tX, y = v.tY}, {x = tX, y = tY}) == true and distance(v.x, v.y, mouse.transX, mouse.transY) < distance(cursorPos.x, cursorPos.y, mouse.transX, mouse.transY) then
+        cursorPos = v
+      end
+    end
+  else
+    for i, v in ipairs(roomNodes) do
+      if distance(v.x, v.y, mouse.transX, mouse.transY) < distance(cursorPos.x, cursorPos.y, mouse.transX, mouse.transY) then
+        cursorPos = v
+      end
     end
   end
 end

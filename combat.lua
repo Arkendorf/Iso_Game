@@ -38,6 +38,17 @@ function combat_load()
     return actor
   end
 
+  findTargetFuncs[4] = function (actor, cursorPos, table)
+    for i, v in ipairs(table) do
+      local tX, tY = coordToTile(v.x, v.y)
+      if v.room == actor.room and v.dead == false and cursorPos.tX == tX and cursorPos.tY == tY then
+        if actor.seen == nil or actor.seen[i] ~= nil then -- if enemy is finding target, make sure target is seen
+          return v
+        end
+      end
+    end
+    return nil
+  end
 
   targetValidFuncs = {}
 
@@ -65,6 +76,18 @@ function combat_load()
       return true
     end
     return false
+  end
+
+  targetValidFuncs[4] = function (enemy, actor, cost)
+    if enemy ~= nil and actor.turnPts >= cost then
+      if enemy.room == actor.room and enemy.dead == false and enemy.futureHealth > 0 and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true then
+        return true
+      else
+        return false
+      end
+    else
+      return false
+    end
   end
 end
 
