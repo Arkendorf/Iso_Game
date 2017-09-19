@@ -21,7 +21,7 @@ function combat_load()
     for i, v in ipairs(table) do
       local tX, tY = coordToTile(v.x, v.y)
       if v.room == actor.room and v.dead == false and cursorPos.tX == tX and cursorPos.tY == tY then
-        if actor.seen == nil or actor.seen[i] ~= nil then -- if enemy is finding target, make sure target is seen
+        if actor.seen == nil or actor.seen[i] == true then -- if enemy is finding target, make sure target is seen
           return v
         end
       end

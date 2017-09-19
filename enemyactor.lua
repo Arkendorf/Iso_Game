@@ -47,7 +47,7 @@ function enemyactor_update(dt)
     end
 
     if nextTurn == true and #projectileEntities == 0 then
-      --startPlayerTurn()
+      startPlayerTurn()
     end
   end
 end

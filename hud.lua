@@ -6,12 +6,6 @@ function hud_load()
 end
 
 function hud_update(dt)
-  if isPlayerVisible(currentActor, currentActorNum) == true then
-    statusEffectInfoboxNums[1] = createInfoBox(209, screen.h-49, 10, 10, text[11])
-  elseif statusEffectInfoboxNums[1] ~= nil then
-    deleteInfoBox(statusEffectInfoboxNums[1])
-    statusEffectInfoboxNums[1] = nil
-  end
   for i, v in ipairs(currentLevel.actors) do
     v.displayTurnPts = v.displayTurnPts - (v.displayTurnPts-v.turnPts)/10
     v.displayHealth = v.displayHealth - (v.displayHealth-v.health)/10
@@ -48,7 +42,7 @@ function drawEnemyHud()
   for i, v in ipairs(currentLevel.enemyActors) do
     enemyHudInfo.turnPts = enemyHudInfo.turnPts + v.turnPts
   end
-  love.graphics.print(text[12], (screen.w-font:getWidth(text[12]))/2, screen.h/4-9)
+  love.graphics.print(text[11], (screen.w-font:getWidth(text[11]))/2, screen.h/4-9)
   love.graphics.setColor(palette.turnPts)
   enemyHudInfo.displayTurnPts = enemyHudInfo.displayTurnPts - (enemyHudInfo.displayTurnPts-enemyHudInfo.turnPts)/10
   love.graphics.rectangle("fill", screen.w/2-enemyHudInfo.displayTurnPts/enemyHudInfo.maxTurnPts*128, screen.h/4, enemyHudInfo.displayTurnPts/enemyHudInfo.maxTurnPts*256, 10)
