@@ -39,11 +39,14 @@ function combat_load()
   end
 
   findTargetFuncs[4] = function (actor, cursorPos, table)
-    for i, v in ipairs(table) do
-      local tX, tY = coordToTile(v.x, v.y)
-      if v.room == actor.room and v.dead == false and cursorPos.tX == tX and cursorPos.tY == tY then
-        if actor.seen == nil or actor.seen[i] ~= nil then -- if enemy is finding target, make sure target is seen
-          return v
+    local tX, tY = coordToTile(actor.x, actor.y)
+    if neighbors({x = cursorPos.tX, y = cursorPos.tY}, {x = tX, y = tY}) == true then
+      for i, v in ipairs(table) do
+        local tX, tY = coordToTile(v.x, v.y)
+        if v.room == actor.room and v.dead == false and cursorPos.tX == tX and cursorPos.tY == tY then
+          if actor.seen == nil or actor.seen[i] ~= nil then -- if enemy is finding target, make sure target is seen
+            return v
+          end
         end
       end
     end

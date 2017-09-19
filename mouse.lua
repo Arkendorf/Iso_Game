@@ -9,18 +9,9 @@ function mouse_update(dt)
   mouse.transX = mouse.transX-cameraPos.x
   mouse.transY = mouse.transY-cameraPos.y
   cursorPos = roomNodes[1]
-  if currentActor.targetMode == 4 then -- if targetMode == 4, only allow tiles Adjacent to player
-    for i, v in ipairs(roomNodes) do
-      local tX, tY = coordToTile(currentActor.x, currentActor.y)
-      if neighbors({x = v.tX, y = v.tY}, {x = tX, y = tY}) == true and distance(v.x, v.y, mouse.transX, mouse.transY) < distance(cursorPos.x, cursorPos.y, mouse.transX, mouse.transY) then
-        cursorPos = v
-      end
-    end
-  else
-    for i, v in ipairs(roomNodes) do
-      if distance(v.x, v.y, mouse.transX, mouse.transY) < distance(cursorPos.x, cursorPos.y, mouse.transX, mouse.transY) then
-        cursorPos = v
-      end
+  for i, v in ipairs(roomNodes) do
+    if distance(v.x, v.y, mouse.transX, mouse.transY) < distance(cursorPos.x, cursorPos.y, mouse.transX, mouse.transY) then
+      cursorPos = v
     end
   end
 end
@@ -33,6 +24,9 @@ function mouse_draw()
   if currentActor.targetMode == 0 then
     setValidColor(currentActor.path.valid)
     love.graphics.draw(cursorImg, tileToIso(cursorPos.tX,cursorPos.tY))
+  elseif currentActor.targetMode == 4 then
+    setValidColor(currentActor.target.valid)
+    love.graphics.draw(meleeImg, tileToIso(cursorPos.tX,cursorPos.tY))
   elseif currentActor.targetMode ~= 3 then
     setValidColor(currentActor.target.valid)
     love.graphics.draw(targetImg, tileToIso(cursorPos.tX,cursorPos.tY))
