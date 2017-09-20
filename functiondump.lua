@@ -110,16 +110,6 @@ function pathIsValid(path, actor)
   return true
 end
 
-function isUnderCover(a, b, map) -- a is object under attack
-  local dir = getDirection(a, b)
-  local tX, tY = coordToTile(a.x, a.y)
-  if tX+dir.x >= 1 and tX+dir.x <= #map[1] and tY+dir.y >= 1 and tY+dir.y <=#map and tileType[map[tY+dir.y][tX+dir.x]] == 3 then
-    return true
-  else
-    return false
-  end
-end
-
 function getDirection(a, b)
   local angle = math.deg(math.atan2(a.y-b.y, a.x-b.x))
   if angle > 45 and angle < 135 then
@@ -157,18 +147,18 @@ end
 function math.sign(n) return n>0 and 1 or n<0 and -1 or 0 end
 
 function LoS(a, b, map) -- a and b are coords
-  a.x, a.y = coordToTile(a.x, a.y)
-  b.x, b.y = coordToTile(b.x, b.y)
+  tX1, tY1 = coordToTile(a.x, a.y)
+  tX2, tY2 = coordToTile(b.x, b.y)
   local xMin, xMax, yMin, yMax = 0, 0, 0, 0
-  if a.x > b.x then
-    xMin, xMax = b.x, a.x
+  if tX1 > tX2 then
+    xMin, xMax = tX2, tX1
   else
-    xMin, xMax = a.x, b.x
+    xMin, xMax = tX1, tX2
   end
-  if a.y > b.y then
-    yMin, yMax = b.y, a.y
+  if tY1 > tY2 then
+    yMin, yMax = tY2, tY1
   else
-    yMin, yMax = a.y, b.y
+    yMin, yMax = tY1, tY2
   end
 
   for down = yMin, yMax do
@@ -184,6 +174,31 @@ function LoS(a, b, map) -- a and b are coords
     end
   end
   return true
+end
+
+function isUnderCover(a, b, map) -- a is object under attack
+  local tX1, tY1 = coordToTile(a.x, a.y)
+  local tX2, tY2 = coordToTile(b.x, b.y)
+  local xMin, xMax, yMin, yMax = 0, 0, 0, 0
+  if tX1 <= 0 then xMin = 0 else xMin = -1 end
+  if tX1 >= #map[1] then xMax = 0 else xMax = 1 end
+  if tY1 <= 0 then yMin = 0 else yMin = -1 end
+  if tY1 >= #map then yMax = 0 else yMax = 1 end
+
+  for down = yMin, yMax do
+    for across = xMin, xMax do
+      local x, y = tX1+across, tY1+down
+      if tileType[map[y][x]] == 3 then
+        if checkIntersect({x = tX1, y = tY1}, {x = tX2, y = tY2}, {x = x-.5, y = y-.5}, {x = x+.5, y = y-.5}) or
+           checkIntersect({x = tX1, y = tY1}, {x = tX2, y = tY2}, {x = x+.5, y = y+.5}, {x = x+.5, y = y+.5}) or
+           checkIntersect({x = tX1, y = tY1}, {x = tX2, y = tY2}, {x = x+.5, y = y+.5}, {x = x-.5, y = y+.5}) or
+           checkIntersect({x = tX1, y = tY1}, {x = tX2, y = tY2}, {x = x-.5, y = y+.5}, {x = x-.5, y = y-.5}) then
+          return true
+        end
+      end
+    end
+  end
+  return false
 end
 
 function removeNil(t)

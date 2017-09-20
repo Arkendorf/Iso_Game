@@ -43,8 +43,8 @@ function graphics_load()
   combatButtonQuad = createSpriteSheet(combatButtonImg, 2, 3, 44, 24)
 
   combatIconImg = love.graphics.newImage("buttonicons.png")
-  combatIconOnQuad = createSpriteSheet(combatIconImg, 1, 3, 44, 24)
-  combatIconOffQuad = createSpriteSheet(combatIconImg, 1, 3, 44, 24, 44, 0)
+  combatIconOnQuad = createSpriteSheet(combatIconImg, 1, 4, 44, 24)
+  combatIconOffQuad = createSpriteSheet(combatIconImg, 1, 4, 44, 24, 44, 0)
 
   boxImg = love.graphics.newImage("box.png")
   boxQuad = {{}, {}, {}, {}}
