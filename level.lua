@@ -51,6 +51,9 @@ function startLevel(level)
     v.coolDowns = {0, 0}
     v.effects = {}
   end
+  for i, v in ipairs(currentLevel.hazards) do
+    v.alpha = 255
+  end
 
   startRoom(currentRoom)
   centerCamOnCoords(#rooms[currentRoom][1] * 16, #rooms[currentRoom] * 16)

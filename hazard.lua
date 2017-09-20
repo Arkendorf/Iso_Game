@@ -1,6 +1,6 @@
 function hazard_load()
   hazards = {}
-  hazards[1] = {img = hazardImg, drawType = 1, effect = 1}
+  hazards[1] = {img = 1, drawType = 1, effect = 1}
 
   effects = {}
   effects[1] = {func = 1, length = 2, particle = 3, r = 255, g = 0, b = 255, pChance = 64}
@@ -34,7 +34,18 @@ function queueHazards(room)
   for i, v in ipairs(currentLevel.hazards) do
     if v.room == room and hazards[v.type].drawType == 2 then
       local x, y = tileToIso(v.tX, v.tY)
-      drawQueue[#drawQueue + 1] = {type = 1, img = hazards[v.type].img, quad = hazards[v.type].quad, x = x+tileSize, y = y+tileSize/2, z= hazards[v.type].img:getHeight()-tileSize}
+      if v.alpha < 255 then -- if hazard is being hidden, draw a marker
+        local r, g, b = unpack(palette.red)
+        love.graphics.setColor(r, g, b, 255-v.alpha)
+        love.graphics.draw(tileTypeImg, x, y)
+      end
+
+      local img = hazards[v.type].img
+      if hazardTiles.quad[img] == nil then
+        drawQueue[#drawQueue + 1] = {type = 1, img = hazardTiles.img[img], x = x+tileSize*2-hazardTiles.width[img]/2, y = y+tileSize/2, z = hazardTiles.height[img]-tileSize, alpha = v.alpha}
+      else
+        drawQueue[#drawQueue + 1] = {type = 1, img = hazardTiles.img[img], quad = hazardTiles.quad[img][math.floor(hazardTiles.quadInfo[img].frame)], x = x+tileSize*2-hazardTiles.width[img]/2, y = y+tileSize/2, z = hazardTiles.height[img]-tileSize, alpha = v.alpha}
+      end
     end
   end
 end
@@ -43,10 +54,18 @@ function drawFlatHazards(room)
   for i, v in ipairs(currentLevel.hazards) do
     if v.room == room and hazards[v.type].drawType == 1 then
       local x, y = tileToIso(v.tX, v.tY)
-      if hazards[v.type].quad == nil then
-        love.graphics.draw(hazards[v.type].img, x, y)
+      if v.alpha < 255 then -- if hazard is being hidden, draw a marker
+        local r, g, b = unpack(palette.red)
+        love.graphics.setColor(r, g, b, 255-v.alpha)
+        love.graphics.draw(tileTypeImg, x, y)
+      end
+
+      local img = hazards[v.type].img
+      love.graphics.setColor(255, 255, 255, v.alpha)
+      if hazardTiles.quad[img] == nil then
+        love.graphics.draw(hazardTiles.img[img], x+tileSize-hazardTiles.width[img]/2, y-hazardTiles.height[img]+tileSize)
       else
-        love.graphics.draw(hazards[v.type].img, hazards[v.type].quad, x, y)
+        love.graphics.draw(hazardTiles.img[img], hazardTiles.quad[img][math.floor(hazardTiles.quadInfo[img].frame)], x+tileSize-hazardTiles.width[img]/2, y-hazardTiles.height[img]+tileSize)
       end
     end
   end
@@ -67,6 +86,35 @@ function updateEffects(table)
         if v.effects[j] <= 0 then
           v.effects[j] = nil
         end
+      end
+    end
+  end
+end
+
+function hideHazards(x, y, room, dt)
+  local tX, tY = coordToTile(x, y)
+  local x2, y2 = coordToIso(x, y)
+  for i, v in ipairs(currentLevel.hazards) do
+    if v.tX+2 > tX or v.tY+2 > tY then
+      local x3, y3 = tileToIso(v.tX, v.tY)
+      if (neighbors({x = tX, y = tY}, {x = v.tX, y = v.tY}) == true) or (y3 > y2 and y3-16+tileSize - y2 <= 0 and math.abs(x3 - x2) <= 32/2) then
+        if v.alpha > 0 then
+          v.alpha = v.alpha - dt * fadeSpeed
+        else
+          v.alpha = 0
+        end
+      else
+        if v.alpha < 255 then
+          v.alpha = v.alpha + dt * fadeSpeed
+        else
+          v.alpha = 255
+        end
+      end
+    else
+      if v.alpha < 255 then
+        v.alpha = v.alpha + dt * fadeSpeed
+      else
+        v.alpha = 255
       end
     end
   end

@@ -7,16 +7,17 @@ function rooms_load()
               {4, 1, 1, 2, 1, 5},
               {4, 1, 2, 4, 5, 5}}
   rooms[2] = {{1, 1, 1, 1, 1, 1},
+              {1, 1, 4, 4, 1, 1},
+              {1, 1, 2, 4, 1, 1},
               {1, 1, 2, 2, 1, 1},
-              {1, 1, 2, 2, 1, 1},
-              {1, 1, 2, 2, 1, 1},
-              {1, 1, 2, 2, 1, 5},
+              {1, 1, 2, 4, 1, 5},
               {1, 1, 1, 1, 1, 1}}
   tileType = {[0] = 0, [1] = 1, [2] = 2, [3] = 3, [4] = 2, [5] = 1}
-  floors = {}
+  roomAlphas = {}
   roomNodes = {}
 
   drawQueue = {}
+  fadeSpeed = 500
 end
 
 function rooms_update(dt)
@@ -26,6 +27,9 @@ function rooms_update(dt)
       v.frame = 1
     end
   end
+  local x, y = tileToCoord(cursorPos.tX, cursorPos.tY)
+  hideObstructions(x, y, currentRoom, dt)
+  hideHazards(x, y, currentRoom, dt)
 end
 
 function rooms_draw()
@@ -94,11 +98,11 @@ function queueWalls(room)
     for j, t in ipairs(v) do
       if tileType[rooms[room][i][j]] == 2 then
         local x, y = tileToIso(j, i)
-        local tile = rooms[room][i][j]
-        if tiles.quad[tile] == nil then
-          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[tile], x = x+tileSize, y = y+tileSize/2, z = tiles.height[tile]-tileSize}
+        local img = rooms[room][i][j]
+        if tiles.quad[img] == nil then
+          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[img], x = x+tileSize*2-tiles.width[img]/2, y = y+tileSize/2, z = tiles.height[img]-tileSize, alpha = roomAlphas[room][i][j]}
         else
-          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[tile], quad = tiles.quad[tile][math.floor(tiles.quadInfo[tile].frame)], x = x+tileSize, y = y+tileSize/2, z = tiles.height[tile]-tileSize}
+          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[img], quad = tiles.quad[img][math.floor(tiles.quadInfo[img].frame)], x = x+tileSize*2-tiles.width[img]/2, y = y+tileSize/2, z = tiles.height[img]-tileSize, alpha = roomAlphas[room][i][j]}
         end
       end
     end
@@ -110,11 +114,11 @@ function queueCover(room)
     for j, t in ipairs(v) do
       if tileType[rooms[room][i][j]] == 3 then
         local x, y = tileToIso(j, i)
-        local tile = rooms[room][i][j]
-        if tiles.quad[tile] == nil then
-          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[tile], x = x+tileSize, y = y+tileSize/2, z = tiles.height[tile]-tileSize}
+        local img = rooms[room][i][j]
+        if tiles.quad[img] == nil then
+          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[img], x = x+tileSize*2-tiles.width[img]/2, y = y+tileSize/2, z = tiles.height[img]-tileSize, alpha = roomAlphas[room][i][j]}
         else
-          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[tile], quad = tiles.quad[tile][math.floor(tiles.quadInfo[tile].frame)], x = x+tileSize, y = y+tileSize/2, z = tiles.height[tile]-tileSize}
+          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[img], quad = tiles.quad[img][math.floor(tiles.quadInfo[img].frame)], x = x+tileSize*2-tiles.width[img]/2, y = y+tileSize/2, z = tiles.height[img]-tileSize, alpha = roomAlphas[room][i][j]}
         end
       end
     end
@@ -123,6 +127,20 @@ end
 
 function startRoom(room)
   roomNodes = createIsoNodes(room)
+  if roomAlphas[room] == nil then
+    roomAlphas[room] = createRoomAlpha(room)
+  end
+end
+
+function createRoomAlpha(room)
+  local map = {}
+  for i, v in ipairs(rooms[room]) do
+    map[i] = {}
+    for j, t in ipairs(v) do
+      map[i][j] = 255
+    end
+  end
+  return map
 end
 
 function drawFloor(room)
@@ -130,12 +148,23 @@ function drawFloor(room)
     for j, t in ipairs(v) do
       if tileType[t] == 1 then
         local x, y = tileToIso(j, i)
-        local tile = rooms[room][i][j]
-        if tiles.quad[tile] == nil then
-          love.graphics.draw(tiles.img[tile], x, y-tiles.height[tile]+tileSize)
+        local img = rooms[room][i][j]
+        if tiles.quad[img] == nil then
+          love.graphics.draw(tiles.img[img], x+tileSize-tiles.width[img]/2, y-tiles.height[img]+tileSize)
         else
-          love.graphics.draw(tiles.img[tile], tiles.quad[tile][math.floor(tiles.quadInfo[tile].frame)], x, y-tiles.height[tile]+tileSize)
+          love.graphics.draw(tiles.img[img], tiles.quad[img][math.floor(tiles.quadInfo[img].frame)], x+tileSize-tiles.width[img]/2, y-tiles.height[img]+tileSize)
         end
+      elseif roomAlphas[room][i][j] < 255 then -- if tile is being hidden, draw a marker
+        local x, y = tileToIso(j, i)
+        if tileType[t] == 2 then
+          local r, g, b = unpack(palette.blue)
+          love.graphics.setColor(r, g, b, 255-roomAlphas[room][i][j])
+        else
+          local r, g, b = unpack(palette.cyan)
+          love.graphics.setColor(r, g, b, 255-roomAlphas[room][i][j])
+        end
+        love.graphics.draw(tileTypeImg, x, y)
+        love.graphics.setColor(255, 255, 255)
       end
     end
   end
@@ -152,4 +181,36 @@ function createIsoNodes(room)
     end
   end
   return roomNodes
+end
+
+function hideObstructions(x, y, room, dt)
+  local tX, tY = coordToTile(x, y)
+  local x2, y2 = coordToIso(x, y)
+  for i, v in ipairs(rooms[room]) do
+    for j, t in ipairs(v) do
+      if j+2 > tX or i+2 > tY then
+        local tile = rooms[room][i][j]
+        local x3, y3 = tileToIso(j, i)
+        if (neighbors({x = tX, y = tY}, {x = j, y = i}) == true) or (y3 > y2 and y3-tiles.height[tile]+tileSize - y2 <= 0 and math.abs(x3 - x2) <= tiles.width[tile]/2) then
+          if roomAlphas[room][i][j] > 0 then
+            roomAlphas[room][i][j] = roomAlphas[room][i][j] - dt * fadeSpeed
+          else
+            roomAlphas[room][i][j] = 0
+          end
+        else
+          if roomAlphas[room][i][j] < 255 then
+            roomAlphas[room][i][j] = roomAlphas[room][i][j] + dt * fadeSpeed
+          else
+            roomAlphas[room][i][j] = 255
+          end
+        end
+      else
+        if roomAlphas[room][i][j] < 255 then
+          roomAlphas[room][i][j] = roomAlphas[room][i][j] + dt * fadeSpeed
+        else
+          roomAlphas[room][i][j] = 255
+        end
+      end
+    end
+  end
 end

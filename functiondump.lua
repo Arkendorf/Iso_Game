@@ -210,7 +210,7 @@ function resumeCanvas(canvas)
 end
 
 function neighbors(a, b)
-  if (math.abs(b.x-a.x) <= 1 and math.abs(b.y-a.y) <= 1) then
+  if (math.abs(b.x-a.x) <= 1 and math.abs(b.y-a.y) <= 1) and (math.abs(b.x-a.x) ~= 0 or math.abs(b.y-a.y) ~= 0) then
     return true
   else
     return false

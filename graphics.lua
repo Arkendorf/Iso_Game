@@ -18,14 +18,18 @@ function graphics_load()
   "1234567890", 1)
 
   wallImg = love.graphics.newImage("wall.png")
-  hazardImg = love.graphics.newImage("hazard.png")
   cursorImg = love.graphics.newImage("cursor.png")
   targetImg = love.graphics.newImage("target.png")
   meleeImg = love.graphics.newImage("melee.png")
   tileSize = 16
 
   tiles = {}
-  tiles.img, tiles.height, tiles.quad, tiles.quadInfo = loadFolder("tiles")
+  tiles.img, tiles.width, tiles.height, tiles.quad, tiles.quadInfo = loadFolder("tiles")
+  tileTypeImg = love.graphics.newImage("tileindicator.png")
+
+  hazardTiles = {}
+  hazardTiles.img, hazardTiles.width, hazardTiles.height, hazardTiles.quad, hazardTiles.quadInfo = loadFolder("hazards")
+
 
   pathImg = love.graphics.newImage("path.png")
   pathQuad = createSpriteSheet(pathImg, 2, 3, 32, 16)
@@ -84,29 +88,33 @@ end
 
 function loadFolder(folder)
   local imageList = {}
+  local widthList = {}
   local heightList = {}
   local quadList = {}
   local quadInfoList = {}
+
   local i = 1
   while true do
     if love.filesystem.isFile(folder.."/"..tostring(i)..".png") == true then
       imageList[i] = love.graphics.newImage(folder.."/"..tostring(i)..".png")
       heightList[i] = imageList[i]:getHeight()
-      local frames = math.floor(imageList[i]:getWidth()/(tileSize*2))
-      if frames > 1 then
-        quadList[i] = createSpriteSheet(imageList[i], frames, 1, tileSize*2, heightList[i])
+      if love.filesystem.isFile(folder.."/"..tostring(i)..".txt") == true then
         local quadInfo = {}
         for line in love.filesystem.lines(folder.."/"..tostring(i)..".txt") do
           quadInfo[#quadInfo+1] = line
         end
-        quadInfoList[i] = {frame = 1, maxFrame = frames, speed = quadInfo[1]}
+        widthList[i] = math.floor(imageList[i]:getWidth() / quadInfo[1])
+        quadList[i] = createSpriteSheet(imageList[i], quadInfo[1], 1, widthList[i], heightList[i])
+        quadInfoList[i] = {frame = 1, maxFrame = quadInfo[1], speed = quadInfo[2]}
+      else
+        widthList[i] = imageList[i]:getWidth()
       end
       i = i + 1
     else
       break
     end
   end
-  return imageList, heightList, quadList, quadInfoList
+  return imageList, widthList, heightList, quadList, quadInfoList
 end
 
 function drawBox(width, height, type)
