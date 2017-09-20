@@ -154,12 +154,22 @@ function hideDoors(tX1, tY1, room, dt)
     local tX2, tY2 = nil
     if room == v.room1 then
       tX2, tY2 = v.tX1, v.tY1
+      if isDoorObstructed(i, 1) == true then
+        img = doors[v.type].img2
+      else
+        img = doors[v.type].img1
+      end
     else
       tX2, tY2 = v.tX2, v.tY2
+      if isDoorObstructed(i, 2) == true then
+        img = doors[v.type].img2
+      else
+        img = doors[v.type].img1
+      end
     end
     if tX2+2 > tX1 or tY2+2 > tY1 and (room == v.room1 or room == v.room2) then
       local x2, y2 = tileToIso(tX2, tY2)
-      if (neighbors({x = tX1, y = tY1}, {x = tX2, y = tY2}) == true) or (y2 > y and y2-16+tileSize - y <= 0 and math.abs(x2 - x1) <= 32/2) then
+      if (neighbors({x = tX1, y = tY1}, {x = tX2, y = tY2}) == true) or (y2 > y and y2-doorTiles.height[img]+tileSize - y <= 0 and math.abs(x2 - x1) <= doorTiles.width[img]/2) then
         if v.alpha > 0 then
           v.alpha = v.alpha - dt * fadeSpeed
         else

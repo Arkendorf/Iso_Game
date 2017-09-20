@@ -97,16 +97,15 @@ function drawPlayerInfoHud()
       end
     else
       love.graphics.draw(combatButtonImg, combatButtonQuad[i*2], -43+i*44, screen.h-25)
+      if i == 1 then
+        love.graphics.draw(combatIconImg, combatIconOffQuad[weapons[currentActor.actor.item.weapon].icon], -43+i*44, screen.h-25)
+      else
+        love.graphics.draw(combatIconImg, combatIconOffQuad[abilities[currentActor.actor.item.abilities[i-1]].icon], -43+i*44, screen.h-25)
+      end
       if i > 1 and currentActor.coolDowns[i-1] ~= 0 then
         love.graphics.setFont(buttonFont)
-        love.graphics.print(tostring(currentActor.coolDowns[i-1]), -26+i*44, screen.h-20)
+        love.graphics.print(tostring(currentActor.coolDowns[i-1]), -40+i*44, screen.h-22)
         love.graphics.setFont(font)
-      else
-        if i == 1 then
-          love.graphics.draw(combatIconImg, combatIconOffQuad[weapons[currentActor.actor.item.weapon].icon], -43+i*44, screen.h-25)
-        else
-          love.graphics.draw(combatIconImg, combatIconOffQuad[abilities[currentActor.actor.item.abilities[i-1]].icon], -43+i*44, screen.h-25)
-        end
       end
     end
   end

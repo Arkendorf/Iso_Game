@@ -164,10 +164,10 @@ function LoS(a, b, map) -- a and b are coords
   for down = yMin, yMax do
     for across = xMin, xMax do
       if tileType[map[down][across]] == 2 then
-        if checkIntersect(a, b, {x = across-.5, y = down-.5}, {x = across+.5, y = down-.5}) or
-           checkIntersect(a, b, {x = across+.5, y = down-.5}, {x = across+.5, y = down+.5}) or
-           checkIntersect(a, b, {x = across+.5, y = down+.5}, {x = across-.5, y = down+.5}) or
-           checkIntersect(a, b, {x = across-.5, y = down+.5}, {x = across-.5, y = down-.5}) then
+        if checkIntersect({x = tX1, y = tY1}, {x = tX2, y = tY2}, {x = across-.5, y = down-.5}, {x = across+.5, y = down-.5}) or
+           checkIntersect({x = tX1, y = tY1}, {x = tX2, y = tY2}, {x = across+.5, y = down-.5}, {x = across+.5, y = down+.5}) or
+           checkIntersect({x = tX1, y = tY1}, {x = tX2, y = tY2}, {x = across+.5, y = down+.5}, {x = across-.5, y = down+.5}) or
+           checkIntersect({x = tX1, y = tY1}, {x = tX2, y = tY2}, {x = across-.5, y = down+.5}, {x = across-.5, y = down-.5}) then
           return false
         end
       end
@@ -180,10 +180,10 @@ function isUnderCover(a, b, map) -- a is object under attack
   local tX1, tY1 = coordToTile(a.x, a.y)
   local tX2, tY2 = coordToTile(b.x, b.y)
   local xMin, xMax, yMin, yMax = 0, 0, 0, 0
-  if tX1 <= 0 then xMin = 0 else xMin = -1 end
-  if tX1 >= #map[1] then xMax = 0 else xMax = 1 end
-  if tY1 <= 0 then yMin = 0 else yMin = -1 end
-  if tY1 >= #map then yMax = 0 else yMax = 1 end
+  if tX1 <= 1 then xMin = 0 else xMin = -1 end
+  if tX1 >= #map[1]-1 then xMax = 0 else xMax = 1 end
+  if tY1 <= 1 then yMin = 0 else yMin = -1 end
+  if tY1 >= #map-1 then yMax = 0 else yMax = 1 end
 
   for down = yMin, yMax do
     for across = xMin, xMax do

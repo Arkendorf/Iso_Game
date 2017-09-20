@@ -15,7 +15,7 @@ function graphics_load()
   love.graphics.setFont(font)
 
   buttonFont = love.graphics.newImageFont("buttonfont.png",
-  "1234567890", 1)
+  "1234567890")
 
   wallImg = love.graphics.newImage("wall.png")
   cursorImg = love.graphics.newImage("cursor.png")

@@ -190,9 +190,9 @@ function hideObstructions(tX, tY, room, dt)
   for i, v in ipairs(rooms[room]) do
     for j, t in ipairs(v) do
       if j+2 > tX or i+2 > tY then
-        local tile = rooms[room][i][j]
+        local img = rooms[room][i][j]
         local x2, y2 = tileToIso(j, i)
-        if (neighbors({x = tX, y = tY}, {x = j, y = i}) == true) or (y2 > y and y2-tiles.height[tile]+tileSize - y <= 0 and math.abs(x2 - x) <= tiles.width[tile]/2) then
+        if (neighbors({x = tX, y = tY}, {x = j, y = i}) == true) or (y2 > y and y2-tiles.height[img]+tileSize - y <= 0 and math.abs(x2 - x) <= tiles.width[img]/2) then
           if roomAlphas[room][i][j] > 0 then
             roomAlphas[room][i][j] = roomAlphas[room][i][j] - dt * fadeSpeed
           else
