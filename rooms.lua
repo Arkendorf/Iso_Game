@@ -27,10 +27,9 @@ function rooms_update(dt)
       v.frame = 1
     end
   end
-  local x, y = tileToCoord(cursorPos.tX, cursorPos.tY)
-  hideObstructions(x, y, currentRoom, dt)
-  hideHazards(x, y, currentRoom, dt)
-  hideDoors(x, y, currentRoom, dt)
+  hideObstructions(cursorPos.tX, cursorPos.tY, currentRoom, dt)
+  hideHazards(cursorPos.tX, cursorPos.tY, currentRoom, dt)
+  hideDoors(cursorPos.tX, cursorPos.tY, currentRoom, dt)
 end
 
 function rooms_draw()
@@ -186,15 +185,14 @@ function createIsoNodes(room)
   return roomNodes
 end
 
-function hideObstructions(x, y, room, dt)
-  local tX, tY = coordToTile(x, y)
-  local x2, y2 = coordToIso(x, y)
+function hideObstructions(tX, tY, room, dt)
+  local x, y = tileToIso(tX, tY)
   for i, v in ipairs(rooms[room]) do
     for j, t in ipairs(v) do
       if j+2 > tX or i+2 > tY then
         local tile = rooms[room][i][j]
-        local x3, y3 = tileToIso(j, i)
-        if (neighbors({x = tX, y = tY}, {x = j, y = i}) == true) or (y3 > y2 and y3-tiles.height[tile]+tileSize - y2 <= 0 and math.abs(x3 - x2) <= tiles.width[tile]/2) then
+        local x2, y2 = tileToIso(j, i)
+        if (neighbors({x = tX, y = tY}, {x = j, y = i}) == true) or (y2 > y and y2-tiles.height[tile]+tileSize - y <= 0 and math.abs(x2 - x) <= tiles.width[tile]/2) then
           if roomAlphas[room][i][j] > 0 then
             roomAlphas[room][i][j] = roomAlphas[room][i][j] - dt * fadeSpeed
           else

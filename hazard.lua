@@ -97,13 +97,12 @@ function updateEffects(table)
   end
 end
 
-function hideHazards(x, y, room, dt)
-  local tX, tY = coordToTile(x, y)
-  local x2, y2 = coordToIso(x, y)
+function hideHazards(tX, tY, room, dt)
+  local x, y = tileToIso(tX, tY)
   for i, v in ipairs(currentLevel.hazards) do
     if v.room == room and v.tX+2 > tX or v.tY+2 > tY then
-      local x3, y3 = tileToIso(v.tX, v.tY)
-      if (neighbors({x = tX, y = tY}, {x = v.tX, y = v.tY}) == true) or (y3 > y2 and y3-16+tileSize - y2 <= 0 and math.abs(x3 - x2) <= 32/2) then
+      local x2, y2 = tileToIso(v.tX, v.tY)
+      if (neighbors({x = tX, y = tY}, {x = v.tX, y = v.tY}) == true) or (y2 > y and y2-16+tileSize - y <= 0 and math.abs(x2 - x) <= 32/2) then
         if v.alpha > 0 then
           v.alpha = v.alpha - dt * fadeSpeed
         else

@@ -148,9 +148,8 @@ function isDoorObstructed(door, side)
   return false
 end
 
-function hideDoors(x, y, room, dt)
-  local tX1, tY1 = coordToTile(x, y)
-  local x2, y2 = coordToIso(x, y)
+function hideDoors(tX1, tY1, room, dt)
+  local x, y = tileToIso(tX1, tY1)
   for i, v in ipairs(currentLevel.doors) do
     local tX2, tY2 = nil
     if room == v.room1 then
@@ -159,8 +158,8 @@ function hideDoors(x, y, room, dt)
       tX2, tY2 = v.tX2, v.tY2
     end
     if tX2+2 > tX1 or tY2+2 > tY1 and (room == v.room1 or room == v.room2) then
-      local x3, y3 = tileToIso(tX2, tY2)
-      if (neighbors({x = tX1, y = tY1}, {x = tX2, y = tY2}) == true) or (y3 > y2 and y3-16+tileSize - y2 <= 0 and math.abs(x3 - x2) <= 32/2) then
+      local x2, y2 = tileToIso(tX2, tY2)
+      if (neighbors({x = tX1, y = tY1}, {x = tX2, y = tY2}) == true) or (y2 > y and y2-16+tileSize - y <= 0 and math.abs(x2 - x1) <= 32/2) then
         if v.alpha > 0 then
           v.alpha = v.alpha - dt * fadeSpeed
         else
