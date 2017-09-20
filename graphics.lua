@@ -30,6 +30,9 @@ function graphics_load()
   hazardTiles = {}
   hazardTiles.img, hazardTiles.width, hazardTiles.height, hazardTiles.quad, hazardTiles.quadInfo = loadFolder("hazards")
 
+  doorTiles = {}
+  doorTiles.img, doorTiles.width, doorTiles.height, doorTiles.quad, doorTiles.quadInfo = loadFolder("doors")
+
 
   pathImg = love.graphics.newImage("path.png")
   pathQuad = createSpriteSheet(pathImg, 2, 3, 32, 16)

@@ -30,6 +30,7 @@ function rooms_update(dt)
   local x, y = tileToCoord(cursorPos.tX, cursorPos.tY)
   hideObstructions(x, y, currentRoom, dt)
   hideHazards(x, y, currentRoom, dt)
+  hideDoors(x, y, currentRoom, dt)
 end
 
 function rooms_draw()
@@ -42,6 +43,7 @@ function drawRoom()
   drawFloor(currentRoom) -- floor is drawn first so it will be at the bottom
 
   drawFlatHazards(currentRoom) -- draw hazards that will be beneath everything regardless
+  drawFlatDoors(currentRoom)
   drawFlatParticles(currentRoom)
 
   setValidColor(currentActor.path.valid) -- sets color of path indicator
@@ -54,6 +56,7 @@ function drawRoom()
   queueWalls(currentRoom)
   queueCover(currentRoom)
   queueHazards(currentRoom)
+  queueDoors(currentRoom)
   queueChars(currentRoom)
   queueEnemyChars(currentRoom)
   queueParticles(currentRoom)

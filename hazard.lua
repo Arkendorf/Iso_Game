@@ -28,6 +28,12 @@ function hazard_update(dt)
       end
     end
   end
+  for i, v in pairs(hazardTiles.quadInfo) do
+    v.frame = v.frame + dt * v.speed
+    if v.frame > v.maxFrame+1 then
+      v.frame = 1
+    end
+  end
 end
 
 function queueHazards(room)
@@ -95,7 +101,7 @@ function hideHazards(x, y, room, dt)
   local tX, tY = coordToTile(x, y)
   local x2, y2 = coordToIso(x, y)
   for i, v in ipairs(currentLevel.hazards) do
-    if v.tX+2 > tX or v.tY+2 > tY then
+    if v.room == room and v.tX+2 > tX or v.tY+2 > tY then
       local x3, y3 = tileToIso(v.tX, v.tY)
       if (neighbors({x = tX, y = tY}, {x = v.tX, y = v.tY}) == true) or (y3 > y2 and y3-16+tileSize - y2 <= 0 and math.abs(x3 - x2) <= 32/2) then
         if v.alpha > 0 then

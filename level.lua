@@ -1,7 +1,7 @@
 function level_load()
   levels = {}
   levels[1] = {type = 1,
-               doors = {{room1 = 1, room2 = 2, tX1 = 6, tY1 = 6, tX2 = 6, tY2 = 6}, {room1 = 1, room2 = 2, tX1 = 6, tY1 = 1, tX2 = 5, tY2 = 3}},
+               doors = {{room1 = 1, room2 = 2, tX1 = 6, tY1 = 6, tX2 = 6, tY2 = 6, type = 1}, {room1 = 1, room2 = 2, tX1 = 6, tY1 = 1, tX2 = 5, tY2 = 3, type = 1}},
                hazards = {{tX = 6, tY = 3, type = 1, room = 1}},
                actors = {{actor = {num = 1}, room = 1, x= 16, y = 0}, {actor = {num = 2}, room = 2, x= 0, y = 0}},
                enemyActors = {{actor = {num = 1}, room = 1, x= 64, y = 16}, {actor = {num = 1}, room = 1, x= 16, y = 64},
@@ -52,6 +52,9 @@ function startLevel(level)
     v.effects = {}
   end
   for i, v in ipairs(currentLevel.hazards) do
+    v.alpha = 255
+  end
+  for i, v in ipairs(currentLevel.doors) do
     v.alpha = 255
   end
 

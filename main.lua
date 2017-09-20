@@ -49,6 +49,7 @@ function love.load()
   delay_load()
   ability_load()
   hazard_load()
+  door_load()
 
   window = love.graphics.newCanvas(screen.w, screen.h)
 end
@@ -66,6 +67,7 @@ function love.update(dt)
   ability_update(dt)
   hazard_update(dt)
   rooms_update(dt)
+  door_update(dt)
 end
 
 function love.draw()
