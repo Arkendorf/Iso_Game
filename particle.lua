@@ -4,8 +4,6 @@ function particle_load()
   particles[2] = {ai = 2, startAI = 2, z = 8, time = 10, zV = 2, xV = 3, yV = 3, img = bloodImg, quad = bloodQuad}
   particles[3] = {ai = 2, startAI = 2, z = 16, time = 10, zV = 0, xV = 1.5, yV = 1.5, img = goopImg, quad = goopQuad}
 
-  particleEntities = {}
-
   particleAIs = {}
 
   particleAIs[1] = function(v, dt)
@@ -54,28 +52,28 @@ function particle_load()
 end
 
 function newParticle(room, x, y, type, displayAngle)
-  particleEntities[#particleEntities + 1] = {room = room, x = x, y = y, type = type, z = particles[type].z, displayAngle = displayAngle, time = particles[type].time, frame = 1, alpha = 255}
-  particleStartAIs[particles[type].startAI](particleEntities[#particleEntities])
+  currentLevel.particles[#currentLevel.particles + 1] = {room = room, x = x, y = y, type = type, z = particles[type].z, displayAngle = displayAngle, time = particles[type].time, frame = 1, alpha = 255}
+  particleStartAIs[particles[type].startAI](currentLevel.particles[#currentLevel.particles])
 end
 
 function particle_update(dt)
   local removeNils = false
-  for i, v in ipairs(particleEntities) do
+  for i, v in ipairs(currentLevel.particles) do
     particleAIs[particles[v.type].ai](v, dt)
 
     v.time = v.time - dt
     if v.time <= 0 then
-      particleEntities[i] = nil
+      currentLevel.particles[i] = nil
       removeNils = true
     end
   end
   if removeNils == true then
-    particleEntities = removeNil(particleEntities)
+    currentLevel.particles = removeNil(currentLevel.particles)
   end
 end
 
 function drawFlatParticles(room)
-  for i, v in ipairs(particleEntities) do
+  for i, v in ipairs(currentLevel.particles) do
     if v.room == room and v.z <= 0 then
       local x, y = coordToIso(v.x, v.y)
       if particles[v.type].quad == nil then
@@ -93,7 +91,7 @@ function drawFlatParticles(room)
 end
 
 function queueParticles(room)
-  for i, v in ipairs(particleEntities) do
+  for i, v in ipairs(currentLevel.particles) do
     if v.room == room and v.z > 0 then
       local x, y = coordToIso(v.x, v.y)
       drawQueue[#drawQueue + 1] = {type = 2, img = particles[v.type].img, quad = particles[v.type].quad[math.floor(v.frame)], x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle, alpha = v.alpha}

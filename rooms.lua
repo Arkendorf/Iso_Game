@@ -87,7 +87,7 @@ function drawItemsInQueue()
         local w, h = v.img:getDimensions()
         love.graphics.draw(v.img, v.x, v.y-v.z, v.angle, 1, 1, math.floor(w/2), math.floor(h/2))
       else
-        local x, y, w, h = v.quad:getViewport()
+        local _, _, w, h = v.quad:getViewport()
         love.graphics.draw(v.img, v.quad, v.x, v.y-v.z, v.angle, 1, 1, math.floor(w/2), math.floor(h/2))
       end
     end

@@ -1,13 +1,11 @@
 function combat_load()
   weapons = {}
-  weapons[1] = {type = 2, targetMode = 1, baseDmg = 5, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, icon = 1}
-  weapons[2] = {type = 2, targetMode = 1, baseDmg = 1, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, icon = 1}
-  weapons[3] = {type = 2, targetMode = 2, baseDmg = 5, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, AOE = 4000, falloff = .04, icon = 1} -- example AOE weapon
+  weapons[1] = {type = 2, targetMode = 1, baseDmg = 5, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, icon = 1, particle = 1}
+  weapons[2] = {type = 2, targetMode = 1, baseDmg = 1, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, icon = 1, particle = 1}
+  weapons[3] = {type = 2, targetMode = 2, baseDmg = 5, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, icon = 1, particle = 1, AOE = 4000, falloff = .04,} -- example AOE weapon
 
   projectiles = {}
   projectiles[1] = {ai = 1, speed = 10, z = 8, img = laserImg}
-
-  projectileEntities = {}
 
   projectileAIs = {}
   projectileAIs[1] = function(v, dt)
@@ -103,7 +101,9 @@ function attack(a, b, table)
 end
 
 function hitscanAttack(a, b, table, info) -- a is shooter, b is target, table is who is getting hurt
-  local dmg = 0
+  if info == nil then -- if no info is given, default to attacker's weapon info
+    info = weapons[a.actor.item.weapon]
+  end
   futureDamage(a, b, table, info)
   damage(a, b, table, info)
 
@@ -115,10 +115,17 @@ function hitscanAttack(a, b, table, info) -- a is shooter, b is target, table is
   local angle = getAngle({x = a.x, y = a.y}, {x = b.x, y = b.y})
   local xOffset, yOffset = (tileSize/2*math.cos(angle)), (tileSize/2*math.sin(angle))
 
-  newParticle(a.room, a.x+xOffset, a.y+yOffset, 1, displayAngle)
+  if info.particle ~= nil then
+    newParticle(a.room, a.x+xOffset, a.y+yOffset, info.particle, displayAngle)
+  else
+    newParticle(a.room, a.x+xOffset, a.y+yOffset, 1, displayAngle)
+  end
 end
 
 function projectileAttack(a, b, table, info)
+  if info == nil then -- if no info is given, default to attacker's weapon info
+    info = weapons[a.actor.item.weapon]
+  end
   futureDamage(a, b, table, info)
 
   -- particles stuff
@@ -129,12 +136,16 @@ function projectileAttack(a, b, table, info)
   local xOffset, yOffset = (tileSize/2*math.cos(angle)), (tileSize/2*math.sin(angle))
 
   newProjectile(table, info, a, b, a.x+xOffset, a.y+yOffset, b.x-xOffset, b.y-yOffset, displayAngle)
-  newParticle(a.room, a.x+xOffset, a.y+yOffset, 1, displayAngle)
+  if info.particle ~= nil then
+    newParticle(a.room, a.x+xOffset, a.y+yOffset, info.particle, displayAngle)
+  else
+    newParticle(a.room, a.x+xOffset, a.y+yOffset, 1, displayAngle)
+  end
 end
 
 function newProjectile(table, info, a, b, x, y, dX, dY, displayAngle)
   local type = weapons[a.actor.item.weapon].projectile
-  projectileEntities[#projectileEntities + 1] = {table = table, info = info, b = b, a = a, x = x, y = y, z = projectiles[type].z, dX = dX, dY = dY, angle = getAngle({x = x, y = y}, {x = dX, y = dY}), displayAngle = displayAngle, type = type, dir = getDirection({x = a.x, y = a.y}, {x = b.x, y = b.y}), speed = projectiles[type].speed}
+  currentLevel.projectiles[#currentLevel.projectiles + 1] = {table = table, info = info, b = b, a = a, x = x, y = y, z = projectiles[type].z, dX = dX, dY = dY, angle = getAngle({x = x, y = y}, {x = dX, y = dY}), displayAngle = displayAngle, type = type, dir = getDirection({x = a.x, y = a.y}, {x = b.x, y = b.y}), speed = projectiles[type].speed}
 end
 
 function damage(a, b, table, info)
@@ -233,21 +244,21 @@ function combat_update(dt)
   end
 
   local removeNils = false
-  for i, v in ipairs(projectileEntities) do
+  for i, v in ipairs(currentLevel.projectiles) do
     projectileAIs[projectiles[v.type].ai](v, dt)
     if (v.dX - v.x)*v.dir.x <= 0 and (v.dY - v.y)*v.dir.y <= 0 then
       damage(v.a, v.b, v.table, v.info)
-      projectileEntities[i] = nil
+      currentLevel.projectiles[i] = nil
       removeNils = true
     end
   end
   if removeNils == true then
-    projectileEntities = removeNil(projectileEntities)
+    currentLevel.projectiles = removeNil(currentLevel.projectiles)
   end
 end
 
 function queueProjectiles(room)
-  for i, v in ipairs(projectileEntities) do
+  for i, v in ipairs(currentLevel.projectiles) do
     if v.a.room == room then
       local x, y = coordToIso(v.x, v.y)
       drawQueue[#drawQueue + 1] = {type = 2, img = projectiles[v.type].img, quad = projectiles[v.type].quad, x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle}

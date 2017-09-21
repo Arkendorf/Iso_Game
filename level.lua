@@ -17,6 +17,8 @@ function startLevel(level)
   currentLevelNum = level
   currentRoom = currentLevel.start.room
 
+  currentLevel.particles = {}
+  currentLevel.projectiles = {}
   for i, v in ipairs(currentLevel.actors) do
     v.actor.item = playerActors[currentLevel.type][v.actor.num]
     v.turnPts = v.actor.item.turnPts

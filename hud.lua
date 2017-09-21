@@ -87,24 +87,30 @@ function drawPlayerInfoHud()
   end
   love.graphics.setColor(255, 255, 255)
 
-  for i = 1, 3 do
-    if currentActor.mode == i then
-      love.graphics.draw(combatButtonImg, combatButtonQuad[i*2-1], -43+i*44, screen.h-25)
-      if i == 1 then
-        love.graphics.draw(combatIconImg, combatIconOnQuad[weapons[currentActor.actor.item.weapon].icon], -43+i*44, screen.h-25)
-      else
-        love.graphics.draw(combatIconImg, combatIconOnQuad[abilities[currentActor.actor.item.abilities[i-1]].icon], -43+i*44, screen.h-25)
-      end
+  local abilityNum = #currentActor.actor.item.abilities
+  if abilityNum > 0 then -- draw weapon button border
+    love.graphics.draw(combatButtonImg, combatButtonQuad[2], 1, screen.h-25)
+  else
+    love.graphics.draw(combatButtonImg, combatButtonQuad[1], 1, screen.h-25)
+  end
+  if currentActor.mode == 1 then -- draw weapon button icon
+    love.graphics.draw(combatIconImg, combatIconOnQuad[weapons[currentActor.actor.item.weapon].icon], 1, screen.h-25)
+  else
+    love.graphics.draw(combatIconImg, combatIconOffQuad[weapons[currentActor.actor.item.weapon].icon], 1, screen.h-25)
+  end
+  for i = 1, abilityNum do
+    if i == abilityNum then -- draw weapon button border
+      love.graphics.draw(combatButtonImg, combatButtonQuad[4], 1+i*44, screen.h-25)
     else
-      love.graphics.draw(combatButtonImg, combatButtonQuad[i*2], -43+i*44, screen.h-25)
-      if i == 1 then
-        love.graphics.draw(combatIconImg, combatIconOffQuad[weapons[currentActor.actor.item.weapon].icon], -43+i*44, screen.h-25)
-      else
-        love.graphics.draw(combatIconImg, combatIconOffQuad[abilities[currentActor.actor.item.abilities[i-1]].icon], -43+i*44, screen.h-25)
-      end
-      if i > 1 and currentActor.coolDowns[i-1] ~= 0 then
+      love.graphics.draw(combatButtonImg, combatButtonQuad[3], 1+i*44, screen.h-25)
+    end
+    if currentActor.mode == i+1 then
+      love.graphics.draw(combatIconImg, combatIconOnQuad[abilities[currentActor.actor.item.abilities[i]].icon], 1+i*44, screen.h-25)
+    else
+      love.graphics.draw(combatIconImg, combatIconOffQuad[abilities[currentActor.actor.item.abilities[i]].icon], 1+i*44, screen.h-25)
+      if currentActor.coolDowns[i] ~= 0 then -- draw turns left before ability can be used
         love.graphics.setFont(buttonFont)
-        love.graphics.print(tostring(currentActor.coolDowns[i-1]), -40+i*44, screen.h-22)
+        love.graphics.print(tostring(currentActor.coolDowns[i]), 4+i*44, screen.h-22)
         love.graphics.setFont(font)
       end
     end
