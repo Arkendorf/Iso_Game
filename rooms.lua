@@ -83,11 +83,23 @@ function drawItemsInQueue()
         love.graphics.draw(v.img, v.quad, v.x, v.y-v.z, 0, 1, 1, tileSize, tileSize/2)
       end
     elseif v.type == 2 then
+
       if v.quad == nil then
-        local w, h = v.img:getDimensions()
-        love.graphics.draw(v.img, v.x, v.y-v.z, v.angle, 1, 1, math.floor(w/2), math.floor(h/2))
+        if v.w == nil then
+          v.w = v.img:getWidth()
+        end
+        if v.h == nil then
+          v.h = v.img:getHeight()
+        end
+        love.graphics.draw(v.img, v.x, v.y-v.z, v.angle, 1, 1, math.floor(v.w/2), math.floor(v.h/2))
       else
         local _, _, w, h = v.quad:getViewport()
+        if v.w == nil then
+          v.w = w
+        end
+        if v.h == nil then
+          v.h = h
+        end
         love.graphics.draw(v.img, v.quad, v.x, v.y-v.z, v.angle, 1, 1, math.floor(w/2), math.floor(h/2))
       end
     end

@@ -33,6 +33,9 @@ function graphics_load()
   doorTiles = {}
   doorTiles.img, doorTiles.width, doorTiles.height, doorTiles.quad, doorTiles.quadInfo = loadFolder("doors")
 
+  particleImgs = {}
+  particleImgs.img, particleImgs.width, particleImgs.height, particleImgs.quad = loadFolder("particles")
+
 
   pathImg = love.graphics.newImage("path.png")
   pathQuad = createSpriteSheet(pathImg, 2, 3, 32, 16)
@@ -59,15 +62,6 @@ function graphics_load()
     v.right = love.graphics.newQuad(3+(i-1)*32, 6, 3, 26, boxImg:getDimensions())
     v.pattern = love.graphics.newQuad(6+(i-1)*32, 6, 20, 20, boxImg:getDimensions())
   end
-
-  muzzleFlashImg = love.graphics.newImage("muzzleflash.png")
-  muzzleFlashQuad = createSpriteSheet(muzzleFlashImg, 3, 1, 16, 16)
-
-  bloodImg = love.graphics.newImage("blood.png")
-  bloodQuad = createSpriteSheet(bloodImg, 3, 1, 16, 16)
-
-  goopImg = love.graphics.newImage("goop.png")
-  goopQuad = createSpriteSheet(goopImg, 3, 1, 16, 16)
 
   laserImg = love.graphics.newImage("laser.png")
 end

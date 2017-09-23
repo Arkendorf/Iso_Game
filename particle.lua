@@ -1,8 +1,8 @@
 function particle_load()
   particles = {}
-  particles[1] = {ai = 1, startAI = 1, z = 8, time = .3, speed = 10, maxFrame = 3, img = muzzleFlashImg, quad = muzzleFlashQuad}
-  particles[2] = {ai = 2, startAI = 2, z = 8, time = 10, zV = 2, xV = 3, yV = 3, img = bloodImg, quad = bloodQuad}
-  particles[3] = {ai = 2, startAI = 2, z = 16, time = 10, zV = 0, xV = 1.5, yV = 1.5, img = goopImg, quad = goopQuad}
+  particles[1] = {ai = 1, startAI = 1, z = 8, time = .3, speed = 10, maxFrame = 3, img = 1}
+  particles[2] = {ai = 2, startAI = 2, z = 8, time = 10, zV = 2, xV = 3, yV = 3, img = 2}
+  particles[3] = {ai = 2, startAI = 2, z = 16, time = 10, zV = 0, xV = 1.5, yV = 1.5, img = 3}
 
   particleAIs = {}
 
@@ -75,16 +75,16 @@ end
 function drawFlatParticles(room)
   for i, v in ipairs(currentLevel.particles) do
     if v.room == room and v.z <= 0 then
+      local img = particles[v.type].img
       local x, y = coordToIso(v.x, v.y)
-      if particles[v.type].quad == nil then
-        local w, h = v.img:getDimensions()
+      if particleImgs.quad[img] == nil then
+        local w, h = particleImgs.width[img], particleImgs.height[img]
         love.graphics.setColor(255, 255, 255, v.alpha)
-        love.graphics.draw(particles[v.type].img, math.floor(x)+tileSize, math.floor(y)+tileSize/2, v.displayAngle, 1, 1, math.floor(w/2), math.floor(h/2))
+        love.graphics.draw(particleImgs.img[img], math.floor(x)+tileSize, math.floor(y)+tileSize/2, v.displayAngle, 1, 1, math.floor(w/2), math.floor(h/2))
       else
-        local quad = particles[v.type].quad[math.floor(v.frame)]
-        local _, _, w, h = quad:getViewport()
+        local w, h = particleImgs.width[img], particleImgs.height[img]
         love.graphics.setColor(255, 255, 255, v.alpha)
-        love.graphics.draw(particles[v.type].img, quad, math.floor(x)+tileSize, math.floor(y)+tileSize/2, v.displayAngle, 1, 1, math.floor(w/2), math.floor(h/2))
+        love.graphics.draw(particleImgs.img[img], particleImgs.quad[img][math.floor(v.frame)], math.floor(x)+tileSize, math.floor(y)+tileSize/2, v.displayAngle, 1, 1, math.floor(w/2), math.floor(h/2))
       end
     end
   end
@@ -93,8 +93,9 @@ end
 function queueParticles(room)
   for i, v in ipairs(currentLevel.particles) do
     if v.room == room and v.z > 0 then
+      local img = particles[v.type].img
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {type = 2, img = particles[v.type].img, quad = particles[v.type].quad[math.floor(v.frame)], x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle, alpha = v.alpha}
+      drawQueue[#drawQueue + 1] = {type = 2, img = particleImgs.img[img], quad = particleImgs.quad[img][math.floor(v.frame)], x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle, alpha = v.alpha, w = particleImgs.width[img], h = particleImgs.height[img]}
     end
   end
 end
