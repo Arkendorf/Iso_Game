@@ -1,8 +1,8 @@
 function combat_load()
   weapons = {}
-  weapons[1] = {type = 2, targetMode = 1, baseDmg = 5, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, icon = 1, particle = 1}
-  weapons[2] = {type = 2, targetMode = 1, baseDmg = 1, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, icon = 1, particle = 1}
-  weapons[3] = {type = 2, targetMode = 2, baseDmg = 5, idealDist = 48, rangePenalty = .04, cost = 1, projectile = 1, icon = 1, particle = 1, AOE = 4000, falloff = .04,} -- example AOE weapon
+  weapons[1] = {type = 2, targetMode = 1, baseDmg = 5, dist = {range = 48, falloff = .04}, rangePenalty = .04, cost = 1, projectile = 1, icon = 1, particle = 1}
+  weapons[2] = {type = 2, targetMode = 1, baseDmg = 1, dist = {range = 48, falloff = .04}, cost = 1, projectile = 1, icon = 1, particle = 1}
+  weapons[3] = {type = 2, targetMode = 2, baseDmg = 5, dist = {range = 48, falloff = .04}, cost = 1, projectile = 1, icon = 1, particle = 1, AOE = {range = 128, falloff = .04}} -- example AOE weapon
 
   projectiles = {}
   projectiles[1] = {ai = 1, speed = 10, z = 8, img = laserImg}
@@ -191,9 +191,9 @@ function getDamage(a, b, pos, info)
 
   if info.AOE ~= nil then -- if dmg is AOE,
     local dist = getDistance(b, pos)
-    if dist <= info.AOE and LoS({x = pos.x, y = pos.y}, {x = b.x, y = b.y}, rooms[a.room]) == true then
-      if info.falloff ~= nil then
-        dmg = dmg - dist * info.falloff
+    if dist <= info.AOE.range and LoS({x = pos.x, y = pos.y}, {x = b.x, y = b.y}, rooms[a.room]) == true then
+      if info.AOE.falloff ~= nil then
+        dmg = dmg - dist * info.AOE.falloff
       end
     else
       return 0
@@ -202,12 +202,12 @@ function getDamage(a, b, pos, info)
     return 0
   end
 
-  if info.idealDist ~= nil and info.rangePenalty ~= nil then -- if attack has an ideal range, check if distance is in that range
-    local dist = getDistance(a, pos) - info.idealDist
+  if info.dist ~= nil then -- if attack has an ideal range, check if distance is in that range
+    local dist = getDistance(a, pos) - info.dist.range
     if dist < 0 then
       dist = 0
     end
-    dmg = dmg - dist * info.rangePenalty
+    dmg = dmg - dist * info.dist.falloff
   end
 
   if isUnderCover(b, a, rooms[a.room]) == true or isUnderCover(b, pos, rooms[a.room]) == true then -- halve damage if target is behind cover

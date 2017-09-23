@@ -32,8 +32,8 @@ function ai_load()
       averageDist = averageDist + v/#distanceToPlayers
     end
     averageDist = averageDist
-    local distDiffPoints = weapons[enemy.actor.item.weapon].rangePenalty
-    local idealDist = weapons[enemy.actor.item.weapon].idealDist
+    local distDiffPoints = weapons[enemy.actor.item.weapon].dist.falloff
+    local idealDist = weapons[enemy.actor.item.weapon].dist.range
     score = score - math.abs(idealDist - averageDist) * distDiffPoints-- subtrace points based on how close it is to desired distance
 
     if playersInSight > 0 then -- add points based on how exposed enemy is
