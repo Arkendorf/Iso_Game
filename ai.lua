@@ -64,12 +64,12 @@ function ai_load()
 
   enemyCombatAIs = {}
 
-  enemyCombatAIs[1] = function (enemyNum, enemy, target) -- for normal weapons
+  enemyCombatAIs[1] = function (enemyNum, enemy, target, info) -- for normal weapons
     local score = 0
-    if weapons[enemy.actor.item.weapon].AOE ~= nil then
+    if info.AOE ~= nil then
       for i, v in ipairs(currentLevel.actors) do
         if v.dead == false and enemy.seen[i] == true then
-          local dmg = getDamage(enemy, v, target)
+          local dmg = getDamage(enemy, v, target, info)
           score = score + dmg
           if v.health - dmg <= 0 then -- if enemy kills target, add a bonus
             score = score + killPoints
@@ -77,7 +77,7 @@ function ai_load()
         end
       end
     else
-      local dmg = getDamage(enemy, target, target)
+      local dmg = getDamage(enemy, target, target, info)
       score = score + dmg
       if target.health - dmg <= 0 then -- if enemy kills target, add a bonus
         score = score + killPoints
@@ -138,14 +138,14 @@ function goToDoor(enemyNum, enemy)
   return potentialTiles
 end
 
-function rankTargets(enemyNum, enemy)
+function rankTargets(enemyNum, enemy, func, info)
   local potentialTargets = {}
   for i, v in ipairs(rooms[enemy.room]) do -- go through every tile and see if it is a valid target
     for j, t in ipairs(v) do
       if tileType[t] == 1 then
         local target = findTargetFuncs[enemy.targetMode](enemy, {tX = j, tY = i}, currentLevel.actors) -- find target based on weapon targetMode
         if target ~= nil then
-          potentialTargets[#potentialTargets+1] = {item = target, score = enemyCombatAIs[enemy.actor.item.combatAI](enemyNum, enemy, target)} -- score target based on weapon targetMode
+          potentialTargets[#potentialTargets+1] = {item = target, score = func(enemyNum, enemy, target, info)} -- score target based on weapon targetMode
         end
       end
     end
@@ -178,19 +178,25 @@ function rankTiles(enemyNum, enemy)
   return potentialTiles
 end
 
-function chooseTarget(enemyNum, enemy, targets)
+function chooseTarget(enemyNum, enemy, targets, cost, minScore)
   table.sort(targets, function (a, b) return a.score > b.score end)
   for i, v in ipairs(targets) do
-    if targetValidFuncs[enemy.targetMode](v.item, enemy, 0) == true then
+    if minScore ~= nil and v.score < minScore then -- if score is less than minimum end search
+      return nil
+    end
+    if targetValidFuncs[enemy.targetMode](v.item, enemy, cost) == true then
       return v.item
     end
   end
   return nil
 end
 
-function chooseTile(enemyNum, enemy, tiles)
+function chooseTile(enemyNum, enemy, tiles, minScore)
   table.sort(tiles, function (a, b) return a.score > b.score end)
   for i, v in ipairs(tiles) do
+    if minScore ~= nil and v.score < minScore then -- if score is less than minimum end search
+      return nil
+    end
     local tX, tY = coordToTile(enemy.x, enemy.y)
     local path = newPath({x = tX, y = tY}, {x = v.tX, y = v.tY}, rooms[enemy.room])
     if #path > 1 and pathIsValid(path, enemy) then

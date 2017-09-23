@@ -6,6 +6,7 @@ function combat_load()
 
   projectiles = {}
   projectiles[1] = {ai = 1, speed = 10, z = 8, img = laserImg}
+  projectiles[2] = {ai = 1, speed = 2, z = 8, img = laserImg}
 
   projectileAIs = {}
   projectileAIs[1] = function(v, dt)
@@ -143,8 +144,8 @@ function projectileAttack(a, b, table, info)
   end
 end
 
-function newProjectile(table, info, a, b, x, y, dX, dY, displayAngle)
-  local type = weapons[a.actor.item.weapon].projectile
+function newProjectile(table, info, a, b, x, y, dX, dY, displayAngle, type)
+  local type = info.projectile
   currentLevel.projectiles[#currentLevel.projectiles + 1] = {table = table, info = info, b = b, a = a, x = x, y = y, z = projectiles[type].z, dX = dX, dY = dY, angle = getAngle({x = x, y = y}, {x = dX, y = dY}), displayAngle = displayAngle, type = type, dir = getDirection({x = a.x, y = a.y}, {x = b.x, y = b.y}), speed = projectiles[type].speed}
 end
 

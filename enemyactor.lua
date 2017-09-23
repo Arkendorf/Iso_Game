@@ -18,7 +18,7 @@ end
 function enemyactor_update(dt)
   if playerTurn == false then
     local nextTurn = true
-    for i, v in ipairs(currentLevel.enemyActors) do
+    for i, v in ipairs(currentLevel.enemyActors) do -- main enemy loop
       if v.dead == false then
         if v.wait == true then
           nextTurn = false
@@ -34,7 +34,10 @@ function enemyactor_update(dt)
               moveEnemy(i, v, 0) -- check if enemy should move once in new room
             end
           end
-          local result = enemyAttack(i, v)
+          local result = enemyAbility(i, v, 10) -- if turnPts are left, maybe use ability (3rd arg is minimun score needed to use ability)
+          if result == false then
+            result = enemyAttack(i, v) -- if turnPts are left, maybe attack
+          end
           if result == false then
             v.turnPts = 0
           else
@@ -132,7 +135,7 @@ function moveEnemy(enemyNum, enemy, delay)
 end
 
 function enemyAttack(enemyNum, enemy) -- damages player, returns true if it attacks, false if it doesn't
-  local target = findEnemyTarget(enemyNum, enemy)
+  local target = findEnemyTarget(enemyNum, enemy, enemyCombatAIs[enemy.actor.item.combatAI], weapons[enemy.actor.item.weapon], weapons[enemy.actor.item.weapon].cost)
   if target ~= nil then
     attack(enemy, target, currentLevel.actors)
     enemy.turnPts = enemy.turnPts - weapons[enemy.actor.item.weapon].cost
@@ -140,6 +143,21 @@ function enemyAttack(enemyNum, enemy) -- damages player, returns true if it atta
   else
     return false
   end
+end
+
+function enemyAbility(enemyNum, enemy, minScore) -- damages player, returns true if it attacks, false if it doesn't
+  for i, v in ipairs(enemy.actor.item.abilities) do
+    if enemy.coolDowns[i] == 0 then
+      local target = findEnemyTarget(enemyNum, enemy, abilityAIs[abilities[v].ai], abilities[v].dmgInfo, abilities[v].cost, minScore)
+      if target ~= nil then
+        useAbility(v, enemy, target, currentLevel.actors)
+        enemy.coolDowns[i] = abilities[enemy.actor.item.abilities[i]].coolDown
+        enemy.turnPts = enemy.turnPts - abilities[v].cost
+        return true
+      end
+    end
+  end
+  return false
 end
 
 function startEnemyTurn()
@@ -157,9 +175,9 @@ function startEnemyTurn()
   startEnemyHud()
 end
 
-function findEnemyTarget(i, v)
-  local potentialTargets = rankTargets(i, v)
-  return chooseTarget(i, v, potentialTargets)
+function findEnemyTarget(i, v, func, info, cost, minScore)
+  local potentialTargets = rankTargets(i, v, func, info)
+  return chooseTarget(i, v, potentialTargets, cost, minScore)
 end
 
 function enemyFollowPath(i, v, dt)

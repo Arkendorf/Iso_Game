@@ -1,9 +1,9 @@
 function ability_load()
   abilities = {}
 
-  abilities[1] = {cost = 2, coolDown = 1, func = 1, targetMode = 1, icon = 2, dmgInfo = {baseDmg = 5}}
+  abilities[1] = {cost = 2, coolDown = 1, func = 1, targetMode = 1, icon = 2, dmgInfo = {baseDmg = 5, projectile = 2}, ai = 1}
 
-  abilities[2] = {cost = 3, coolDown = 0, func = 2, targetMode = 4, icon = 3, dmgInfo = {baseDmg = 5}}
+  abilities[2] = {cost = 3, coolDown = 0, func = 2, targetMode = 4, icon = 3, dmgInfo = {baseDmg = 5}, ai = 1}
 
   abilityFuncs = {}
 
@@ -13,6 +13,12 @@ function ability_load()
 
   abilityFuncs[2] = function (a, b, enemies, info)
     hitscanAttack(a, b, enemies, info)
+  end
+
+  abilityAIs = {} -- functions should be adjusted so 10 is a good result
+
+  abilityAIs[1] = function (enemyNum, enemy, target, info) -- for normal weapons
+    return enemyCombatAIs[1](enemyNum, enemy, target, info) * (10/info.baseDmg)
   end
 end
 
@@ -26,7 +32,6 @@ function ability_update(dt)
     currentActor.targetMode = 0
   end
 end
-
 
 function reduceCoolDowns(table)
   for i, v in ipairs(table) do
