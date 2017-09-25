@@ -1,8 +1,8 @@
 function combat_load()
   weapons = {}
-  weapons[1] = {type = 2, targetMode = 1, baseDmg = 5, dist = {range = 48, falloff = .04}, pierce = false, cost = 1, projectile = 1, icon = 1, particle = 1}
+  weapons[1] = {type = 1, targetMode = 1, baseDmg = 5, dist = {range = 48, falloff = .04}, pierce = false, cost = 1, projectile = 1, icon = 1, particle = 1}
   weapons[2] = {type = 2, targetMode = 1, baseDmg = 1, dist = {range = 48, falloff = .04}, cost = 1, projectile = 1, icon = 1, particle = 1}
-  weapons[3] = {type = 2, targetMode = 2, baseDmg = 5, dist = {range = 48, falloff = .04}, cost = 1, projectile = 1, icon = 1, particle = 1, AOE = {range = 128, falloff = .04}} -- example AOE weapon
+  weapons[3] = {type = 3, targetMode = 2, baseDmg = 5, dist = {range = 48, falloff = .04}, cost = 1, projectile = 1, icon = 1, particle = 1, AOE = {range = 128, falloff = .04}} -- example AOE weapon
 
   projectiles = {}
   projectiles[1] = {ai = 1, speed = 10, z = 8, img = laserImg}
@@ -94,9 +94,9 @@ function combat_load()
 end
 
 function attack(a, b, table)
-  if weapons[a.actor.item.weapon].type == 1 then
+  if weapons[a.actor.item.weapon].type == nil or weapons[a.actor.item.weapon].type == 1 then
     hitscanAttack(a, b, table)
-  elseif weapons[a.actor.item.weapon].type == 2 then
+  elseif weapons[a.actor.item.weapon].type > 1 then
     projectileAttack(a, b, table)
   end
 end
@@ -214,11 +214,19 @@ function getDamage(a, b, pos, info)
     dmg = dmg / 2
   end
 
+  if info.type ~= nil and b.actor.item.type ~= nil and crit(info.type, b.actor.item.type) then -- check if attack is a crit
+    dmg = dmg * 1.2
+  end
+
   if dmg > 0 then -- make sure dmg isn't negative
     return dmg
   else
     return 0
   end
+end
+
+function crit(type1, type2)
+  return type1 == type2
 end
 
 function combat_update(dt)

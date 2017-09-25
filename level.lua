@@ -1,13 +1,14 @@
 function level_load()
   levels = {}
-  levels[1] = {type = 1,
+  levels[1] = {
                doors = {{room1 = 1, room2 = 2, tX1 = 6, tY1 = 6, tX2 = 6, tY2 = 6, type = 1}, {room1 = 1, room2 = 2, tX1 = 6, tY1 = 1, tX2 = 5, tY2 = 3, type = 1}},
                hazards = {{tX = 6, tY = 3, type = 1, room = 1}},
                actors = {{actor = {num = 1}, room = 1, x= 16, y = 0}, {actor = {num = 2}, room = 2, x= 0, y = 0}},
                enemyActors = {{actor = {num = 1}, room = 1, x= 64, y = 16}, {actor = {num = 1}, room = 1, x= 16, y = 64},
                               {actor = {num = 2}, room = 2, x= 64, y = 32, patrol = {room = 2, tiles = {{x = 2, y = 1}, {x = 5, y = 1}, {x = 5, y = 6}, {x = 2, y = 6}}}}},
                start = {room = 1, x = 1, y = 1},
-               finish = {room = 1, x = 3, y = 3}}
+               finish = {room = 1, x = 3, y = 3}
+              }
   startLevel(1)
 end
 
@@ -20,7 +21,7 @@ function startLevel(level)
   currentLevel.particles = {}
   currentLevel.projectiles = {}
   for i, v in ipairs(currentLevel.actors) do
-    v.actor.item = playerActors[currentLevel.type][v.actor.num]
+    v.actor.item = playerActors[v.actor.num]
     v.turnPts = v.actor.item.turnPts
     v.displayTurnPts = v.turnPts
     v.health = v.actor.item.health
@@ -38,7 +39,7 @@ function startLevel(level)
     v.effects = {}
   end
   for i, v in ipairs(currentLevel.enemyActors) do
-    v.actor.item = enemyActors[currentLevel.type][v.actor.num]
+    v.actor.item = enemyActors[v.actor.num]
     v.turnPts = 0
     v.displayTurnPts = v.turnPts
     v.health = v.actor.item.health

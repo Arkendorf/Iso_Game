@@ -1,8 +1,7 @@
 function enemychar_load()
   enemyActors = {}
-  enemyActors[1] = {}
-  enemyActors[1][1] = {speed = 30, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2}
-  enemyActors[1][2] = {speed = 120, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2}
+  enemyActors[1] = {speed = 30, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2, type = 1}
+  enemyActors[2] = {speed = 120, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2, type = 1}
   enemyHeight = 32
 end
 
@@ -44,15 +43,22 @@ function queueEnemyChars(room)
       if v.dead == false then
         local tX, tY = coordToTile(v.x, v.y)
         local dmgEstimate = 0
+        local color = palette.red
         if currentActor.target.valid == true and currentActor.mode == 1 then
           dmgEstimate = getDamage(currentActor, v, currentActor.target.item)
+          if crit(weapons[currentActor.actor.item.weapon].type, v.actor.item.type) then -- if attack will crit, change color
+            color = {255, 127, 0}
+          end
         elseif currentActor.target.valid == true and currentActor.mode > 1 then
           dmgEstimate = getDamage(currentActor, v, currentActor.target.item, abilities[currentActor.actor.item.abilities[currentActor.mode-1]].dmgInfo)
+          if crit(abilities[currentActor.actor.item.abilities[currentActor.mode-1]].dmgInfo.type, v.actor.item.type) then -- if attack will crit, change color
+            color = {255, 127, 0}
+          end
         end
         if dmgEstimate > 0 then -- second getDamage will need to be changed
-          love.graphics.setColor(gradient(5, palette.health)) -- current health
+          love.graphics.setColor(gradient(5, color)) -- current health
           love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, v.displayHealth/v.actor.item.health*tileSize*2, 2)
-          love.graphics.setColor(palette.health)
+          love.graphics.setColor(color)
           if (v.displayHealth- dmgEstimate) > 0 then -- health after projectiles and possible current attack deal damage
             love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, (v.futureHealth-dmgEstimate)/v.actor.item.health*tileSize*2, 2)
           end

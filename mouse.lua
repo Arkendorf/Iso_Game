@@ -1,5 +1,5 @@
 function mouse_load()
-  mouse= {}
+  mouse = {}
 end
 
 function mouse_update(dt)
