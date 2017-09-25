@@ -1,6 +1,6 @@
 function combat_load()
   weapons = {}
-  weapons[1] = {type = 2, targetMode = 1, baseDmg = 5, dist = {range = 48, falloff = .04}, rangePenalty = .04, cost = 1, projectile = 1, icon = 1, particle = 1}
+  weapons[1] = {type = 2, targetMode = 1, baseDmg = 5, dist = {range = 48, falloff = .04}, pierce = false, cost = 1, projectile = 1, icon = 1, particle = 1}
   weapons[2] = {type = 2, targetMode = 1, baseDmg = 1, dist = {range = 48, falloff = .04}, cost = 1, projectile = 1, icon = 1, particle = 1}
   weapons[3] = {type = 2, targetMode = 2, baseDmg = 5, dist = {range = 48, falloff = .04}, cost = 1, projectile = 1, icon = 1, particle = 1, AOE = {range = 128, falloff = .04}} -- example AOE weapon
 
@@ -210,7 +210,7 @@ function getDamage(a, b, pos, info)
     dmg = dmg - dist * info.dist.falloff
   end
 
-  if isUnderCover(b, a, rooms[a.room]) == true or isUnderCover(b, pos, rooms[a.room]) == true then -- halve damage if target is behind cover
+  if (info.pierce == nil or info.pierce == false) and (isUnderCover(b, a, rooms[a.room]) == true or isUnderCover(b, pos, rooms[a.room]) == true) then -- halve damage if target is behind cover
     dmg = dmg / 2
   end
 
