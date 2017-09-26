@@ -1,7 +1,7 @@
 function enemychar_load()
   enemyActors = {}
   enemyActors[1] = {speed = 30, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2, type = 1}
-  enemyActors[2] = {speed = 120, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2, type = 1}
+  enemyActors[2] = {speed = 120, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2, type = 2}
   enemyHeight = 32
 end
 
@@ -41,40 +41,42 @@ function queueEnemyChars(room)
 
       -- draw hud
       if v.dead == false then
-        local tX, tY = coordToTile(v.x, v.y)
         local dmgEstimate = 0
         local color = palette.red
-        if currentActor.target.valid == true and currentActor.mode == 1 then
-          dmgEstimate = getDamage(currentActor, v, currentActor.target.item)
-          if crit(weapons[currentActor.actor.item.weapon].type, v.actor.item.type) then -- if attack will crit, change color
-            color = {255, 127, 0}
-          end
-        elseif currentActor.target.valid == true and currentActor.mode > 1 then
-          dmgEstimate = getDamage(currentActor, v, currentActor.target.item, abilities[currentActor.actor.item.abilities[currentActor.mode-1]].dmgInfo)
-          if crit(abilities[currentActor.actor.item.abilities[currentActor.mode-1]].dmgInfo.type, v.actor.item.type) then -- if attack will crit, change color
-            color = {255, 127, 0}
+        if currentActor.target.item ~= nil and currentActor.target.item.x == v.x and currentActor.target.item.y == v.y then -- check if player target is this enemy
+          if currentActor.target.valid == true and currentActor.mode == 1 then
+            dmgEstimate = getDamage(currentActor, v, currentActor.target.item)
+            if crit(weapons[currentActor.actor.item.weapon].type, v.actor.item.type) then -- if attack will crit, change color
+              color = {255, 127, 0}
+            end
+          elseif currentActor.target.valid == true and currentActor.mode > 1 then
+            dmgEstimate = getDamage(currentActor, v, currentActor.target.item, abilities[currentActor.actor.item.abilities[currentActor.mode-1]].dmgInfo)
+            if crit(abilities[currentActor.actor.item.abilities[currentActor.mode-1]].dmgInfo.type, v.actor.item.type) then -- if attack will crit, change color
+              color = {255, 127, 0}
+            end
           end
         end
-        if dmgEstimate > 0 then -- second getDamage will need to be changed
+        if dmgEstimate > 0 then -- if attack will effect this enemy, signal it by flashing the health color
           love.graphics.setColor(gradient(5, color)) -- current health
-          love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, v.displayHealth/v.actor.item.health*tileSize*2, 2)
+          love.graphics.rectangle("fill", -cameraPos.x, 10-cameraPos.y, v.displayHealth/v.actor.item.health*tileSize*2, 2)
+          love.graphics.setColor(color) -- future health
+          love.graphics.rectangle("fill", -cameraPos.x, 10-cameraPos.y, (v.futureHealth-dmgEstimate)/v.actor.item.health*tileSize*2, 2)
+        else
           love.graphics.setColor(color)
           if (v.displayHealth- dmgEstimate) > 0 then -- health after projectiles and possible current attack deal damage
-            love.graphics.rectangle("fill", -cameraPos.x, 3-cameraPos.y, (v.futureHealth-dmgEstimate)/v.actor.item.health*tileSize*2, 2)
-          end
-        else
-          local x, y = tileToCoord(cursorPos.tX, cursorPos.tY)
-          if v.seen[currentActorNum] == true then
-            love.graphics.setColor(255, 0, 0)
-            love.graphics.draw(spottedImg, tileSize-4-cameraPos.x, -cameraPos.y)
-          elseif currentActor.mode == 0 and isPlayerInView(v, {x = x, y = y, dead = currentActor.dead, room = currentActor.room}) == true then
-            love.graphics.setColor(255, 127, 0)
-            love.graphics.draw(spottedImg, tileSize-4-cameraPos.x, -cameraPos.y)
-          elseif currentActor.mode ~= 0 and isPlayerInView(v, currentActor) == true then
-            love.graphics.setColor(255, 127, 0)
-            love.graphics.draw(spottedImg, tileSize-4-cameraPos.x, -cameraPos.y)
+            love.graphics.rectangle("fill", -cameraPos.x, 10-cameraPos.y, v.displayHealth/v.actor.item.health*tileSize*2, 2)
           end
         end
+
+        local x, y = tileToCoord(cursorPos.tX, cursorPos.tY)
+        if v.seen[currentActorNum] == true then
+          love.graphics.setColor(255, 0, 0)
+        elseif (currentActor.mode == 0 and isPlayerInView(v, {x = x, y = y, dead = currentActor.dead, room = currentActor.room}) == true) or (currentActor.mode ~= 0 and isPlayerInView(v, currentActor) == true) then
+          love.graphics.setColor(255, 127, 0)
+        else
+          love.graphics.setColor(200, 200, 200)
+        end
+        love.graphics.draw(enemyIcon.img, enemyIcon.quad[v.actor.item.type], 1-cameraPos.x, 1-cameraPos.y)
       end
 
       love.graphics.setCanvas(oldCanvas)

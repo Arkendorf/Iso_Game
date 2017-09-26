@@ -14,8 +14,7 @@ function graphics_load()
   "123456789.,!?-+/():;%&`'*#=[]\"", 1)
   love.graphics.setFont(font)
 
-  buttonFont = love.graphics.newImageFont("buttonfont.png",
-  "1234567890")
+  buttonFont = love.graphics.newImageFont("buttonfont.png","1234567890")
 
   wallImg = love.graphics.newImage("wall.png")
   cursorImg = love.graphics.newImage("cursor.png")
@@ -36,11 +35,12 @@ function graphics_load()
   particleImgs = {}
   particleImgs.img, particleImgs.width, particleImgs.height, particleImgs.quad = loadFolder("particles")
 
-
   pathImg = love.graphics.newImage("path.png")
   pathQuad = createSpriteSheet(pathImg, 2, 3, 32, 16)
 
-  spottedImg = love.graphics.newImage("statuseffecticons.png")
+  enemyIcon = {}
+  enemyIcon.img = love.graphics.newImage("enemyicon.png")
+  enemyIcon.quad = createSpriteSheet(enemyIcon.img, 3, 1, 8, 8)
 
   combatButtonImg = love.graphics.newImage("combatbuttons.png")
   combatButtonQuad = createSpriteSheet(combatButtonImg, 4, 1, 44, 24)
