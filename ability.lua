@@ -3,7 +3,7 @@ function ability_load()
 
   abilities[1] = {cost = 2, coolDown = 1, func = 1, targetMode = 1, icon = 2, dmgInfo = {baseDmg = 5, projectile = 2, type = 2}, ai = 1}
 
-  abilities[2] = {cost = 3, coolDown = 0, func = 2, targetMode = 4, icon = 3, dmgInfo = {baseDmg = 5, type = 1}, ai = 1}
+  abilities[2] = {cost = 3, coolDown = 0, func = 2, targetMode = 4, icon = 3, dmgInfo = {baseDmg = 5}, ai = 1}
 
   abilityFuncs = {}
 

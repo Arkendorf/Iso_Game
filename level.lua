@@ -50,7 +50,7 @@ function startLevel(level)
     v.move = false
     v.dead = false
     v.targetMode = weapons[v.actor.item.weapon].targetMode
-    v.canvas = love.graphics.newCanvas(tileSize*2, enemyHeight+9)
+    v.canvas = love.graphics.newCanvas(tileSize*2, enemyHeight+12)
     v.coolDowns = {0, 0}
     v.effects = {}
   end
