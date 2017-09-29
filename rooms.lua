@@ -34,7 +34,6 @@ end
 
 function rooms_draw()
   drawRoom()
-  mouse_draw()
   love.graphics.setColor(255, 255, 255)
 end
 
@@ -46,10 +45,10 @@ function drawRoom()
   drawFlatParticles(currentRoom)
 
   setValidColor(currentActor.path.valid) -- sets color of path indicator
-
   if currentActor.mode == 0 then
     drawPath(currentActor) -- draws path indicator
   end
+  mouse_draw()
 
   drawQueue = {} -- reset queue
   queueWalls(currentRoom)

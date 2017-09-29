@@ -51,8 +51,11 @@ function particle_load()
   end
 end
 
-function newParticle(room, x, y, type, displayAngle)
-  currentLevel.particles[#currentLevel.particles + 1] = {room = room, x = x, y = y, type = type, z = particles[type].z, displayAngle = displayAngle, time = particles[type].time, frame = 1, alpha = 255}
+function newParticle(room, x, y, type, displayAngle, z)
+  if z == nil then
+    z = particles[type].z
+  end
+  currentLevel.particles[#currentLevel.particles + 1] = {room = room, x = x, y = y, type = type, z = z, displayAngle = displayAngle, time = particles[type].time, frame = 1, alpha = 255}
   particleStartAIs[particles[type].startAI](currentLevel.particles[#currentLevel.particles])
 end
 

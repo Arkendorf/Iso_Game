@@ -37,6 +37,7 @@ function startLevel(level)
     v.currentCost = 0
     v.coolDowns = {0, 0}
     v.effects = {}
+    v.dir = "r"
   end
   for i, v in ipairs(currentLevel.enemyActors) do
     v.actor.item = enemyActors[v.actor.num]
@@ -53,6 +54,7 @@ function startLevel(level)
     v.canvas = love.graphics.newCanvas(tileSize*2, enemyHeight+12)
     v.coolDowns = {0, 0}
     v.effects = {}
+    v.dir = "r"
   end
   for i, v in ipairs(currentLevel.hazards) do
     v.alpha = 255

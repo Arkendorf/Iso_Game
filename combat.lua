@@ -155,7 +155,7 @@ function damage(a, b, table, info)
       dmg = getDamage(a, v, b, info)
       v.health = v.health - dmg
       local angle = getAngle({x = a.x, y = a.y}, {x = v.x, y = v.y})
-      local xOffset, yOffset = (tileSize/2*math.cos(angle)), (tileSize/2*math.sin(angle))
+      local xOffset, yOffset = (tileSize/4*math.cos(angle)), (tileSize/4*math.sin(angle))
 
       for i = 1, math.ceil(dmg) do
         newParticle(a.room, v.x-xOffset, v.y-yOffset, 2, 0)

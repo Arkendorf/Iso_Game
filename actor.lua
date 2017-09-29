@@ -129,6 +129,15 @@ function followPath(i, v, dt)
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)
+    if dir.x == 1 and dir.y == 0 then -- set player direction
+      v.dir = "r"
+    elseif dir.x == -1 and dir.y == 0 then
+      v.dir = "l"
+    elseif dir.x == 0 and dir.y == 1 then
+      v.dir = "d"
+    elseif dir.x == 0 and dir.y == -1 then
+      v.dir = "u"
+    end
     local speed = currentActor.actor.item.speed
     v.x = v.x + dir.x * dt * speed
     v.y = v.y + dir.y * dt * speed
