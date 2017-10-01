@@ -1,7 +1,7 @@
 function enemychar_load()
   enemyActors = {}
-  enemyActors[1] = {speed = 30, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2, type = 1}
-  enemyActors[2] = {speed = 120, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2, type = 2}
+  enemyActors[1] = {speed = 30, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2, type = 1, img = 1}
+  enemyActors[2] = {speed = 120, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2, type = 2, img = 1}
   enemyHeight = 38
 end
 
@@ -37,7 +37,7 @@ function queueEnemyChars(room)
         love.graphics.setColor(200, 100, 100)
       end
 
-      love.graphics.draw(wallImg, -cameraPos.x, 12-cameraPos.y)
+      love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][1][1], -cameraPos.x, 12-cameraPos.y)
 
       -- draw hud
       if v.dead == false then

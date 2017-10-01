@@ -35,6 +35,9 @@ function graphics_load()
   particleImgs = {}
   particleImgs.img, particleImgs.width, particleImgs.height, particleImgs.quad = loadFolder("particles")
 
+  charImgs = {}
+  charImgs.img, charImgs.width, charImgs.height, charImgs.quad = loadFolder2("chars")
+
   pathImg = love.graphics.newImage("path.png")
   pathQuad = createSpriteSheet(pathImg, 2, 3, 32, 16)
 
@@ -100,9 +103,10 @@ function loadFolder(folder)
         for line in love.filesystem.lines(folder.."/"..tostring(i)..".txt") do
           quadInfo[#quadInfo+1] = line
         end
-        widthList[i] = math.floor(imageList[i]:getWidth() / quadInfo[1])
-        quadList[i] = createSpriteSheet(imageList[i], quadInfo[1], 1, widthList[i], heightList[i])
-        quadInfoList[i] = {frame = 1, maxFrame = quadInfo[1], speed = quadInfo[2]}
+        widthList[i] = quadInfo[1]
+        local frames = math.floor(imageList[i]:getWidth()/quadInfo[1])
+        quadList[i] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i])
+        quadInfoList[i] = {frame = 1, maxFrame = frames, speed = quadInfo[2]}
       else
         widthList[i] = imageList[i]:getWidth()
       end
@@ -113,6 +117,53 @@ function loadFolder(folder)
   end
   return imageList, widthList, heightList, quadList, quadInfoList
 end
+
+function loadFolder2(folder)
+  local imageList = {}
+  local widthList = {}
+  local heightList = {}
+  local quadList = {}
+
+  local i = 1
+  while true do
+    if love.filesystem.isFile(folder.."/"..tostring(i)..".png") == true then
+      imageList[i] = love.graphics.newImage(folder.."/"..tostring(i)..".png")
+      if love.filesystem.isFile(folder.."/"..tostring(i)..".txt") == true then
+        local quadInfo = {}
+        for line in love.filesystem.lines(folder.."/"..tostring(i)..".txt") do
+          quadInfo[#quadInfo+1] = line
+        end
+
+        quadList[i] = {['u'] = {}, ['d'] = {}, ['l'] = {}, ['r'] = {}}
+        widthList[i] = quadInfo[1]
+        local frames = math.floor(imageList[i]:getWidth()/quadInfo[1]/4)
+        heightList[i] = quadInfo[2]
+        local animations = math.floor(imageList[i]:getHeight()/quadInfo[1])
+
+        for j = 1, animations do
+          quadList[i]['u'][j] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i], imageList[i]:getWidth()/4*3, (j-1)*quadInfo[1])
+        end
+        for j = 1, animations do
+          quadList[i]['d'][j] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i], imageList[i]:getWidth()/4*2, (j-1)*quadInfo[1])
+        end
+        for j = 1, animations do
+          quadList[i]['l'][j] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i], imageList[i]:getWidth()/4*1, (j-1)*quadInfo[1])
+        end
+        for j = 1, animations do
+          quadList[i]['r'][j] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i],0, (j-1)*quadInfo[1])
+        end
+      else
+        heightList[i] = imageList[i]:getHeight()
+        widthList[i] = imageList[i]:getWidth()
+      end
+      i = i + 1
+    else
+      break
+    end
+  end
+  return imageList, widthList, heightList, quadList
+end
+
 
 function drawBox(width, height, type)
   local box, oldCanvas = startNewCanvas(width+4, height+4)

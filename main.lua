@@ -83,6 +83,7 @@ function love.draw()
 
   love.graphics.setCanvas(oldCanvas)
   love.graphics.draw(window, 0, 0, 0, 2, 2)
+  love.graphics.draw(charImgs.img[1], charImgs.quad[1]['u'][1][1])
 end
 
 function love.keypressed(key)

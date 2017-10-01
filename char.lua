@@ -1,7 +1,7 @@
 function char_load()
   playerActors ={}
-  playerActors[1] = {speed = 30, turnPts = 10, name = "Luke", health = 20, abilities = {1, 2}, weapon = 1, type = 1}
-  playerActors[2] = {speed = 120, turnPts = 20, name = "Ben", health = 10, abilities = {1, 2}, weapon = 1, type = 2}
+  playerActors[1] = {speed = 30, turnPts = 10, name = "Luke", health = 20, abilities = {1, 2}, weapon = 1, type = 1, img = 1}
+  playerActors[2] = {speed = 120, turnPts = 20, name = "Ben", health = 10, abilities = {1, 2}, weapon = 1, type = 2, img = 1}
   charHeight = 38
 end
 
@@ -36,7 +36,7 @@ function queueChars(room)
         love.graphics.setColor(100, 200, 100)
       end
 
-      love.graphics.draw(wallImg, -cameraPos.x, -cameraPos.y)
+      love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][1][1], -cameraPos.x, -cameraPos.y)
       love.graphics.setCanvas(oldCanvas)
       love.graphics.setColor(255, 255, 255)
 
