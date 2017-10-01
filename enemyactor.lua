@@ -41,6 +41,8 @@ function enemyactor_update(dt)
           if result == false then
             v.turnPts = 0
           else
+            local dir = getDirection(v, v.target.item)
+            v.dir = coordToStringDir(dir) -- face target
             nextTurn = false -- dont end enemies turn if orders need to be given
             v.wait = true
             newDelay(1/enemyTurnSpeed*.5, function (enemy) enemy.wait = false end, {v})
@@ -137,6 +139,7 @@ end
 function enemyAttack(enemyNum, enemy) -- damages player, returns true if it attacks, false if it doesn't
   local target = findEnemyTarget(enemyNum, enemy, enemyCombatAIs[enemy.actor.item.combatAI], weapons[enemy.actor.item.weapon], weapons[enemy.actor.item.weapon].cost)
   if target ~= nil then
+    enemy.target.item = target
     attack(enemy, target, currentLevel.actors)
     enemy.turnPts = enemy.turnPts - weapons[enemy.actor.item.weapon].cost
     return true
@@ -150,6 +153,7 @@ function enemyAbility(enemyNum, enemy, minScore) -- damages player, returns true
     if enemy.coolDowns[i] == 0 then
       local target = findEnemyTarget(enemyNum, enemy, abilityAIs[abilities[v].ai], abilities[v].dmgInfo, abilities[v].cost, minScore)
       if target ~= nil then
+        enemy.target.item = target
         useAbility(v, enemy, target, currentLevel.actors)
         enemy.coolDowns[i] = abilities[enemy.actor.item.abilities[i]].coolDown
         enemy.turnPts = enemy.turnPts - abilities[v].cost
@@ -189,15 +193,7 @@ function enemyFollowPath(i, v, dt)
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)
-    if dir.x == 1 and dir.y == 0 then -- set enemy direction
-      v.dir = "r"
-    elseif dir.x == -1 and dir.y == 0 then
-      v.dir = "l"
-    elseif dir.x == 0 and dir.y == 1 then
-      v.dir = "d"
-    elseif dir.x == 0 and dir.y == -1 then
-      v.dir = "u"
-    end
+    v.dir = coordToStringDir(dir)
     local speed = v.actor.item.speed*enemyTurnSpeed
     v.x = v.x + dir.x * dt * speed
     v.y = v.y + dir.y * dt * speed

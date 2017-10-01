@@ -17,14 +17,14 @@ function hazard_update(dt)
   for i, v in ipairs(currentLevel.actors) do
     for j = 1, #effects do
       if v.effects[j] ~= nil and math.random(1, effects[j].pChance) == 1 then
-        newParticle(v.room, v.x, v.y, effects[j].particle, 0, charHeight-tileSize)
+        newParticle(v.room, v.x, v.y, effects[j].particle, 0, charImgs.height[v.actor.item.img]-tileSize)
       end
     end
   end
   for i, v in ipairs(currentLevel.enemyActors) do
     for j = 1, #effects do
       if v.effects[j] ~= nil and math.random(1, effects[j].pChance) == 1 then
-        newParticle(v.room, v.x, v.y, effects[j].particle, 0, enemyHeight-tileSize)
+        newParticle(v.room, v.x, v.y, effects[j].particle, 0, charImgs.height[v.actor.item.img]-tileSize)
       end
     end
   end

@@ -111,6 +111,9 @@ function pathIsValid(path, actor)
 end
 
 function getDirection(a, b)
+  if a.x-b.x == 0 and a.y - b.y == 0 then
+    return {x = 0, y = 0}
+  end
   local angle = math.deg(math.atan2(a.y-b.y, a.x-b.x))
   if angle > 45 and angle < 135 then
     return {x = 0, y = -1}
@@ -229,5 +232,17 @@ function neighbors(a, b)
     return true
   else
     return false
+  end
+end
+
+function coordToStringDir(dir)
+  if (dir.x == 0 and dir.y ==0) or (dir.x == 1 and dir.y == 0) or (dir.x == 1 and dir.y == -1) then -- set player direction
+    return "r"
+  elseif (dir.x == -1 and dir.y == 0) or (dir.x == -1 and dir.y == 1) then
+    return "l"
+  elseif (dir.x == 0 and dir.y == 1) or (dir.x == 1 and dir.y == 1) then
+    return "d"
+  elseif (dir.x == 0 and dir.y == -1) or (dir.x == -1 and dir.y == -1) then
+    return "u"
   end
 end

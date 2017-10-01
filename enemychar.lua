@@ -2,7 +2,6 @@ function enemychar_load()
   enemyActors = {}
   enemyActors[1] = {speed = 30, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2, type = 1, img = 1}
   enemyActors[2] = {speed = 120, turnPts = 10, moveAI = 1, combatAI = 1, eyesight = 164, health = 10, abilities = {1, 1}, weapon = 2, type = 2, img = 1}
-  enemyHeight = 38
 end
 
 function queueEnemyChars(room)
@@ -58,15 +57,15 @@ function queueEnemyChars(room)
         end
         if dmgEstimate > 0 then -- if attack will effect this enemy, signal it by flashing the health color
           love.graphics.setColor(gradient(5, color)) -- current health
-          love.graphics.rectangle("fill", tileSize-4-cameraPos.x, 10-cameraPos.y, v.displayHealth/v.actor.item.health*8, 2)
+          love.graphics.rectangle("fill", charImgs.width[v.actor.item.img]/2-4-cameraPos.x, 10-cameraPos.y, v.displayHealth/v.actor.item.health*8, 2)
           love.graphics.setColor(color) -- future health
           if (v.futureHealth- dmgEstimate) > 0 then
-            love.graphics.rectangle("fill", tileSize-4-cameraPos.x, 10-cameraPos.y, (v.futureHealth-dmgEstimate)/v.actor.item.health*8, 2)
+            love.graphics.rectangle("fill", charImgs.width[v.actor.item.img]/2-4-cameraPos.x, 10-cameraPos.y, (v.futureHealth-dmgEstimate)/v.actor.item.health*8, 2)
           end
         else
           love.graphics.setColor(color)
           if (v.displayHealth- dmgEstimate) > 0 then -- health after projectiles and possible current attack deal damage
-            love.graphics.rectangle("fill", tileSize-4-cameraPos.x, 10-cameraPos.y, v.displayHealth/v.actor.item.health*8, 2)
+            love.graphics.rectangle("fill", charImgs.width[v.actor.item.img]/2-4-cameraPos.x, 10-cameraPos.y, v.displayHealth/v.actor.item.health*8, 2)
           end
         end
 
@@ -78,13 +77,13 @@ function queueEnemyChars(room)
         else
           love.graphics.setColor(200, 200, 200)
         end
-        love.graphics.draw(enemyIcon.img, enemyIcon.quad[v.actor.item.type], tileSize-4-cameraPos.x, 1-cameraPos.y)
+        love.graphics.draw(enemyIcon.img, enemyIcon.quad[v.actor.item.type], charImgs.width[v.actor.item.img]/2-4-cameraPos.x, 1-cameraPos.y)
       end
 
       love.graphics.setCanvas(oldCanvas)
 
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {type = 1, img = canvas, x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z= enemyHeight-tileSize+12}
+      drawQueue[#drawQueue + 1] = {type = 1, img = canvas, x = math.floor(x)+tileSize*2-charImgs.width[v.actor.item.img]/2, y = math.floor(y)+tileSize/2, z= charImgs.height[v.actor.item.img]-tileSize+12}
     end
   end
 end

@@ -32,7 +32,7 @@ function startLevel(level)
     v.path = {}
     v.move = false
     v.dead = false
-    v.canvas = love.graphics.newCanvas(tileSize*2, charHeight)
+    v.canvas = love.graphics.newCanvas(charImgs.width[v.actor.item.img], charImgs.height[v.actor.item.img])
     v.targetMode = 0
     v.currentCost = 0
     v.coolDowns = {0, 0}
@@ -47,11 +47,12 @@ function startLevel(level)
     v.displayHealth = v.health
     v.futureHealth = v.health
     v.seen = {}
+    v.target = {}
     v.path = {}
     v.move = false
     v.dead = false
     v.targetMode = weapons[v.actor.item.weapon].targetMode
-    v.canvas = love.graphics.newCanvas(tileSize*2, enemyHeight+12)
+    v.canvas = love.graphics.newCanvas(charImgs.width[v.actor.item.img], charImgs.height[v.actor.item.img]+12)
     v.coolDowns = {0, 0}
     v.effects = {}
     v.dir = "r"

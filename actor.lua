@@ -72,6 +72,9 @@ function actor_update(dt)
       end
       currentActor.target.item = findTargetFuncs[currentActor.targetMode](currentActor, cursorPos, currentLevel.enemyActors)
       currentActor.target.valid = targetValidFuncs[currentActor.targetMode](currentActor.target.item, currentActor, currentActor.currentCost)
+      local x, y = tileToCoord(cursorPos.tX, cursorPos.tY)
+      local dir = getDirection(currentActor, {x = x, y = y})
+      currentActor.dir = coordToStringDir(dir)
     end
   end
 
@@ -129,15 +132,7 @@ function followPath(i, v, dt)
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)
-    if dir.x == 1 and dir.y == 0 then -- set player direction
-      v.dir = "r"
-    elseif dir.x == -1 and dir.y == 0 then
-      v.dir = "l"
-    elseif dir.x == 0 and dir.y == 1 then
-      v.dir = "d"
-    elseif dir.x == 0 and dir.y == -1 then
-      v.dir = "u"
-    end
+    v.dir = coordToStringDir(dir)
     local speed = currentActor.actor.item.speed
     v.x = v.x + dir.x * dt * speed
     v.y = v.y + dir.y * dt * speed
