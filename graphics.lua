@@ -36,7 +36,10 @@ function graphics_load()
   particleImgs.img, particleImgs.width, particleImgs.height, particleImgs.quad = loadFolder("particles")
 
   charImgs = {}
-  charImgs.img, charImgs.width, charImgs.height, charImgs.quad = loadFolder2("chars")
+  charImgs.img, charImgs.width, charImgs.height, charImgs.quad, charImgs.info = loadFolder2("chars")
+
+  weaponImgs = {}
+  weaponImgs.img, weaponImgs.width, weaponImgs.height, weaponImgs.quad, weaponImgs.info = loadFolder2("weapons")
 
   pathImg = love.graphics.newImage("path.png")
   pathQuad = createSpriteSheet(pathImg, 2, 3, 32, 16)
@@ -123,6 +126,7 @@ function loadFolder2(folder)
   local widthList = {}
   local heightList = {}
   local quadList = {}
+  local quadInfoList = {}
 
   local i = 1
   while true do
@@ -152,6 +156,8 @@ function loadFolder2(folder)
         for j = 1, animations do
           quadList[i].r[j] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i], 0, (j-1)*heightList[i])
         end
+
+        quadInfoList[i] = {center = {r = {x = quadInfo[3], y = quadInfo[4]}, l = {x = quadInfo[5], y = quadInfo[6]}, d = {x = quadInfo[7], y = quadInfo[8]}, u = {y = quadInfo[9], x = quadInfo[10]}}}
       else
         heightList[i] = imageList[i]:getHeight()
         widthList[i] = imageList[i]:getWidth()
@@ -161,7 +167,7 @@ function loadFolder2(folder)
       break
     end
   end
-  return imageList, widthList, heightList, quadList
+  return imageList, widthList, heightList, quadList, quadInfoList
 end
 
 

@@ -38,7 +38,14 @@ function queueChars(room)
       if v.dead == true then
         love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][3][1], -cameraPos.x, -cameraPos.y) -- draw char
       elseif v.targetMode > 0 and v.move == false then
+        local weapon = weapons[v.actor.item.weapon].img
+        if v.dir == "l" or v.dir == "u" then
+          love.graphics.draw(weaponImgs.img[weapon], weaponImgs.quad[weapon][v.dir][1][1], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[weapon].center[v.dir].y-cameraPos.y)
+        end
         love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][2][1], -cameraPos.x, -cameraPos.y) -- draw corpse
+        if v.dir == "r" or v.dir == "d" then
+          love.graphics.draw(weaponImgs.img[weapon], weaponImgs.quad[weapon][v.dir][1][1], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[weapon].center[v.dir].y-cameraPos.y)
+        end
       else
         love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][1][1], -cameraPos.x, -cameraPos.y) -- draw corpse
       end
