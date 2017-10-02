@@ -35,7 +35,13 @@ function queueChars(room)
         love.graphics.setColor(100, 200, 100)
       end
 
-      love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][1][1], -cameraPos.x, -cameraPos.y)
+      if v.dead == true then
+        love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][3][1], -cameraPos.x, -cameraPos.y) -- draw char
+      elseif v.targetMode > 0 and v.move == false then
+        love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][2][1], -cameraPos.x, -cameraPos.y) -- draw corpse
+      else
+        love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][1][1], -cameraPos.x, -cameraPos.y) -- draw corpse
+      end
       love.graphics.setCanvas(oldCanvas)
       love.graphics.setColor(255, 255, 255)
 

@@ -45,7 +45,7 @@ function particle_load()
 
   particleStartAIs[2] = function (v)
     v.move = true
-    v.zV = particles[v.type].zV
+    v.zV = math.random(0, particles[v.type].zV*10)/10
     v.xV = math.random(-particles[v.type].xV*10, particles[v.type].xV*10)/10
     v.yV = math.random(-particles[v.type].yV*10, particles[v.type].yV*10)/10
   end

@@ -104,7 +104,7 @@ function loadFolder(folder)
           quadInfo[#quadInfo+1] = line
         end
         widthList[i] = quadInfo[1]
-        local frames = math.floor(imageList[i]:getWidth()/quadInfo[1])
+        local frames = math.floor(imageList[i]:getWidth()/widthList[i])
         quadList[i] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i])
         quadInfoList[i] = {frame = 1, maxFrame = frames, speed = quadInfo[2]}
       else
@@ -134,23 +134,23 @@ function loadFolder2(folder)
           quadInfo[#quadInfo+1] = line
         end
 
-        quadList[i] = {['u'] = {}, ['d'] = {}, ['l'] = {}, ['r'] = {}}
+        quadList[i] = {u = {}, d = {}, l = {}, r = {}}
         widthList[i] = quadInfo[1]
         local frames = math.floor(imageList[i]:getWidth()/widthList[i]/4)
         heightList[i] = quadInfo[2]
         local animations = math.floor(imageList[i]:getHeight()/heightList[i])
 
         for j = 1, animations do
-          quadList[i]['u'][j] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i], imageList[i]:getWidth()/4*3, (j-1)*heightList[i])
+          quadList[i].u[j] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i], imageList[i]:getWidth()/4*3, (j-1)*heightList[i])
         end
         for j = 1, animations do
-          quadList[i]['d'][j] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i], imageList[i]:getWidth()/4*2, (j-1)*heightList[i])
+          quadList[i].d[j] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i], imageList[i]:getWidth()/4*2, (j-1)*heightList[i])
         end
         for j = 1, animations do
-          quadList[i]['l'][j] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i], imageList[i]:getWidth()/4, (j-1)*heightList[i])
+          quadList[i].l[j] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i], imageList[i]:getWidth()/4, (j-1)*heightList[i])
         end
         for j = 1, animations do
-          quadList[i]['r'][j] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i], 0, (j-1)*heightList[i])
+          quadList[i].r[j] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i], 0, (j-1)*heightList[i])
         end
       else
         heightList[i] = imageList[i]:getHeight()

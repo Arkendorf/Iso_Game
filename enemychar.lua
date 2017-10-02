@@ -36,10 +36,10 @@ function queueEnemyChars(room)
         love.graphics.setColor(200, 100, 100)
       end
 
-      love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][1][1], -cameraPos.x, 12-cameraPos.y)
-
-      -- draw hud
+      -- draw hud and char
       if v.dead == false then
+        love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][1][1], -cameraPos.x, 12-cameraPos.y) -- draw char
+
         local dmgEstimate = 0
         local color = palette.red
         if currentActor.target.item ~= nil and currentActor.target.item.x == v.x and currentActor.target.item.y == v.y then -- check if player target is this enemy
@@ -78,6 +78,8 @@ function queueEnemyChars(room)
           love.graphics.setColor(200, 200, 200)
         end
         love.graphics.draw(enemyIcon.img, enemyIcon.quad[v.actor.item.type], charImgs.width[v.actor.item.img]/2-4-cameraPos.x, 1-cameraPos.y)
+      else
+        love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][1][1], -cameraPos.x, 12-cameraPos.y) -- draw char
       end
 
       love.graphics.setCanvas(oldCanvas)

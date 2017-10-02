@@ -154,11 +154,9 @@ function damage(a, b, table, info)
     if v.dead == false then
       dmg = getDamage(a, v, b, info)
       v.health = v.health - dmg
-      local angle = getAngle({x = a.x, y = a.y}, {x = v.x, y = v.y})
-      local xOffset, yOffset = (tileSize/4*math.cos(angle)), (tileSize/4*math.sin(angle))
 
       for i = 1, math.ceil(dmg) do
-        newParticle(a.room, v.x-xOffset, v.y-yOffset, 2, 0)
+        newParticle(a.room, v.x, v.y, 2, 0, (charImgs.height[b.actor.item.img]-tileSize)/2)
       end
     end
   end
