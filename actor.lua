@@ -72,9 +72,6 @@ function actor_update(dt)
       end
       currentActor.target.item = findTargetFuncs[currentActor.targetMode](currentActor, cursorPos, currentLevel.enemyActors)
       currentActor.target.valid = targetValidFuncs[currentActor.targetMode](currentActor.target.item, currentActor, currentActor.currentCost)
-      local x, y = tileToCoord(cursorPos.tX, cursorPos.tY)
-      local dir = getDirection(currentActor, {x = x, y = y})
-      currentActor.dir = coordToStringDir(dir)
     end
   end
 
@@ -87,6 +84,12 @@ function actor_update(dt)
           followPath(i, v, dt)
         elseif v.turnPts > 0 then
           nextTurn = false -- dont end players turn if orders need to be given
+        end
+
+        if v.move == false and v.targetMode > 0 then -- decide which animation to draw
+          v.anim.quad = 2
+        else
+          v.anim.quad = 1
         end
       end
     end
@@ -114,11 +117,22 @@ function actor_mousepressed(x, y, button)
   elseif button == 1 and currentActor.mode == 1 and currentActor.target.valid == true then
     attack(currentActor, currentActor.target.item, currentLevel.enemyActors)
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
+
+    currentActor.anim.quad = 3
+    local x, y = tileToCoord(cursorPos.tX, cursorPos.tY) -- set dir
+    local dir = getDirection(currentActor, {x = x, y = y})
+    currentActor.dir = coordToStringDir(dir)
     return true
   elseif button ==1 and currentActor.mode > 1 and currentActor.target.valid == true and currentActor.coolDowns[currentActor.mode-1] == 0 then
     useAbility(currentActor.actor.item.abilities[currentActor.mode-1], currentActor, currentActor.target.item, currentLevel.enemyActors)
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
     currentActor.coolDowns[currentActor.mode-1] = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].coolDown
+
+    currentActor.anim.quad = 3
+    local x, y = tileToCoord(cursorPos.tX, cursorPos.tY) -- set dir
+    local dir = getDirection(currentActor, {x = x, y = y})
+    currentActor.dir = coordToStringDir(dir)
+    return true
   end
   return false
 end

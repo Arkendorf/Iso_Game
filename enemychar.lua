@@ -36,10 +36,21 @@ function queueEnemyChars(room)
         love.graphics.setColor(200, 100, 100)
       end
 
+      if v.anim.quad == 2 then -- draw player and possibly weapon
+        local weapon = weapons[v.actor.item.weapon].img
+        if v.dir == "l" or v.dir == "u" then
+          love.graphics.draw(weaponImgs.img[weapon], weaponImgs.quad[weapon][v.dir][1][v.anim.frame], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[weapon].center[v.dir].y-cameraPos.y)
+        end
+        love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][v.anim.quad][math.floor(v.anim.frame)], -cameraPos.x, 12-cameraPos.y) -- draw corpse
+        if v.dir == "r" or v.dir == "d" then
+          love.graphics.draw(weaponImgs.img[weapon], weaponImgs.quad[weapon][v.dir][1][1], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[weapon].center[v.dir].y-cameraPos.y)
+        end
+      else
+        love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][v.anim.quad][math.floor(v.anim.frame)], -cameraPos.x, 12-cameraPos.y) -- draw corpse
+      end
+
       -- draw hud and char
       if v.dead == false then
-        love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][1][1], -cameraPos.x, 12-cameraPos.y) -- draw char
-
         local dmgEstimate = 0
         local color = palette.red
         if currentActor.target.item ~= nil and currentActor.target.item.x == v.x and currentActor.target.item.y == v.y then -- check if player target is this enemy
@@ -78,8 +89,6 @@ function queueEnemyChars(room)
           love.graphics.setColor(200, 200, 200)
         end
         love.graphics.draw(enemyIcon.img, enemyIcon.quad[v.actor.item.type], charImgs.width[v.actor.item.img]/2-4-cameraPos.x, 1-cameraPos.y)
-      else
-        love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][1][1], -cameraPos.x, 12-cameraPos.y) -- draw char
       end
 
       love.graphics.setCanvas(oldCanvas)

@@ -38,6 +38,7 @@ function startLevel(level)
     v.coolDowns = {0, 0}
     v.effects = {}
     v.dir = "r"
+    v.anim = {quad = 1, frame = 1}
   end
   for i, v in ipairs(currentLevel.enemyActors) do
     v.actor.item = enemyActors[v.actor.num]
@@ -56,6 +57,7 @@ function startLevel(level)
     v.coolDowns = {0, 0}
     v.effects = {}
     v.dir = "r"
+    v.anim = {quad = 1, frame = 1}
   end
   for i, v in ipairs(currentLevel.hazards) do
     v.alpha = 255
