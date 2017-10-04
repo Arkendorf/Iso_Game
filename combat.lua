@@ -231,7 +231,7 @@ function combat_update(dt)
   for i, v in ipairs(currentLevel.actors) do
     if v.health <= 0 then
       v.dead = true
-      v.anim.quad = 4
+      v.anim.quad = 4 -- draw player as dead
       for j, k in ipairs(currentLevel.enemyActors) do
         k.seen[i] = false
       end
@@ -248,7 +248,7 @@ function combat_update(dt)
   for i, v in ipairs(currentLevel.enemyActors) do
     if v.health <= 0 then
       v.dead = true
-      v.anim.quad = 4
+      v.anim.quad = 4 -- draw enemy as dead
     end
   end
 

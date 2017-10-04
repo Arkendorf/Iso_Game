@@ -4,7 +4,7 @@ function door_load()
 end
 
 function door_update(dt)
-  for i, v in pairs(doorTiles.quadInfo) do
+  for i, v in pairs(doorTiles.info) do
     v.frame = v.frame + dt * v.speed
     if v.frame > v.maxFrame+1 then
       v.frame = 1
@@ -43,7 +43,7 @@ function queueDoors(room)
       if doorTiles.quad[img] == nil then
         drawQueue[#drawQueue + 1] = {type = 1, img = doorTiles.img[img], x = x+tileSize*2-doorTiles.width[img]/2, y = y+tileSize/2, z = doorTiles.height[img]-tileSize, alpha = v.alpha}
       else
-        drawQueue[#drawQueue + 1] = {type = 1, img = doorTiles.img[img], quad = doorTiles.quad[img][math.floor(doorTiles.quadInfo[img].frame)], x = x+tileSize*2-doorTiles.width[img]/2, y = y+tileSize/2, z = doorTiles.height[img]-tileSize, alpha = v.alpha}
+        drawQueue[#drawQueue + 1] = {type = 1, img = doorTiles.img[img], quad = doorTiles.quad[img][math.floor(doorTiles.info[img].frame)], x = x+tileSize*2-doorTiles.width[img]/2, y = y+tileSize/2, z = doorTiles.height[img]-tileSize, alpha = v.alpha}
       end
     end
   end
@@ -79,7 +79,7 @@ function drawFlatDoors(room)
       if doorTiles.quad[img] == nil then
         love.graphics.draw(doorTiles.img[img], x+tileSize-doorTiles.width[img]/2, y-doorTiles.height[img]+tileSize)
       else
-        love.graphics.draw(doorTiles.img[img], doorTiles.quad[img][math.floor(doorTiles.quadInfo[img].frame)], x+tileSize-doorTiles.width[img]/2, y-doorTiles.height[img]+tileSize)
+        love.graphics.draw(doorTiles.img[img], doorTiles.quad[img][math.floor(doorTiles.info[img].frame)], x+tileSize-doorTiles.width[img]/2, y-doorTiles.height[img]+tileSize)
       end
     end
   end

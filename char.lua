@@ -29,22 +29,24 @@ function queueChars(room)
           end
         end
       end
-      if r ~= nil and g ~= nil and g ~= nil then -- set color to effect color if it exists
-        love.graphics.setColor(r, g, b)
-      else
-        love.graphics.setColor(100, 200, 100)
+      if r == nil or g == nil or g == nil then -- set color to effect color if it exists
+        r, g, b = 100, 200, 100
       end
 
-      if v.anim.quad == 2 or v.anim.quad == 3 then -- draw player and possibly weapon
+      if v.anim.quad == 2 then -- draw player and possibly weapon
         local weapon = weapons[v.actor.item.weapon].img
         if v.dir == "l" or v.dir == "u" then
-          love.graphics.draw(weaponImgs.img[weapon], weaponImgs.quad[weapon][v.dir][1][1], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[weapon].center[v.dir].y-cameraPos.y)
+          love.graphics.setColor(255, 255, 255)
+          love.graphics.draw(weaponImgs.img[weapon], weaponImgs.quad[weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[weapon].center[v.dir].y-cameraPos.y)
         end
+        love.graphics.setColor(r, g, b)
         love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][v.anim.quad][math.floor(v.anim.frame)], -cameraPos.x, -cameraPos.y) -- draw corpse
         if v.dir == "r" or v.dir == "d" then
-          love.graphics.draw(weaponImgs.img[weapon], weaponImgs.quad[weapon][v.dir][1][1], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[weapon].center[v.dir].y-cameraPos.y)
+          love.graphics.setColor(255, 255, 255)
+          love.graphics.draw(weaponImgs.img[weapon], weaponImgs.quad[weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[weapon].center[v.dir].y-cameraPos.y)
         end
       else
+        love.graphics.setColor(r, g, b)
         love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][v.anim.quad][math.floor(v.anim.frame)], -cameraPos.x, -cameraPos.y) -- draw corpse
       end
 

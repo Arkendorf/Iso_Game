@@ -28,7 +28,7 @@ function hazard_update(dt)
       end
     end
   end
-  for i, v in pairs(hazardTiles.quadInfo) do
+  for i, v in pairs(hazardTiles.info) do
     v.frame = v.frame + dt * v.speed
     if v.frame > v.maxFrame+1 then
       v.frame = 1
@@ -50,7 +50,7 @@ function queueHazards(room)
       if hazardTiles.quad[img] == nil then
         drawQueue[#drawQueue + 1] = {type = 1, img = hazardTiles.img[img], x = x+tileSize*2-hazardTiles.width[img]/2, y = y+tileSize/2, z = hazardTiles.height[img]-tileSize, alpha = v.alpha}
       else
-        drawQueue[#drawQueue + 1] = {type = 1, img = hazardTiles.img[img], quad = hazardTiles.quad[img][math.floor(hazardTiles.quadInfo[img].frame)], x = x+tileSize*2-hazardTiles.width[img]/2, y = y+tileSize/2, z = hazardTiles.height[img]-tileSize, alpha = v.alpha}
+        drawQueue[#drawQueue + 1] = {type = 1, img = hazardTiles.img[img], quad = hazardTiles.quad[img][math.floor(hazardTiles.info[img].frame)], x = x+tileSize*2-hazardTiles.width[img]/2, y = y+tileSize/2, z = hazardTiles.height[img]-tileSize, alpha = v.alpha}
       end
     end
   end
@@ -71,7 +71,7 @@ function drawFlatHazards(room)
       if hazardTiles.quad[img] == nil then
         love.graphics.draw(hazardTiles.img[img], x+tileSize-hazardTiles.width[img]/2, y-hazardTiles.height[img]+tileSize)
       else
-        love.graphics.draw(hazardTiles.img[img], hazardTiles.quad[img][math.floor(hazardTiles.quadInfo[img].frame)], x+tileSize-hazardTiles.width[img]/2, y-hazardTiles.height[img]+tileSize)
+        love.graphics.draw(hazardTiles.img[img], hazardTiles.quad[img][math.floor(hazardTiles.info[img].frame)], x+tileSize-hazardTiles.width[img]/2, y-hazardTiles.height[img]+tileSize)
       end
     end
   end

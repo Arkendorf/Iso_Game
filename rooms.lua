@@ -21,7 +21,7 @@ function rooms_load()
 end
 
 function rooms_update(dt)
-  for i, v in pairs(tiles.quadInfo) do
+  for i, v in pairs(tiles.info) do
     v.frame = v.frame + dt * v.speed
     if v.frame > v.maxFrame+1 then
       v.frame = 1
@@ -115,7 +115,7 @@ function queueWalls(room)
         if tiles.quad[img] == nil then
           drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[img], x = x+tileSize*2-tiles.width[img]/2, y = y+tileSize/2, z = tiles.height[img]-tileSize, alpha = roomAlphas[room][i][j]}
         else
-          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[img], quad = tiles.quad[img][math.floor(tiles.quadInfo[img].frame)], x = x+tileSize*2-tiles.width[img]/2, y = y+tileSize/2, z = tiles.height[img]-tileSize, alpha = roomAlphas[room][i][j]}
+          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[img], quad = tiles.quad[img][math.floor(tiles.info[img].frame)], x = x+tileSize*2-tiles.width[img]/2, y = y+tileSize/2, z = tiles.height[img]-tileSize, alpha = roomAlphas[room][i][j]}
         end
       end
     end
@@ -131,7 +131,7 @@ function queueCover(room)
         if tiles.quad[img] == nil then
           drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[img], x = x+tileSize*2-tiles.width[img]/2, y = y+tileSize/2, z = tiles.height[img]-tileSize, alpha = roomAlphas[room][i][j]}
         else
-          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[img], quad = tiles.quad[img][math.floor(tiles.quadInfo[img].frame)], x = x+tileSize*2-tiles.width[img]/2, y = y+tileSize/2, z = tiles.height[img]-tileSize, alpha = roomAlphas[room][i][j]}
+          drawQueue[#drawQueue + 1] = {type = 1, img = tiles.img[img], quad = tiles.quad[img][math.floor(tiles.info[img].frame)], x = x+tileSize*2-tiles.width[img]/2, y = y+tileSize/2, z = tiles.height[img]-tileSize, alpha = roomAlphas[room][i][j]}
         end
       end
     end
@@ -165,7 +165,7 @@ function drawFloor(room)
         if tiles.quad[img] == nil then
           love.graphics.draw(tiles.img[img], x+tileSize-tiles.width[img]/2, y-tiles.height[img]+tileSize)
         else
-          love.graphics.draw(tiles.img[img], tiles.quad[img][math.floor(tiles.quadInfo[img].frame)], x+tileSize-tiles.width[img]/2, y-tiles.height[img]+tileSize)
+          love.graphics.draw(tiles.img[img], tiles.quad[img][math.floor(tiles.info[img].frame)], x+tileSize-tiles.width[img]/2, y-tiles.height[img]+tileSize)
         end
       elseif roomAlphas[room][i][j] < 255 then -- if tile is being hidden, draw a marker
         local x, y = tileToIso(j, i)

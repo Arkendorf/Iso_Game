@@ -86,10 +86,22 @@ function actor_update(dt)
           nextTurn = false -- dont end players turn if orders need to be given
         end
 
-        if v.move == false and v.targetMode > 0 then -- decide which animation to draw
+        if v.move == true then -- decide which animation to draw
+          v.anim.quad = 3
+        elseif v.move == false and v.targetMode > 0 then
           v.anim.quad = 2
-        else
+        elseif v.anim.weaponQuad ~= 2 then
           v.anim.quad = 1
+        end
+
+        v.anim.frame = v.anim.frame + dt * charImgs.info[v.actor.item.img].speed[v.anim.quad] -- animate player
+        if v.anim.frame >= charImgs.info[v.actor.item.img].maxFrame[v.anim.quad]+1 then
+          v.anim.frame = 1
+        end
+
+        v.anim.weaponFrame = v.anim.weaponFrame + dt * weaponImgs.info[weapons[v.actor.item.weapon].img].speed[v.anim.weaponQuad] -- animate weapon
+        if v.anim.weaponFrame >= weaponImgs.info[weapons[v.actor.item.weapon].img].maxFrame[v.anim.weaponQuad]+1 then
+          v.anim.weaponFrame = 1
         end
       end
     end
@@ -118,7 +130,9 @@ function actor_mousepressed(x, y, button)
     attack(currentActor, currentActor.target.item, currentLevel.enemyActors)
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
 
-    currentActor.anim.quad = 3
+    currentActor.anim.weaponQuad = 2
+    currentActor.anim.weaponFrame = 1
+    newDelay(weaponImgs.info[weapons[currentActor.actor.item.weapon].img].maxFrame[2]/weaponImgs.info[weapons[currentActor.actor.item.weapon].img].speed[2], function (player) player.anim.weaponQuad = 1 end, {currentActor})
     local x, y = tileToCoord(cursorPos.tX, cursorPos.tY) -- set dir
     local dir = getDirection(currentActor, {x = x, y = y})
     currentActor.dir = coordToStringDir(dir)
@@ -128,7 +142,9 @@ function actor_mousepressed(x, y, button)
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
     currentActor.coolDowns[currentActor.mode-1] = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].coolDown
 
-    currentActor.anim.quad = 3
+    currentActor.anim.weaponQuad = 2
+    currentActor.anim.weaponFrame = 1
+    newDelay(weaponImgs.info[weapons[currentActor.actor.item.weapon].img].maxFrame[2]/weaponImgs.info[weapons[currentActor.actor.item.weapon].img].speed[2], function (player) player.anim.weaponQuad = 1 end, {currentActor})
     local x, y = tileToCoord(cursorPos.tX, cursorPos.tY) -- set dir
     local dir = getDirection(currentActor, {x = x, y = y})
     currentActor.dir = coordToStringDir(dir)

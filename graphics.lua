@@ -23,14 +23,14 @@ function graphics_load()
   tileSize = 16
 
   tiles = {}
-  tiles.img, tiles.width, tiles.height, tiles.quad, tiles.quadInfo = loadFolder("tiles")
+  tiles.img, tiles.width, tiles.height, tiles.quad, tiles.info = loadFolder("tiles")
   tileTypeImg = love.graphics.newImage("tileindicator.png")
 
   hazardTiles = {}
-  hazardTiles.img, hazardTiles.width, hazardTiles.height, hazardTiles.quad, hazardTiles.quadInfo = loadFolder("hazards")
+  hazardTiles.img, hazardTiles.width, hazardTiles.height, hazardTiles.quad, hazardTiles.info = loadFolder("hazards")
 
   doorTiles = {}
-  doorTiles.img, doorTiles.width, doorTiles.height, doorTiles.quad, doorTiles.quadInfo = loadFolder("doors")
+  doorTiles.img, doorTiles.width, doorTiles.height, doorTiles.quad, doorTiles.info = loadFolder("doors")
 
   particleImgs = {}
   particleImgs.img, particleImgs.width, particleImgs.height, particleImgs.quad = loadFolder("particles")
@@ -94,7 +94,7 @@ function loadFolder(folder)
   local widthList = {}
   local heightList = {}
   local quadList = {}
-  local quadInfoList = {}
+  local infoList = {}
 
   local i = 1
   while true do
@@ -102,14 +102,12 @@ function loadFolder(folder)
       imageList[i] = love.graphics.newImage(folder.."/"..tostring(i)..".png")
       heightList[i] = imageList[i]:getHeight()
       if love.filesystem.isFile(folder.."/"..tostring(i)..".txt") == true then
-        local quadInfo = {}
-        for line in love.filesystem.lines(folder.."/"..tostring(i)..".txt") do
-          quadInfo[#quadInfo+1] = line
-        end
-        widthList[i] = quadInfo[1]
+        infoList[i] = love.filesystem.load(folder.."/"..tostring(i)..".txt")()
+        widthList[i] = infoList[i].w
         local frames = math.floor(imageList[i]:getWidth()/widthList[i])
         quadList[i] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i])
-        quadInfoList[i] = {frame = 1, maxFrame = frames, speed = quadInfo[2]}
+        infoList[i].frame = 1
+        infoList[i].maxFrame = frames
       else
         widthList[i] = imageList[i]:getWidth()
       end
@@ -118,7 +116,7 @@ function loadFolder(folder)
       break
     end
   end
-  return imageList, widthList, heightList, quadList, quadInfoList
+  return imageList, widthList, heightList, quadList, infoList
 end
 
 function loadFolder2(folder)
@@ -126,22 +124,19 @@ function loadFolder2(folder)
   local widthList = {}
   local heightList = {}
   local quadList = {}
-  local quadInfoList = {}
+  local infoList = {}
 
   local i = 1
   while true do
     if love.filesystem.isFile(folder.."/"..tostring(i)..".png") == true then
       imageList[i] = love.graphics.newImage(folder.."/"..tostring(i)..".png")
       if love.filesystem.isFile(folder.."/"..tostring(i)..".txt") == true then
-        local quadInfo = {}
-        for line in love.filesystem.lines(folder.."/"..tostring(i)..".txt") do
-          quadInfo[#quadInfo+1] = line
-        end
+        infoList[i] = love.filesystem.load(folder.."/"..tostring(i)..".txt")()
 
         quadList[i] = {u = {}, d = {}, l = {}, r = {}}
-        widthList[i] = quadInfo[1]
+        widthList[i] = infoList[i].w
         local frames = math.floor(imageList[i]:getWidth()/widthList[i]/4)
-        heightList[i] = quadInfo[2]
+        heightList[i] = infoList[i].h
         local animations = math.floor(imageList[i]:getHeight()/heightList[i])
 
         for j = 1, animations do
@@ -156,8 +151,6 @@ function loadFolder2(folder)
         for j = 1, animations do
           quadList[i].r[j] = createSpriteSheet(imageList[i], frames, 1, widthList[i], heightList[i], 0, (j-1)*heightList[i])
         end
-
-        quadInfoList[i] = {center = {r = {x = quadInfo[3], y = quadInfo[4]}, l = {x = quadInfo[5], y = quadInfo[6]}, d = {x = quadInfo[7], y = quadInfo[8]}, u = {y = quadInfo[9], x = quadInfo[10]}}}
       else
         heightList[i] = imageList[i]:getHeight()
         widthList[i] = imageList[i]:getWidth()
@@ -167,7 +160,7 @@ function loadFolder2(folder)
       break
     end
   end
-  return imageList, widthList, heightList, quadList, quadInfoList
+  return imageList, widthList, heightList, quadList, infoList
 end
 
 
