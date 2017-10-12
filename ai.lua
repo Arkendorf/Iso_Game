@@ -65,27 +65,27 @@ function ai_load()
   enemyCombatAIs = {}
 
   enemyCombatAIs[1] = function (enemyNum, enemy, target, info) -- for normal weapons
-    local score = 0
-    if info.AOE ~= nil then
-      for i, v in ipairs(currentLevel.actors) do
-        if v.dead == false and enemy.seen[i] == true then
-          local dmg = getDamage(enemy, v, target, info)
-          score = score + dmg
-          if v.health - dmg <= 0 then -- if enemy kills target, add a bonus
-            score = score + killPoints
-          end
-        end
-      end
-    else
-      local dmg = getDamage(enemy, target, target, info)
-      score = score + dmg
-      if target.health - dmg <= 0 then -- if enemy kills target, add a bonus
-        score = score + killPoints
-      end
-    end
-    return score
+    -- local score = 0
+    -- if info.AOE ~= nil then
+    --   for i, v in ipairs(currentLevel.actors) do
+    --     if v.dead == false and enemy.seen[i] == true then
+    --       local dmg = getDamage(enemy, v, target, info)
+    --       score = score + dmg
+    --       if v.health - dmg <= 0 then -- if enemy kills target, add a bonus
+    --         score = score + killPoints
+    --       end
+    --     end
+    --   end
+    -- else
+    --   local dmg = getDamage(enemy, target, target, info)
+    --   score = score + dmg
+    --   if target.health - dmg <= 0 then -- if enemy kills target, add a bonus
+    --     score = score + killPoints
+    --   end
+    -- end
+    local dmg, kills = getTotalDamage(enemy, target, currentLevel.actors, info)
+    return dmg + kills*killPoints
   end
-
 end
 
 function rankPathToTile(enemyNum, enemy, list, x, y)
