@@ -62,12 +62,39 @@ function pathDirection(a, b)
   end
 end
 
-function setValidColor(bool)
-  if bool then
-    love.graphics.setColor(palette.green)
+function setValidColor(actor)
+  if actor.mode == 0 then
+    if actor.path.valid and tileInTable(cursorPos.tX, cursorPos.tY, currentLevel.hazards) then
+      love.graphics.setColor(palette.orange)
+    elseif actor.path.valid then
+      love.graphics.setColor(palette.green)
+    else
+      love.graphics.setColor(palette.red)
+    end
   else
-    love.graphics.setColor(palette.red)
+    if actor.target.valid then
+      local info = nil
+      if actor.mode > 1 then
+        info = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].dmgInfo
+      end
+      if actor.target.item ~= nil and getTotalDamage(currentActor, currentActor.target.item, currentLevel.enemyActors, info) <= 0 then
+        love.graphics.setColor(palette.orange)
+      else
+        love.graphics.setColor(palette.green)
+      end
+    else
+      love.graphics.setColor(palette.red)
+    end
   end
+end
+
+function tileInTable(x, y, table)
+  for i, v in ipairs(table) do
+    if x == v.tX and y == v.tY then
+      return true, v
+    end
+  end
+  return false
 end
 
 function pathIsValid(path, actor)

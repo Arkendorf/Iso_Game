@@ -1,7 +1,7 @@
 function char_load()
   playerActors ={}
-  playerActors[1] = {speed = 30, turnPts = 10, name = "Luke", health = 20, abilities = {1, 2}, weapon = 1, type = 1, img = 1}
-  playerActors[2] = {speed = 120, turnPts = 20, name = "Ben", health = 10, abilities = {1, 2}, weapon = 1, type = 2, img = 1}
+  playerActors[1] = {speed = 30, turnPts = 10, name = "Luke", health = 20, abilities = {1, 1}, weapon = 1, type = 1, img = 1}
+  playerActors[2] = {speed = 120, turnPts = 20, name = "Ben", health = 10, abilities = {1, 1}, weapon = 1, type = 2, img = 1}
 end
 
 function queueChars(room)
@@ -34,16 +34,20 @@ function queueChars(room)
       end
 
       if v.anim.quad == 2 then -- draw player and possibly weapon
-        local weapon = weapons[v.actor.item.weapon].img
+        if v.mode == 1 and v.anim.weaponQuad == 1 then
+          v.weapon = weapons[v.actor.item.weapon].img
+        elseif v.anim.weaponQuad == 1 then
+          v.weapon = abilities[v.actor.item.abilities[v.mode-1]].img
+        end
         if v.dir == "l" or v.dir == "u" then
           love.graphics.setColor(255, 255, 255)
-          love.graphics.draw(weaponImgs.img[weapon], weaponImgs.quad[weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[weapon].center[v.dir].y-cameraPos.y)
+          love.graphics.draw(weaponImgs.img[v.weapon], weaponImgs.quad[v.weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[v.weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[v.weapon].center[v.dir].y-cameraPos.y)
         end
         love.graphics.setColor(r, g, b)
         love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][v.anim.quad][math.floor(v.anim.frame)], -cameraPos.x, -cameraPos.y) -- draw corpse
         if v.dir == "r" or v.dir == "d" then
           love.graphics.setColor(255, 255, 255)
-          love.graphics.draw(weaponImgs.img[weapon], weaponImgs.quad[weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[weapon].center[v.dir].y-cameraPos.y)
+          love.graphics.draw(weaponImgs.img[v.weapon], weaponImgs.quad[v.weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[v.weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[v.weapon].center[v.dir].y-cameraPos.y)
         end
       else
         love.graphics.setColor(r, g, b)

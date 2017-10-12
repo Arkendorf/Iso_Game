@@ -44,7 +44,7 @@ function drawRoom()
   drawFlatDoors(currentRoom)
   drawFlatParticles(currentRoom)
 
-  setValidColor(currentActor.path.valid) -- sets color of path indicator
+  setValidColor(currentActor) -- sets color of path indicator
   if currentActor.mode == 0 then
     drawPath(currentActor) -- draws path indicator
   end

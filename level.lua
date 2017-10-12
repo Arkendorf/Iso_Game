@@ -39,6 +39,7 @@ function startLevel(level)
     v.effects = {}
     v.dir = "r"
     v.anim = {quad = 1, frame = 1, weaponQuad = 1, weaponFrame = 1}
+    v.weapon = weapons[v.actor.item.weapon].img
   end
   for i, v in ipairs(currentLevel.enemyActors) do
     v.actor.item = enemyActors[v.actor.num]
@@ -58,6 +59,7 @@ function startLevel(level)
     v.effects = {}
     v.dir = "r"
     v.anim = {quad = 1, frame = 1, weaponQuad = 1, weaponFrame = 1}
+    v.weapon = weapons[v.actor.item.weapon].img
   end
   for i, v in ipairs(currentLevel.hazards) do
     v.alpha = 255

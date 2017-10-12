@@ -41,8 +41,6 @@ function enemyactor_update(dt)
           if result == false then
             v.turnPts = 0
           else
-            local dir = getDirection(v, v.target.item)
-            v.dir = coordToStringDir(dir) -- face target
             nextTurn = false -- dont end enemies turn if orders need to be given
             v.wait = true
             newDelay(1/enemyTurnSpeed*.5, function (enemy) enemy.wait = false end, {v})
@@ -140,6 +138,10 @@ function enemyAttack(enemyNum, enemy) -- damages player, returns true if it atta
   local target = findEnemyTarget(enemyNum, enemy, enemyCombatAIs[enemy.actor.item.combatAI], weapons[enemy.actor.item.weapon], weapons[enemy.actor.item.weapon].cost)
   if target ~= nil then
     enemy.target.item = target
+
+    local dir = getDirection(enemy, enemy.target.item)
+    enemy.dir = coordToStringDir(dir) -- face target
+
     attack(enemy, target, currentLevel.actors)
     enemy.turnPts = enemy.turnPts - weapons[enemy.actor.item.weapon].cost
     return true

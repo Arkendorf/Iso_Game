@@ -127,17 +127,22 @@ function actor_mousepressed(x, y, button)
     currentActor.path.valid = false
     return true
   elseif button == 1 and currentActor.mode == 1 and currentActor.target.valid == true then
+    local x, y = tileToCoord(cursorPos.tX, cursorPos.tY) -- set dir
+    local dir = getDirection(currentActor, {x = x, y = y})
+    currentActor.dir = coordToStringDir(dir)
+
     attack(currentActor, currentActor.target.item, currentLevel.enemyActors)
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
 
     currentActor.anim.weaponQuad = 2
     currentActor.anim.weaponFrame = 1
     newDelay(weaponImgs.info[weapons[currentActor.actor.item.weapon].img].maxFrame[2]/weaponImgs.info[weapons[currentActor.actor.item.weapon].img].speed[2], function (player) player.anim.weaponQuad = 1 end, {currentActor})
+    return true
+  elseif button ==1 and currentActor.mode > 1 and currentActor.target.valid == true and currentActor.coolDowns[currentActor.mode-1] == 0 then
     local x, y = tileToCoord(cursorPos.tX, cursorPos.tY) -- set dir
     local dir = getDirection(currentActor, {x = x, y = y})
     currentActor.dir = coordToStringDir(dir)
-    return true
-  elseif button ==1 and currentActor.mode > 1 and currentActor.target.valid == true and currentActor.coolDowns[currentActor.mode-1] == 0 then
+
     useAbility(currentActor.actor.item.abilities[currentActor.mode-1], currentActor, currentActor.target.item, currentLevel.enemyActors)
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
     currentActor.coolDowns[currentActor.mode-1] = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].coolDown
@@ -145,9 +150,6 @@ function actor_mousepressed(x, y, button)
     currentActor.anim.weaponQuad = 2
     currentActor.anim.weaponFrame = 1
     newDelay(weaponImgs.info[weapons[currentActor.actor.item.weapon].img].maxFrame[2]/weaponImgs.info[weapons[currentActor.actor.item.weapon].img].speed[2], function (player) player.anim.weaponQuad = 1 end, {currentActor})
-    local x, y = tileToCoord(cursorPos.tX, cursorPos.tY) -- set dir
-    local dir = getDirection(currentActor, {x = x, y = y})
-    currentActor.dir = coordToStringDir(dir)
     return true
   end
   return false

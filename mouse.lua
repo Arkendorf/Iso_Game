@@ -22,13 +22,10 @@ end
 
 function mouse_draw()
   if currentActor.targetMode == 0 then
-    setValidColor(currentActor.path.valid)
+    setValidColor(currentActor)
     love.graphics.draw(cursorImg, tileToIso(cursorPos.tX,cursorPos.tY))
-  elseif currentActor.targetMode == 4 then
-    setValidColor(currentActor.target.valid)
-    love.graphics.draw(meleeImg, tileToIso(cursorPos.tX,cursorPos.tY))
   elseif currentActor.targetMode ~= 3 then
-    setValidColor(currentActor.target.valid)
+    setValidColor(currentActor)
     love.graphics.draw(targetImg, tileToIso(cursorPos.tX,cursorPos.tY))
   end
 end

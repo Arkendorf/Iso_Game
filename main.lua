@@ -28,7 +28,7 @@ function love.load()
     text[#text+1] = line
   end
   palette = {green = {0, 255, 0}, yellow = {255, 255, 0}, blue = {0, 0, 255}, cyan = {0, 255, 255}, purple = {255, 0, 255}, red = {255, 0, 0},
-             health = {255, 0, 0}, turnPts = {0, 255, 255}}
+             health = {255, 0, 0}, turnPts = {0, 255, 255}, orange = {255, 127, 0}}
 
   graphics_load()
   infobox_load()

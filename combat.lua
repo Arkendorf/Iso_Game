@@ -37,21 +37,6 @@ function combat_load()
     return actor
   end
 
-  findTargetFuncs[4] = function (actor, cursorPos, table)
-    local tX, tY = coordToTile(actor.x, actor.y)
-    if neighbors({x = cursorPos.tX, y = cursorPos.tY}, {x = tX, y = tY}) == true then
-      for i, v in ipairs(table) do
-        local tX, tY = coordToTile(v.x, v.y)
-        if v.room == actor.room and v.dead == false and cursorPos.tX == tX and cursorPos.tY == tY then
-          if actor.seen == nil or actor.seen[i] ~= nil then -- if enemy is finding target, make sure target is seen
-            return v
-          end
-        end
-      end
-    end
-    return nil
-  end
-
   targetValidFuncs = {}
 
   targetValidFuncs[1] = function (enemy, actor, cost)
@@ -79,18 +64,6 @@ function combat_load()
     end
     return false
   end
-
-  targetValidFuncs[4] = function (enemy, actor, cost)
-    if enemy ~= nil and actor.turnPts >= cost then
-      if enemy.room == actor.room and enemy.dead == false and enemy.futureHealth > 0 and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true then
-        return true
-      else
-        return false
-      end
-    else
-      return false
-    end
-  end
 end
 
 function attack(a, b, table)
@@ -117,9 +90,9 @@ function hitscanAttack(a, b, table, info) -- a is shooter, b is target, table is
   local xOffset, yOffset = (tileSize/2*math.cos(angle)), (tileSize/2*math.sin(angle))
 
   if info.particle ~= nil then
-    newParticle(a.room, a.x+xOffset, a.y+yOffset, info.particle, displayAngle)
+    newParticle(a.room, a.x+xOffset, a.y+yOffset, info.particle, displayAngle, charImgs.height[a.actor.item.img]-charImgs.info[a.actor.item.img].center[a.dir].y-tileSize/2)
   else
-    newParticle(a.room, a.x+xOffset, a.y+yOffset, 1, displayAngle)
+    newParticle(a.room, a.x+xOffset, a.y+yOffset, 1, displayAngle, charImgs.height[a.actor.item.img]-charImgs.info[a.actor.item.img].center[a.dir].y-tileSize/2)
   end
 end
 
@@ -136,17 +109,20 @@ function projectileAttack(a, b, table, info)
   local angle = getAngle({x = a.x, y = a.y}, {x = b.x, y = b.y})
   local xOffset, yOffset = (tileSize/2*math.cos(angle)), (tileSize/2*math.sin(angle))
 
-  newProjectile(table, info, a, b, a.x+xOffset, a.y+yOffset, b.x-xOffset, b.y-yOffset, displayAngle)
+  newProjectile(table, info, a, b, a.x+xOffset, a.y+yOffset, b.x-xOffset, b.y-yOffset, displayAngle, charImgs.height[a.actor.item.img]-charImgs.info[a.actor.item.img].center[a.dir].y-tileSize/2)
   if info.particle ~= nil then
-    newParticle(a.room, a.x+xOffset, a.y+yOffset, info.particle, displayAngle)
+    newParticle(a.room, a.x+xOffset, a.y+yOffset, info.particle, displayAngle, charImgs.height[a.actor.item.img]-charImgs.info[a.actor.item.img].center[a.dir].y-tileSize/2)
   else
-    newParticle(a.room, a.x+xOffset, a.y+yOffset, 1, displayAngle)
+    newParticle(a.room, a.x+xOffset, a.y+yOffset, 1, displayAngle, charImgs.height[a.actor.item.img]-charImgs.info[a.actor.item.img].center[a.dir].y-tileSize/2)
   end
 end
 
-function newProjectile(table, info, a, b, x, y, dX, dY, displayAngle, type)
+function newProjectile(table, info, a, b, x, y, dX, dY, displayAngle, type, z)
   local type = info.projectile
-  currentLevel.projectiles[#currentLevel.projectiles + 1] = {table = table, info = info, b = b, a = a, x = x, y = y, z = projectiles[type].z, dX = dX, dY = dY, angle = getAngle({x = x, y = y}, {x = dX, y = dY}), displayAngle = displayAngle, type = type, dir = getDirection({x = a.x, y = a.y}, {x = b.x, y = b.y}), speed = projectiles[type].speed}
+  if z == nil then
+    z = projectiles[type].z
+  end
+  currentLevel.projectiles[#currentLevel.projectiles + 1] = {table = table, info = info, b = b, a = a, x = x, y = y, z = z, dX = dX, dY = dY, angle = getAngle({x = x, y = y}, {x = dX, y = dY}), displayAngle = displayAngle, type = type, dir = getDirection({x = a.x, y = a.y}, {x = b.x, y = b.y}), speed = projectiles[type].speed}
 end
 
 function damage(a, b, table, info)
@@ -156,7 +132,7 @@ function damage(a, b, table, info)
       v.health = v.health - dmg
 
       for i = 1, math.ceil(dmg) do
-        newParticle(a.room, v.x, v.y, 2, 0, (charImgs.height[b.actor.item.img]-tileSize)/2)
+        newParticle(a.room, v.x, v.y, 2, 0, (charImgs.height[v.actor.item.img]-tileSize)/2)
       end
     end
   end
@@ -169,6 +145,21 @@ function futureDamage(a, b, table, info)
       v.futureHealth = v.futureHealth - dmg
     end
   end
+end
+
+function getTotalDamage(a, pos, table, info)
+  local dmg = 0
+  local kills = 0
+  for i, v in ipairs(table) do
+    if v.room == a.room then
+      local currentDmg = getDamage(a, v, pos, info)
+      if v.health - currentDmg <= 0 then
+        kills = kills + 1
+      end
+      dmg = dmg + currentDmg
+    end
+  end
+  return dmg, kills
 end
 
 function getDamage(a, b, pos, info)

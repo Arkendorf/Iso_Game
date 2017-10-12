@@ -79,11 +79,10 @@ end
 
 function updateEffects(table)
   for i, v in ipairs(table) do
-    for j, k in ipairs(currentLevel.hazards) do
-      local x, y = tileToCoord(k.tX, k.tY)
-      if v.x == x and v.y == y then
-        v.effects[hazards[k.type].effect] = effects[hazards[k.type].effect].length + 1
-      end
+    local tX, tY = coordToTile(v.x, v.y)
+    local result, item = tileInTable(tX, tY, currentLevel.hazards)
+    if result then
+      v.effects[hazards[item.type].effect] = effects[hazards[item.type].effect].length + 1
     end
     for j = 1, #effects do
       if v.effects[j] ~= nil then
@@ -96,6 +95,9 @@ function updateEffects(table)
     end
   end
 end
+
+
+
 
 function hideHazards(tX, tY, room, dt)
   local x, y = tileToIso(tX, tY)

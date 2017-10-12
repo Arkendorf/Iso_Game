@@ -19,7 +19,6 @@ function graphics_load()
   wallImg = love.graphics.newImage("wall.png")
   cursorImg = love.graphics.newImage("cursor.png")
   targetImg = love.graphics.newImage("target.png")
-  meleeImg = love.graphics.newImage("melee.png")
   tileSize = 16
 
   tiles = {}
