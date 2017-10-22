@@ -60,7 +60,7 @@ function enemyactor_update(dt)
       if v.ragdoll.xV == 0 and v.ragdoll.yV == 0 then
         v.ragdoll = nil
       else
-        if collideWithRoom(v.x+2, v.y+2, 1, 1, rooms[v.room]) then
+        if collideWithRoom(v.x+2, v.y+2, tileSize-4, tileSize-4, rooms[v.room]) then
           v.ragdoll.xV = 0
           v.ragdoll.yV = 0
         else

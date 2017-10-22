@@ -111,14 +111,13 @@ function actor_update(dt)
     end
   end
 
-  -- ragdoll shananigens
+  -- ragdoll shananigans
   for i, v in ipairs(currentLevel.actors) do
-    if v.ragdoll ~= nil and v.ragdoll.active == true then
+    if v.ragdoll ~= nil then
       if v.ragdoll.xV == 0 and v.ragdoll.yV == 0 then
         v.ragdoll = nil
       else
-        local x, y = coordToTile(v.x+v.ragdoll.yV+tileSize/2, v.y+v.ragdoll.yV+tileSize/2)
-        if x >= 1 and x <= #rooms[v.room][1] and y >= 1 and y <= #rooms[v.room] and tileType[rooms[v.room][y][x]] ~= 1 then
+        if collideWithRoom(v.x+2, v.y+2, tileSize-4, tileSize-4, rooms[v.room]) then
           v.ragdoll.xV = 0
           v.ragdoll.yV = 0
         else
@@ -126,7 +125,7 @@ function actor_update(dt)
           v.y = v.y + v.ragdoll.yV
           v.ragdoll.xV = v.ragdoll.xV * 0.9
           v.ragdoll.yV = v.ragdoll.yV * 0.9
-        end
+       end
       end
     end
   end
