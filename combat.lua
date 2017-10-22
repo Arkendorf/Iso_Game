@@ -81,7 +81,6 @@ function hitscanAttack(a, b, table, info) -- a is shooter, b is target, table is
   futureDamage(a, b, table, info)
   damage(a, b, table, info)
 
-
   -- particle stuff
   local x1, y1 = coordToIso(a.x, a.y)
   local x2, y2 = coordToIso(b.x, b.y)
@@ -130,6 +129,10 @@ function damage(a, b, table, info)
     if v.dead == false then
       dmg = getDamage(a, v, b, info)
       v.health = v.health - dmg
+
+      if v.health <= 0 then
+        v.death = {killer = a, dmg = dmg}
+      end
 
       for i = 1, math.ceil(dmg) do
         newParticle(a.room, v.x, v.y, 2, 0, (charImgs.height[v.actor.item.img]-tileSize)/2)
@@ -220,7 +223,12 @@ end
 
 function combat_update(dt)
   for i, v in ipairs(currentLevel.actors) do
-    if v.health <= 0 then
+    if v.health <= 0 and v.dead == false then
+      -- set up ragdoll
+      local angle = getAngle({x = v.death.killer.x, y = v.death.killer.y}, {x = v.x, y = v.y})
+      local xOffset, yOffset = (v.death.dmg*math.cos(angle))*.2, (v.death.dmg*math.sin(angle))*.2
+      v.ragdoll = {xV = xOffset, yV = yOffset}
+
       v.dead = true
       v.anim.quad = 4 -- draw player as dead
       for j, k in ipairs(currentLevel.enemyActors) do
@@ -237,7 +245,12 @@ function combat_update(dt)
   end
 
   for i, v in ipairs(currentLevel.enemyActors) do
-    if v.health <= 0 then
+    if v.health <= 0 and v.dead == false then
+      -- set up ragdoll
+      local angle = getAngle({x = v.death.killer.x, y = v.death.killer.y}, {x = v.x, y = v.y})
+      local xOffset, yOffset = (v.death.dmg*math.cos(angle))*.2, (v.death.dmg*math.sin(angle))*.2
+      v.ragdoll = {xV = xOffset, yV = yOffset}
+
       v.dead = true
       v.anim.quad = 4 -- draw enemy as dead
     end

@@ -80,7 +80,7 @@ end
 function updateEffects(table)
   for i, v in ipairs(table) do
     local tX, tY = coordToTile(v.x, v.y)
-    local result, item = tileInTable(tX, tY, currentLevel.hazards)
+    local result, item = tileInTable(tX, tY, v.room, currentLevel.hazards)
     if result then
       v.effects[hazards[item.type].effect] = effects[hazards[item.type].effect].length + 1
     end

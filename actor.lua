@@ -110,6 +110,26 @@ function actor_update(dt)
       startEnemyTurn()
     end
   end
+
+  -- ragdoll shananigens
+  for i, v in ipairs(currentLevel.actors) do
+    if v.ragdoll ~= nil and v.ragdoll.active == true then
+      if v.ragdoll.xV == 0 and v.ragdoll.yV == 0 then
+        v.ragdoll = nil
+      else
+        local x, y = coordToTile(v.x+v.ragdoll.yV+tileSize/2, v.y+v.ragdoll.yV+tileSize/2)
+        if x >= 1 and x <= #rooms[v.room][1] and y >= 1 and y <= #rooms[v.room] and tileType[rooms[v.room][y][x]] ~= 1 then
+          v.ragdoll.xV = 0
+          v.ragdoll.yV = 0
+        else
+          v.x = v.x + v.ragdoll.xV
+          v.y = v.y + v.ragdoll.yV
+          v.ragdoll.xV = v.ragdoll.xV * 0.9
+          v.ragdoll.yV = v.ragdoll.yV * 0.9
+        end
+      end
+    end
+  end
 end
 
 function startPlayerTurn()
@@ -165,7 +185,7 @@ function followPath(i, v, dt)
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)
     v.dir = coordToStringDir(dir)
-    local speed = currentActor.actor.item.speed
+    local speed = v.actor.item.speed
     v.x = v.x + dir.x * dt * speed
     v.y = v.y + dir.y * dt * speed
     if (dir.x > 0 and v.x > path.x) or (dir.x < 0 and v.x < path.x) then

@@ -53,6 +53,25 @@ function enemyactor_update(dt)
       startPlayerTurn()
     end
   end
+
+  -- ragdoll shananigans
+  for i, v in ipairs(currentLevel.enemyActors) do
+    if v.ragdoll ~= nil then
+      if v.ragdoll.xV == 0 and v.ragdoll.yV == 0 then
+        v.ragdoll = nil
+      else
+        if collideWithRoom(v.x+2, v.y+2, 1, 1, rooms[v.room]) then
+          v.ragdoll.xV = 0
+          v.ragdoll.yV = 0
+        else
+          v.x = v.x + v.ragdoll.xV
+          v.y = v.y + v.ragdoll.yV
+          v.ragdoll.xV = v.ragdoll.xV * 0.9
+          v.ragdoll.yV = v.ragdoll.yV * 0.9
+       end
+      end
+    end
+  end
 end
 
 function isRoomOccupied(room, seen)

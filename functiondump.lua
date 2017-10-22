@@ -64,7 +64,7 @@ end
 
 function setValidColor(actor)
   if actor.mode == 0 then
-    if actor.path.valid and tileInTable(cursorPos.tX, cursorPos.tY, currentLevel.hazards) then
+    if actor.path.valid and tileInTable(cursorPos.tX, cursorPos.tY, actor.room, currentLevel.hazards) then
       love.graphics.setColor(palette.orange)
     elseif actor.path.valid then
       love.graphics.setColor(palette.green)
@@ -88,9 +88,9 @@ function setValidColor(actor)
   end
 end
 
-function tileInTable(x, y, table)
+function tileInTable(x, y, room, table)
   for i, v in ipairs(table) do
-    if x == v.tX and y == v.tY then
+    if x == v.tX and y == v.tY and room == v.room then
       return true, v
     end
   end
@@ -272,4 +272,21 @@ function coordToStringDir(dir)
   elseif (dir.x == 0 and dir.y == -1) or (dir.x == -1 and dir.y == -1) then
     return "u"
   end
+end
+
+function aabb(x1, y1, w1, h1, x2, y2, w2, h2)
+  return (x1 < x2 + w2 and x1 + w1 > x2 and y1 < y2 + h2 and h1 + y1 > y2)
+end
+
+function collideWithRoom(x, y, w, h, room)
+  local tX, tY = coordToTile(x, y)
+  for i = -1, 1 do
+    for j = -1, 1 do
+      local x2, y2 = tileToCoord(tX+j, tY+i)
+      if tY+i >= 1 and tY+i <= #room and tX+j >= 1 and tX+j <= #room[1] and tileType[room[tY+i][tX+j]] ~= 1 and aabb(x, y, w, h, x2, y2, tileSize, tileSize) then
+        return true
+      end
+    end
+  end
+  return false
 end
