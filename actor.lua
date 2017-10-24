@@ -87,9 +87,9 @@ function actor_update(dt)
         end
 
         if v.move == true then -- decide which animation to draw
-          v.anim.quad = 3
-        elseif v.move == false and v.targetMode > 0 then
           v.anim.quad = 2
+        elseif v.move == false and v.targetMode > 0 then
+          v.anim.quad = 4
         elseif v.anim.weaponQuad ~= 2 then
           v.anim.quad = 1
         end

@@ -233,8 +233,8 @@ function combat_update(dt)
       v.ragdoll = {xV = xOffset, yV = yOffset}
 
       v.dead = true
-      v.anim.quad = 4 -- draw player as dead
-      newDelay(charImgs.info[v.actor.item.img].maxFrame[4]/charImgs.info[v.actor.item.img].speed[4], function (player) player.anim.quad = 5 end, {v})
+      v.anim.quad = 6 -- draw player as dead
+      newDelay(charImgs.info[v.actor.item.img].maxFrame[6]/charImgs.info[v.actor.item.img].speed[6], function (player) player.anim.quad = 7 end, {v})
       for j, k in ipairs(currentLevel.enemyActors) do
         k.seen[i] = false
       end
@@ -256,8 +256,8 @@ function combat_update(dt)
       v.ragdoll = {xV = xOffset, yV = yOffset}
 
       v.dead = true
-      v.anim.quad = 4 -- draw enemy as dead
-      newDelay(charImgs.info[v.actor.item.img].maxFrame[4]/charImgs.info[v.actor.item.img].speed[4], function (player) player.anim.quad = 5 end, {v})
+      v.anim.quad = 6 -- draw enemy as dead
+      newDelay(charImgs.info[v.actor.item.img].maxFrame[6]/charImgs.info[v.actor.item.img].speed[6], function (player) player.anim.quad = 7 end, {v})
     end
   end
 

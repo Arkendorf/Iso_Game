@@ -33,7 +33,7 @@ function queueChars(room)
         r, g, b = 100, 200, 100
       end
 
-      if v.anim.quad == 2 then -- draw player and possibly weapon
+      if v.anim.quad == 4 then -- draw player and possibly weapon
         if v.mode == 1 and v.anim.weaponQuad == 1 then
           v.weapon = weapons[v.actor.item.weapon].img
         elseif v.anim.weaponQuad == 1 then
