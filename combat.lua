@@ -130,6 +130,9 @@ function damage(a, b, table, info)
       dmg = getDamage(a, v, b, info)
       v.health = v.health - dmg
 
+      local dir = getDirection(v, a)
+      v.dir = coordToStringDir(dir)
+
       if v.health <= 0 then
         v.death = {killer = a, dmg = dmg}
       end
@@ -231,6 +234,7 @@ function combat_update(dt)
 
       v.dead = true
       v.anim.quad = 4 -- draw player as dead
+      newDelay(charImgs.info[v.actor.item.img].maxFrame[4]/charImgs.info[v.actor.item.img].speed[4], function (player) player.anim.quad = 5 end, {v})
       for j, k in ipairs(currentLevel.enemyActors) do
         k.seen[i] = false
       end
@@ -253,6 +257,7 @@ function combat_update(dt)
 
       v.dead = true
       v.anim.quad = 4 -- draw enemy as dead
+      newDelay(charImgs.info[v.actor.item.img].maxFrame[4]/charImgs.info[v.actor.item.img].speed[4], function (player) player.anim.quad = 5 end, {v})
     end
   end
 
