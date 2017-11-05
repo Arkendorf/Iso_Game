@@ -290,3 +290,7 @@ function collideWithRoom(x, y, w, h, room)
   end
   return false
 end
+
+function getAnimTime(img, anim)
+  return img.maxFrame[anim]/img.speed[anim]
+end

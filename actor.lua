@@ -39,7 +39,9 @@ function actor_keypressed(key)
   if key == controls.switchActor then
     nextActor()
   elseif key == controls.endTurn then
-    currentActor.turnPts = 0
+    for i, v in ipairs(currentLevel.actors) do
+      v.turnPts = 0
+    end
   elseif key == controls.use and currentActor.move == false and currentActor.turnPts > 0 then
     newPos = useDoor(tileDoorInfo(currentActor.room, coordToTile(currentActor.x, currentActor.y)))
     if newPos ~= nil then
@@ -84,14 +86,6 @@ function actor_update(dt)
           followPath(i, v, dt)
         elseif v.turnPts > 0 then
           nextTurn = false -- dont end players turn if orders need to be given
-        end
-
-        if v.move == true then -- decide which animation to draw
-          v.anim.quad = 2
-        elseif v.move == false and v.targetMode > 0 then
-          v.anim.quad = 4
-        elseif v.anim.weaponQuad ~= 2 then
-          v.anim.quad = 1
         end
 
         v.anim.frame = v.anim.frame + dt * charImgs.info[v.actor.item.img].speed[v.anim.quad] -- animate player
@@ -144,6 +138,10 @@ function actor_mousepressed(x, y, button)
     currentActor.move = true
     currentActor.path.tiles = simplifyPath(currentActor.path.tiles)
     currentActor.path.valid = false
+
+    -- set actor animation
+    currentActor.anim.quad = 2
+    currentActor.anim.frame = 1
     return true
   elseif button == 1 and currentActor.mode == 1 and currentActor.target.valid == true then
     local x, y = tileToCoord(cursorPos.tX, cursorPos.tY) -- set dir
@@ -153,9 +151,14 @@ function actor_mousepressed(x, y, button)
     attack(currentActor, currentActor.target.item, currentLevel.enemyActors)
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
 
+    -- set actor animation
+    currentActor.anim.quad = 4
+    currentActor.anim.frame = 1
+
+    -- set weapon animation
     currentActor.anim.weaponQuad = 2
     currentActor.anim.weaponFrame = 1
-    newDelay(weaponImgs.info[weapons[currentActor.actor.item.weapon].img].maxFrame[2]/weaponImgs.info[weapons[currentActor.actor.item.weapon].img].speed[2], function (player) player.anim.weaponQuad = 1 end, {currentActor})
+    newDelay(getAnimTime(weaponImgs.info[weapons[currentActor.actor.item.weapon].img], 2), function (player) player.anim.weaponQuad = 1 end, {currentActor})
     return true
   elseif button ==1 and currentActor.mode > 1 and currentActor.target.valid == true and currentActor.coolDowns[currentActor.mode-1] == 0 then
     local x, y = tileToCoord(cursorPos.tX, cursorPos.tY) -- set dir
@@ -166,9 +169,14 @@ function actor_mousepressed(x, y, button)
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
     currentActor.coolDowns[currentActor.mode-1] = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].coolDown
 
+    -- set actor animation
+    currentActor.anim.quad = 4
+    currentActor.anim.frame = 1
+
+    -- set weapon animation
     currentActor.anim.weaponQuad = 2
     currentActor.anim.weaponFrame = 1
-    newDelay(weaponImgs.info[weapons[currentActor.actor.item.weapon].img].maxFrame[2]/weaponImgs.info[weapons[currentActor.actor.item.weapon].img].speed[2], function (player) player.anim.weaponQuad = 1 end, {currentActor})
+    newDelay(getAnimTime(weaponImgs.info[weapons[currentActor.actor.item.weapon].img], 2), function (player) player.anim.weaponQuad = 1 end, {currentActor})
     return true
   end
   return false
@@ -180,6 +188,15 @@ function followPath(i, v, dt)
     table.remove(v.path.tiles, 1)
     if #v.path.tiles < 1 then -- stop moving the actor
       v.move = false
+
+      if v.mode > 0 then
+        v.anim.quad = 3
+        v.anim.frame = 1
+        newDelay(getAnimTime(charImgs.info[currentActor.actor.item.img], 3), function (player) if player.anim.quad ~= 4 then player.anim.quad = 4; player.anim.frame = 1 end end, {currentActor})
+      else
+        v.anim.quad = 1
+        v.anim.frame = 1
+      end
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)

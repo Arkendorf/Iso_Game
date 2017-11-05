@@ -234,7 +234,7 @@ function combat_update(dt)
 
       v.dead = true
       v.anim.quad = 6 -- draw player as dead
-      newDelay(charImgs.info[v.actor.item.img].maxFrame[6]/charImgs.info[v.actor.item.img].speed[6], function (player) player.anim.quad = 7 end, {v})
+      newDelay(getAnimTime(charImgs.info[v.actor.item.img], 6), function (player) player.anim.quad = 7; player.anim.frame = 1 end, {v})
       for j, k in ipairs(currentLevel.enemyActors) do
         k.seen[i] = false
       end
@@ -257,7 +257,7 @@ function combat_update(dt)
 
       v.dead = true
       v.anim.quad = 6 -- draw enemy as dead
-      newDelay(charImgs.info[v.actor.item.img].maxFrame[6]/charImgs.info[v.actor.item.img].speed[6], function (player) player.anim.quad = 7 end, {v})
+      newDelay(getAnimTime(charImgs.info[v.actor.item.img], 6), function (player) player.anim.quad = 7; player.anim.frame = 1 end, {v})
     end
   end
 

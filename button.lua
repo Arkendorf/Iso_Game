@@ -3,12 +3,31 @@
      if currentActor.mode == mode then
        currentActor.mode = 0
        currentActor.targetMode = 0
+
+       -- set animation for putting away weapon
+       currentActor.anim.quad = 5
+       currentActor.anim.frame = 1
+       newDelay(getAnimTime(charImgs.info[currentActor.actor.item.img], 1), function (player) player.anim.quad = 1; player.anim.frame = 1 end, {currentActor})
      elseif mode == 1 then
        currentActor.mode = mode
        currentActor.targetMode = weapons[currentActor.actor.item.weapon].targetMode
+
+       -- set animation for pulling up weapon
+       if currentActor.move == false then
+         currentActor.anim.quad = 3
+         currentActor.anim.frame = 1
+         newDelay(getAnimTime(charImgs.info[currentActor.actor.item.img], 3), function (player) if player.anim.quad ~= 4 then player.anim.quad = 4; player.anim.frame = 1 end end, {currentActor})
+       end
      elseif currentActor.actor.item.abilities[mode-1] ~= nil and currentActor.coolDowns[mode-1] == 0 then
        currentActor.mode = mode
        currentActor.targetMode = abilities[currentActor.actor.item.abilities[mode-1]].targetMode
+
+       -- set animation for pulling up ability
+       if currentActor.move == false then
+         currentActor.anim.quad = 3
+         currentActor.anim.frame = 1
+         newDelay(getAnimTime(charImgs.info[currentActor.actor.item.img], 3), function (player) if player.anim.quad ~= 4 then player.anim.quad = 4; player.anim.frame = 1 end end, {currentActor})
+       end
      end
    end
 

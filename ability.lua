@@ -28,6 +28,11 @@ function ability_update(dt)
   if currentActor.mode > 1 and currentActor.coolDowns[currentActor.mode-1] ~= 0 then
     currentActor.mode = 0
     currentActor.targetMode = 0
+
+    -- set animation for putting away weapon
+    currentActor.anim.quad = 5
+    currentActor.anim.frame = 1
+    newDelay(getAnimTime(charImgs.info[currentActor.actor.item.img], 1), function (player) player.anim.quad = 1; player.anim.frame = 1 end, {currentActor})
   end
 end
 
