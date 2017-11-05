@@ -65,24 +65,6 @@ function ai_load()
   enemyCombatAIs = {}
 
   enemyCombatAIs[1] = function (enemyNum, enemy, target, info) -- for normal weapons
-    -- local score = 0
-    -- if info.AOE ~= nil then
-    --   for i, v in ipairs(currentLevel.actors) do
-    --     if v.dead == false and enemy.seen[i] == true then
-    --       local dmg = getDamage(enemy, v, target, info)
-    --       score = score + dmg
-    --       if v.health - dmg <= 0 then -- if enemy kills target, add a bonus
-    --         score = score + killPoints
-    --       end
-    --     end
-    --   end
-    -- else
-    --   local dmg = getDamage(enemy, target, target, info)
-    --   score = score + dmg
-    --   if target.health - dmg <= 0 then -- if enemy kills target, add a bonus
-    --     score = score + killPoints
-    --   end
-    -- end
     local dmg, kills = getTotalDamage(enemy, target, currentLevel.actors, info)
     return dmg + kills*killPoints
   end
@@ -144,7 +126,7 @@ function rankTargets(enemyNum, enemy, func, info)
     for j, t in ipairs(v) do
       if tileType[t] == 1 then
         local target = findTargetFuncs[enemy.targetMode](enemy, {tX = j, tY = i}, currentLevel.actors) -- find target based on weapon targetMode
-        if target ~= nil then
+        if target then
           potentialTargets[#potentialTargets+1] = {item = target, score = func(enemyNum, enemy, target, info)} -- score target based on weapon targetMode
         end
       end
@@ -181,7 +163,7 @@ end
 function chooseTarget(enemyNum, enemy, targets, cost, minScore)
   table.sort(targets, function (a, b) return a.score > b.score end)
   for i, v in ipairs(targets) do
-    if minScore ~= nil and v.score < minScore then -- if score is less than minimum end search
+    if minScore and v.score < minScore then -- if score is less than minimum end search
       return nil
     end
     if targetValidFuncs[enemy.targetMode](v.item, enemy, cost) == true then
@@ -194,7 +176,7 @@ end
 function chooseTile(enemyNum, enemy, tiles, minScore)
   table.sort(tiles, function (a, b) return a.score > b.score end)
   for i, v in ipairs(tiles) do
-    if minScore ~= nil and v.score < minScore then -- if score is less than minimum end search
+    if minScore and v.score < minScore then -- if score is less than minimum end search
       return nil
     end
     local tX, tY = coordToTile(enemy.x, enemy.y)

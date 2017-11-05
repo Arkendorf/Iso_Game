@@ -52,7 +52,7 @@ function particle_load()
 end
 
 function newParticle(room, x, y, type, displayAngle, z)
-  if z == nil then
+  if not z then
     z = particles[type].z
   end
   currentLevel.particles[#currentLevel.particles + 1] = {room = room, x = x, y = y, type = type, z = z, displayAngle = displayAngle, time = particles[type].time, frame = 1, alpha = 255}
@@ -80,7 +80,7 @@ function drawFlatParticles(room)
     if v.room == room and v.z <= 0 then
       local img = particles[v.type].img
       local x, y = coordToIso(v.x, v.y)
-      if particleImgs.quad[img] == nil then
+      if not particleImgs.quad[img] then
         local w, h = particleImgs.width[img], particleImgs.height[img]
         love.graphics.setColor(255, 255, 255, v.alpha)
         love.graphics.draw(particleImgs.img[img], math.floor(x)+tileSize, math.floor(y)+tileSize/2, v.displayAngle, 1, 1, math.floor(w/2), math.floor(h/2))

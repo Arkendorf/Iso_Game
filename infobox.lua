@@ -17,7 +17,7 @@ function deleteInfoBox(num)
 end
 
 function infobox_update(dt)
-  if currentInfoBox.box ~= nil and mouse.x >= currentInfoBox.box.x and mouse.x <= currentInfoBox.box.x + currentInfoBox.box.w and mouse.y >= currentInfoBox.box.y and mouse.y <= currentInfoBox.box.y + currentInfoBox.box.h then
+  if currentInfoBox.box and mouse.x >= currentInfoBox.box.x and mouse.x <= currentInfoBox.box.x + currentInfoBox.box.w and mouse.y >= currentInfoBox.box.y and mouse.y <= currentInfoBox.box.y + currentInfoBox.box.h then
     if currentInfoBox.anim < 1 then
       currentInfoBox.anim = currentInfoBox.anim + dt
     elseif currentInfoBox.anim > 1 then
@@ -39,7 +39,7 @@ function infobox_update(dt)
 end
 
 function infobox_draw()
-  if currentInfoBox.box ~= nil then
+  if currentInfoBox.box then
     love.graphics.setColor(255, 255, 255, currentInfoBox.anim*255)
     local x, y = mouse.x+12, mouse.y+12
     if x+currentInfoBox.box.canvas:getWidth() > screen.w then

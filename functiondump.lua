@@ -77,7 +77,7 @@ function setValidColor(actor)
       if actor.mode > 1 then
         info = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].dmgInfo
       end
-      if actor.target.item ~= nil and getTotalDamage(currentActor, currentActor.target.item, currentLevel.enemyActors, info) <= 0 then
+      if actor.target.item and getTotalDamage(currentActor, currentActor.target.item, currentLevel.enemyActors, info) <= 0 then
         love.graphics.setColor(palette.orange)
       else
         love.graphics.setColor(palette.green)

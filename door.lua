@@ -40,7 +40,7 @@ function queueDoors(room)
 
 
       local img = doors[v.type].img1
-      if doorTiles.quad[img] == nil then
+      if not doorTiles.quad[img] then
         drawQueue[#drawQueue + 1] = {type = 1, img = doorTiles.img[img], x = x+tileSize*2-doorTiles.width[img]/2, y = y+tileSize/2, z = doorTiles.height[img]-tileSize, alpha = v.alpha}
       else
         drawQueue[#drawQueue + 1] = {type = 1, img = doorTiles.img[img], quad = doorTiles.quad[img][math.floor(doorTiles.info[img].frame)], x = x+tileSize*2-doorTiles.width[img]/2, y = y+tileSize/2, z = doorTiles.height[img]-tileSize, alpha = v.alpha}
@@ -76,7 +76,7 @@ function drawFlatDoors(room)
       end
 
       love.graphics.setColor(255, 255, 255, v.alpha)
-      if doorTiles.quad[img] == nil then
+      if not doorTiles.quad[img] then
         love.graphics.draw(doorTiles.img[img], x+tileSize-doorTiles.width[img]/2, y-doorTiles.height[img]+tileSize)
       else
         love.graphics.draw(doorTiles.img[img], doorTiles.quad[img][math.floor(doorTiles.info[img].frame)], x+tileSize-doorTiles.width[img]/2, y-doorTiles.height[img]+tileSize)
@@ -98,7 +98,7 @@ function tileDoorInfo(room, tX, tY)
 end
 
 function useDoor(door, side)
-  if door ~= nil and side ~= nil then
+  if door and side then
     currentDoor = currentLevel.doors[door]
     if side == 1 then
       local x, y = tileToCoord(currentDoor.tX2, currentDoor.tY2)

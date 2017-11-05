@@ -44,7 +44,7 @@ function actor_keypressed(key)
     end
   elseif key == controls.use and currentActor.move == false and currentActor.turnPts > 0 then
     newPos = useDoor(tileDoorInfo(currentActor.room, coordToTile(currentActor.x, currentActor.y)))
-    if newPos ~= nil then
+    if newPos then
       currentActor.room, currentActor.x, currentActor.y = newPos.room, newPos.x, newPos.y
       syncRooms()
       currentActor.turnPts = currentActor.turnPts - 1
@@ -87,16 +87,6 @@ function actor_update(dt)
         elseif v.turnPts > 0 then
           nextTurn = false -- dont end players turn if orders need to be given
         end
-
-        v.anim.frame = v.anim.frame + dt * charImgs.info[v.actor.item.img].speed[v.anim.quad] -- animate player
-        if v.anim.frame >= charImgs.info[v.actor.item.img].maxFrame[v.anim.quad]+1 then
-          v.anim.frame = 1
-        end
-
-        v.anim.weaponFrame = v.anim.weaponFrame + dt * weaponImgs.info[weapons[v.actor.item.weapon].img].speed[v.anim.weaponQuad] -- animate weapon
-        if v.anim.weaponFrame >= weaponImgs.info[weapons[v.actor.item.weapon].img].maxFrame[v.anim.weaponQuad]+1 then
-          v.anim.weaponFrame = 1
-        end
       end
     end
 
@@ -105,9 +95,49 @@ function actor_update(dt)
     end
   end
 
-  -- ragdoll shananigans
+  -- all-time shananigans
   for i, v in ipairs(currentLevel.actors) do
-    if v.ragdoll ~= nil then
+    if v.anim.next then -- switch animations if necessary
+      v.anim.next.t = v.anim.next.t - dt
+      if v.anim.next.t <= 0 then
+        v.anim.quad = v.anim.next.quad
+        v.anim.frame = 1
+        v.anim.next = nil
+      end
+    end
+    if v.anim.weaponNext then -- switch animations if necessary
+      v.anim.weaponNext.t = v.anim.weaponNext.t - dt
+      if v.anim.weaponNext.t <= 0 then
+        v.anim.weaponQuad = v.anim.weaponNext.quad
+        v.anim.weaponFrame = 1
+        v.anim.weaponNext = nil
+      end
+    end
+
+    v.anim.frame = v.anim.frame + dt * charImgs.info[v.actor.item.img].speed[v.anim.quad] -- animate player
+    if v.anim.frame >= charImgs.info[v.actor.item.img].maxFrame[v.anim.quad]+1 then
+      if v.anim.quad == 3 then
+        v.anim.quad = 4
+      elseif v.anim.quad == 5 then
+        v.anim.quad = 1
+      elseif v.anim.quad == 6 then
+        v.anim.quad = 7
+      end
+      v.anim.frame = 1
+    end
+
+    if v.mode == 1 and v.anim.weaponQuad == 1 then -- move this later
+      v.weapon = weapons[v.actor.item.weapon].img
+    elseif v.mode > 1 and v.anim.weaponQuad == 1 then
+      v.weapon = abilities[v.actor.item.abilities[v.mode-1]].img
+    end
+
+    v.anim.weaponFrame = v.anim.weaponFrame + dt * weaponImgs.info[v.weapon].speed[v.anim.weaponQuad] -- animate weapon
+    if v.anim.weaponFrame >= weaponImgs.info[v.weapon].maxFrame[v.anim.weaponQuad]+1 then
+      v.anim.weaponQuad = 1 -- go back to normal anim
+      v.anim.weaponFrame = 1
+    end
+    if v.ragdoll then
       if v.ragdoll.xV == 0 and v.ragdoll.yV == 0 then
         v.ragdoll = nil
       else
@@ -158,7 +188,6 @@ function actor_mousepressed(x, y, button)
     -- set weapon animation
     currentActor.anim.weaponQuad = 2
     currentActor.anim.weaponFrame = 1
-    newDelay(getAnimTime(weaponImgs.info[weapons[currentActor.actor.item.weapon].img], 2), function (player) player.anim.weaponQuad = 1 end, {currentActor})
     return true
   elseif button ==1 and currentActor.mode > 1 and currentActor.target.valid == true and currentActor.coolDowns[currentActor.mode-1] == 0 then
     local x, y = tileToCoord(cursorPos.tX, cursorPos.tY) -- set dir
@@ -176,7 +205,6 @@ function actor_mousepressed(x, y, button)
     -- set weapon animation
     currentActor.anim.weaponQuad = 2
     currentActor.anim.weaponFrame = 1
-    newDelay(getAnimTime(weaponImgs.info[weapons[currentActor.actor.item.weapon].img], 2), function (player) player.anim.weaponQuad = 1 end, {currentActor})
     return true
   end
   return false
@@ -192,7 +220,6 @@ function followPath(i, v, dt)
       if v.mode > 0 then
         v.anim.quad = 3
         v.anim.frame = 1
-        newDelay(getAnimTime(charImgs.info[v.actor.item.img], 3), function (player) if player.anim.quad ~= 4 then player.anim.quad = 4; player.anim.frame = 1 end end, {v})
       else
         v.anim.quad = 1
         v.anim.frame = 1
@@ -214,7 +241,7 @@ function followPath(i, v, dt)
 end
 
 function drawPath(actor)
-  if actor.move == false then -- only draw the path if the actor isn't moving along it
+  if actor.move == false and actor.path.tiles then -- only draw the path if the actor isn't moving along it
     for i, v in ipairs(actor.path.tiles) do
       if i > 1 and i < #actor.path.tiles then
         local oldTile = {x = actor.path.tiles[i-1].x - v.x, y = actor.path.tiles[i-1].y - v.y}

@@ -73,10 +73,10 @@ end
 
 
 function createSpriteSheet(a, b, c, d, e, f, g) -- image, tiles across, tiles down, tile width, tile height, x offset, y offset
-if f == nil then
+if not f then
   f = 0
 end
-if g == nil then
+if not g then
   g = 0
 end
 local spriteSheet = {}

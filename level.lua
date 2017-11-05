@@ -48,6 +48,7 @@ function startLevel(level)
     v.health = v.actor.item.health
     v.displayHealth = v.health
     v.futureHealth = v.health
+    v.mode = 0
     v.seen = {}
     v.target = {}
     v.path = {}

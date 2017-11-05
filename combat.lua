@@ -20,7 +20,7 @@ function combat_load()
     for i, v in ipairs(table) do
       local tX, tY = coordToTile(v.x, v.y)
       if v.room == actor.room and v.dead == false and cursorPos.tX == tX and cursorPos.tY == tY then
-        if actor.seen == nil or actor.seen[i] == true then -- if enemy is finding target, make sure target is seen
+        if not actor.seen or actor.seen[i] == true then -- if enemy is finding target, make sure target is seen
           return v
         end
       end
@@ -40,7 +40,7 @@ function combat_load()
   targetValidFuncs = {}
 
   targetValidFuncs[1] = function (enemy, actor, cost)
-    if enemy ~= nil and actor.turnPts >= cost then
+    if enemy and actor.turnPts >= cost then
       if enemy.room == actor.room and enemy.dead == false and enemy.futureHealth > 0 and LoS({x = actor.x, y = actor.y}, {x = enemy.x, y = enemy.y}, rooms[actor.room]) == true then
         return true
       else
@@ -67,7 +67,7 @@ function combat_load()
 end
 
 function attack(a, b, table)
-  if weapons[a.actor.item.weapon].type == nil or weapons[a.actor.item.weapon].type == 1 then
+  if not weapons[a.actor.item.weapon].type or weapons[a.actor.item.weapon].type == 1 then
     hitscanAttack(a, b, table)
   elseif weapons[a.actor.item.weapon].type > 1 then
     projectileAttack(a, b, table)
@@ -75,7 +75,7 @@ function attack(a, b, table)
 end
 
 function hitscanAttack(a, b, table, info) -- a is shooter, b is target, table is who is getting hurt
-  if info == nil then -- if no info is given, default to attacker's weapon info
+  if not info then -- if no info is given, default to attacker's weapon info
     info = weapons[a.actor.item.weapon]
   end
   futureDamage(a, b, table, info)
@@ -88,7 +88,7 @@ function hitscanAttack(a, b, table, info) -- a is shooter, b is target, table is
   local angle = getAngle({x = a.x, y = a.y}, {x = b.x, y = b.y})
   local xOffset, yOffset = (tileSize/2*math.cos(angle)), (tileSize/2*math.sin(angle))
 
-  if info.particle ~= nil then
+  if info.particle then
     newParticle(a.room, a.x+xOffset, a.y+yOffset, info.particle, displayAngle, charImgs.height[a.actor.item.img]-charImgs.info[a.actor.item.img].center[a.dir].y-tileSize/2)
   else
     newParticle(a.room, a.x+xOffset, a.y+yOffset, 1, displayAngle, charImgs.height[a.actor.item.img]-charImgs.info[a.actor.item.img].center[a.dir].y-tileSize/2)
@@ -96,7 +96,7 @@ function hitscanAttack(a, b, table, info) -- a is shooter, b is target, table is
 end
 
 function projectileAttack(a, b, table, info)
-  if info == nil then -- if no info is given, default to attacker's weapon info
+  if not info then -- if no info is given, default to attacker's weapon info
     info = weapons[a.actor.item.weapon]
   end
   futureDamage(a, b, table, info)
@@ -109,7 +109,7 @@ function projectileAttack(a, b, table, info)
   local xOffset, yOffset = (tileSize/2*math.cos(angle)), (tileSize/2*math.sin(angle))
 
   newProjectile(table, info, a, b, a.x+xOffset, a.y+yOffset, b.x-xOffset, b.y-yOffset, displayAngle, charImgs.height[a.actor.item.img]-charImgs.info[a.actor.item.img].center[a.dir].y-tileSize/2)
-  if info.particle ~= nil then
+  if info.particle then
     newParticle(a.room, a.x+xOffset, a.y+yOffset, info.particle, displayAngle, charImgs.height[a.actor.item.img]-charImgs.info[a.actor.item.img].center[a.dir].y-tileSize/2)
   else
     newParticle(a.room, a.x+xOffset, a.y+yOffset, 1, displayAngle, charImgs.height[a.actor.item.img]-charImgs.info[a.actor.item.img].center[a.dir].y-tileSize/2)
@@ -118,7 +118,7 @@ end
 
 function newProjectile(table, info, a, b, x, y, dX, dY, displayAngle, type, z)
   local type = info.projectile
-  if z == nil then
+  if not z then
     z = projectiles[type].z
   end
   currentLevel.projectiles[#currentLevel.projectiles + 1] = {table = table, info = info, b = b, a = a, x = x, y = y, z = z, dX = dX, dY = dY, angle = getAngle({x = x, y = y}, {x = dX, y = dY}), displayAngle = displayAngle, type = type, dir = getDirection({x = a.x, y = a.y}, {x = b.x, y = b.y}), speed = projectiles[type].speed}
@@ -173,21 +173,21 @@ function getDamage(a, b, pos, info)
     return 0
   end
 
-  if info == nil then -- if no info is given, default to attacker's weapon info
+  if not info then -- if no info is given, default to attacker's weapon info
     info = weapons[a.actor.item.weapon]
   end
 
   local dmg = 0
-  if info.baseDmg ~= nil then -- if baseDmg is given, set dmg to baseDmg, otherwise dmg is 0
+  if info.baseDmg then -- if baseDmg is given, set dmg to baseDmg, otherwise dmg is 0
     dmg = info.baseDmg
   else
     return 0
   end
 
-  if info.AOE ~= nil then -- if dmg is AOE,
+  if info.AOE then -- if dmg is AOE,
     local dist = getDistance(b, pos)
     if dist <= info.AOE.range and LoS({x = pos.x, y = pos.y}, {x = b.x, y = b.y}, rooms[a.room]) == true then
-      if info.AOE.falloff ~= nil then
+      if info.AOE.falloff then
         dmg = dmg - dist * info.AOE.falloff
       end
     else
@@ -197,7 +197,7 @@ function getDamage(a, b, pos, info)
     return 0
   end
 
-  if info.dist ~= nil then -- if attack has an ideal range, check if distance is in that range
+  if info.dist then -- if attack has an ideal range, check if distance is in that range
     local dist = getDistance(a, pos) - info.dist.range
     if dist < 0 then
       dist = 0
@@ -205,11 +205,11 @@ function getDamage(a, b, pos, info)
     dmg = dmg - dist * info.dist.falloff
   end
 
-  if (info.pierce == nil or info.pierce == false) and (isUnderCover(b, a, rooms[a.room]) == true or isUnderCover(b, pos, rooms[a.room]) == true) then -- halve damage if target is behind cover
+  if not info.pierce and (isUnderCover(b, a, rooms[a.room]) == true or isUnderCover(b, pos, rooms[a.room]) == true) then -- halve damage if target is behind cover
     dmg = dmg / 2
   end
 
-  if info.type ~= nil and b.actor.item.type ~= nil and crit(info.type, b.actor.item.type) then -- check if attack is a crit
+  if info.type and b.actor.item.type and crit(info.type, b.actor.item.type) then -- check if attack is a crit
     dmg = dmg * 1.2
   end
 
@@ -234,7 +234,6 @@ function combat_update(dt)
 
       v.dead = true
       v.anim.quad = 6 -- draw player as dead
-      newDelay(getAnimTime(charImgs.info[v.actor.item.img], 6), function (player) player.anim.quad = 7; player.anim.frame = 1 end, {v})
       for j, k in ipairs(currentLevel.enemyActors) do
         k.seen[i] = false
       end
@@ -257,7 +256,6 @@ function combat_update(dt)
 
       v.dead = true
       v.anim.quad = 6 -- draw enemy as dead
-      newDelay(getAnimTime(charImgs.info[v.actor.item.img], 6), function (player) player.anim.quad = 7; player.anim.frame = 1 end, {v})
     end
   end
 

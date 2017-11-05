@@ -18,7 +18,7 @@ function camera_update(dt)
   end
 
   --screen shake things
-  if cameraPos.shake ~= nil and cameraPos.shake.t > 0 then
+  if cameraPos.shake and cameraPos.shake.t > 0 then
     cameraPos.xOffset = math.random(-cameraPos.shake.v, cameraPos.shake.v)
     cameraPos.yOffset = math.random(-cameraPos.shake.v, cameraPos.shake.v)
     cameraPos.shake.t = cameraPos.shake.t-dt

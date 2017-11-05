@@ -12,34 +12,24 @@ function queueEnemyChars(room)
       -- draw enemy
       local r, g, b = nil
       for j = 1, #effects do -- change color based on current effects
-        if v.effects[j] ~= nil and effects[j].r ~= nil and effects[j].g ~= nil and effects[j].g ~= nil then
-          if r == nil then
-            r = effects[j].r
-          else
-            r = r * 0.5 + effects[j].r * 0.5
-          end
-          if g == nil then
+        if v.effects[j] and effects[j].r and effects[j].g and effects[j].g then
+          if not g then
             g = effects[j].g
           else
             g = g * 0.5 + effects[j].g * 0.5
           end
-          if b == nil then
+          if not b then
             b = effects[j].b
           else
              b = b * 0.5 + effects[j].b * 0.5
           end
         end
       end
-      if r == nil or g == nil or g == nil then -- set color to effect color if it exists
+      if not r or not g or not b then -- set color to effect color if it exists
         r, g, b = 200, 100, 100
       end
 
       if v.anim.quad == 4 then -- draw enemy and possibly weapon
-        if v.mode == 1 and v.anim.weaponQuad == 1 then
-          v.weapon = weapons[v.actor.item.weapon].img
-        elseif v.mode > 1 and v.anim.weaponQuad == 1 then
-          v.weapon = abilities[v.actor.item.abilities[v.mode-1]].img
-        end
         if v.dir == "l" or v.dir == "u" then
           love.graphics.setColor(255, 255, 255)
           love.graphics.draw(weaponImgs.img[v.weapon], weaponImgs.quad[v.weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[v.weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[v.weapon].center[v.dir].y-cameraPos.y)
@@ -59,7 +49,7 @@ function queueEnemyChars(room)
       if v.dead == false then
         local dmgEstimate = 0
         local color = palette.red
-        if currentActor.target.item ~= nil then -- check if player target is this enemy
+        if currentActor.target.item then -- check if player target is this enemy
           if currentActor.target.valid == true and currentActor.mode == 1 then
             dmgEstimate = getDamage(currentActor, v, currentActor.target.item)
             if crit(weapons[currentActor.actor.item.weapon].type, v.actor.item.type) then -- if attack will crit, change color

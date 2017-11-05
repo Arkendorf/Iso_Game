@@ -119,7 +119,7 @@ end
 
 function gradient(speed, c1, c2)
   local num = love.timer.getTime()*speed
-  if c2 ~= nil then
+  if c2 then
     return c1[1]*math.sin(num)+c2[1]*(1-math.sin(num)), c1[2]*math.sin(num)+c2[2]*(1-math.sin(num)), c1[3]*math.sin(num)+c2[3]*(1-math.sin(num))
   else
     return c1[1]*.25*math.sin(num)+c1[1]*.5*(1-math.sin(num)), c1[2]*.25*math.sin(num)+c1[2]*.5*(1-math.sin(num)), c1[3]*.25*math.sin(num)+c1[3]*.5*(1-math.sin(num))

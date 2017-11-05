@@ -16,14 +16,14 @@ end
 function hazard_update(dt)
   for i, v in ipairs(currentLevel.actors) do
     for j = 1, #effects do
-      if v.effects[j] ~= nil and math.random(1, effects[j].pChance) == 1 then
+      if v.effects[j] and math.random(1, effects[j].pChance) == 1 then
         newParticle(v.room, v.x, v.y, effects[j].particle, 0, charImgs.height[v.actor.item.img]-tileSize)
       end
     end
   end
   for i, v in ipairs(currentLevel.enemyActors) do
     for j = 1, #effects do
-      if v.effects[j] ~= nil and math.random(1, effects[j].pChance) == 1 then
+      if v.effects[j] and math.random(1, effects[j].pChance) == 1 then
         newParticle(v.room, v.x, v.y, effects[j].particle, 0, charImgs.height[v.actor.item.img]-tileSize)
       end
     end
@@ -47,7 +47,7 @@ function queueHazards(room)
       end
 
       local img = hazards[v.type].img
-      if hazardTiles.quad[img] == nil then
+      if not hazardTiles.quad[img] then
         drawQueue[#drawQueue + 1] = {type = 1, img = hazardTiles.img[img], x = x+tileSize*2-hazardTiles.width[img]/2, y = y+tileSize/2, z = hazardTiles.height[img]-tileSize, alpha = v.alpha}
       else
         drawQueue[#drawQueue + 1] = {type = 1, img = hazardTiles.img[img], quad = hazardTiles.quad[img][math.floor(hazardTiles.info[img].frame)], x = x+tileSize*2-hazardTiles.width[img]/2, y = y+tileSize/2, z = hazardTiles.height[img]-tileSize, alpha = v.alpha}
@@ -68,7 +68,7 @@ function drawFlatHazards(room)
 
       local img = hazards[v.type].img
       love.graphics.setColor(255, 255, 255, v.alpha)
-      if hazardTiles.quad[img] == nil then
+      if not hazardTiles.quad[img] then
         love.graphics.draw(hazardTiles.img[img], x+tileSize-hazardTiles.width[img]/2, y-hazardTiles.height[img]+tileSize)
       else
         love.graphics.draw(hazardTiles.img[img], hazardTiles.quad[img][math.floor(hazardTiles.info[img].frame)], x+tileSize-hazardTiles.width[img]/2, y-hazardTiles.height[img]+tileSize)
@@ -85,7 +85,7 @@ function updateEffects(table)
       v.effects[hazards[item.type].effect] = effects[hazards[item.type].effect].length + 1
     end
     for j = 1, #effects do
-      if v.effects[j] ~= nil then
+      if v.effects[j] then
         effectFuncs[effects[j].func](v)
         v.effects[j] = v.effects[j] - 1
         if v.effects[j] <= 0 then

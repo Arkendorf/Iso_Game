@@ -30,9 +30,7 @@ function ability_update(dt)
     currentActor.targetMode = 0
 
     -- set animation for putting away weapon
-    currentActor.anim.quad = 5
-    currentActor.anim.frame = 1
-    newDelay(getAnimTime(charImgs.info[currentActor.actor.item.img], 1), function (player) player.anim.quad = 1; player.anim.frame = 1 end, {currentActor})
+    currentActor.anim.next = {quad = 5, t = getAnimTime(weaponImgs.info[currentActor.weapon], 2)}
   end
 end
 

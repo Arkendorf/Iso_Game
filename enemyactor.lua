@@ -28,22 +28,70 @@ function enemyactor_update(dt)
         elseif v.turnPts > 0 then
           if isRoomOccupied(v.room, v.seen) == false and arePlayersSeen(v) then -- use a door if on one and the current room is unoccupied
             local newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
-            if newPos ~= nil then
+            if newPos then
               v.room, v.x, v.y = newPos.room, newPos.x, newPos.y
               v.turnPts = v.turnPts - 1
               moveEnemy(i, v, 0) -- check if enemy should move once in new room
             end
           end
-          local result = enemyAbility(i, v, 10) -- if turnPts are left, maybe use ability (3rd arg is minimun score needed to use ability)
-          if result == false then
-            result = enemyAttack(i, v) -- if turnPts are left, maybe attack
+          local turnover = true
+          if enemyAbility(i, v, 10) then
+            v.mode = 1+v.target.ability.num
+            turnover = false
+            v.coolDowns[v.target.ability.num] = abilities[v.target.ability.item].coolDown
+            v.turnPts = v.turnPts - abilities[v.target.ability.item].cost
+            if v.anim.quad ~= 3 and v.anim.quad ~= 4 then
+              v.anim.quad = 3
+              v.anim.frame = 1
+              v.wait = true
+              local weaponSpeed = weaponImgs.info[v.weapon].speed[2]
+              v.anim.weaponNext = {quad = 2, t = getAnimTime(charImgs.info[v.actor.item.img], 3)+1/weaponSpeed}
+              newDelay(getAnimTime(charImgs.info[v.actor.item.img], 3)+1/weaponSpeed, function (player) useAbility(v.target.ability.item, v, v.target.item, currentLevel.actors); end, {v})
+              newDelay(getAnimTime(charImgs.info[v.actor.item.img], 3)+2/weaponSpeed+getAnimTime(weaponImgs.info[v.weapon], 2), function (player) v.wait = false end, {v})
+            else
+              useAbility(v.target.ability.item, v, v.target.item, currentLevel.actors)
+
+              v.wait = true -- pause between shots
+              v.anim.weaponQuad = 2
+              v.anim.weaponFrame = 1
+              local weaponSpeed = weaponImgs.info[v.weapon].speed[2]
+              newDelay(getAnimTime(weaponImgs.info[v.weapon], 2)+1/weaponSpeed, function (player) v.wait = false end, {v})
+            end
+          elseif enemyAttack(i, v) then
+            v.mode = 1
+            turnover = false
+            v.turnPts = v.turnPts - weapons[v.actor.item.weapon].cost
+            if v.anim.quad ~= 3 and v.anim.quad ~= 4 then
+              v.anim.quad = 3
+              v.anim.frame = 1
+              v.wait = true
+              local weaponSpeed = weaponImgs.info[v.weapon].speed[2]
+              v.anim.weaponNext = {quad = 2, t = getAnimTime(charImgs.info[v.actor.item.img], 3)+1/weaponSpeed}
+              newDelay(getAnimTime(charImgs.info[v.actor.item.img], 3)+1/weaponSpeed, function (player) attack(v, v.target.item, currentLevel.actors) end, {v})
+              newDelay(getAnimTime(charImgs.info[v.actor.item.img], 3)+2/weaponSpeed+getAnimTime(weaponImgs.info[v.weapon], 2), function (player) v.wait = false end, {v})
+            else
+              attack(v, v.target.item, currentLevel.actors)
+
+              v.wait = true -- pause between shots
+              v.anim.weaponQuad = 2
+              v.anim.weaponFrame = 1
+              local weaponSpeed = weaponImgs.info[v.weapon].speed[2]
+              newDelay(getAnimTime(weaponImgs.info[v.weapon], 2)+1/weaponSpeed, function (player) v.wait = false end, {v})
+            end
           end
-          if result == false then
+
+          if turnover == true or v.turnPts <= 0 then
             v.turnPts = 0
+
+            if v.anim.quad == 2 then
+              v.anim.quad = 1
+              v.anim.frame = 1
+            elseif v.anim.quad == 4 or v.anim.quad == 3 then
+              v.anim.quad = 5
+              v.anim.frame = 1
+            end
           else
             nextTurn = false -- dont end enemies turn if orders need to be given
-            v.wait = true
-            newDelay(1/enemyTurnSpeed*.5, function (enemy) enemy.wait = false end, {v})
           end
         end
       end
@@ -54,9 +102,50 @@ function enemyactor_update(dt)
     end
   end
 
-  -- ragdoll shananigans
+  -- all-time shananigans
   for i, v in ipairs(currentLevel.enemyActors) do
-    if v.ragdoll ~= nil then
+    if v.anim.next then -- switch animations if necessary
+      v.anim.next.t = v.anim.next.t - dt
+      if v.anim.next.t <= 0 then
+        v.anim.quad = v.anim.next.quad
+        v.anim.frame = 1
+        v.anim.next = nil
+      end
+    end
+    if v.anim.weaponNext then -- switch animations if necessary
+      v.anim.weaponNext.t = v.anim.weaponNext.t - dt
+      if v.anim.weaponNext.t <= 0 then
+        v.anim.weaponQuad = v.anim.weaponNext.quad
+        v.anim.weaponFrame = 1
+        v.anim.weaponNext = nil
+      end
+    end
+
+    v.anim.frame = v.anim.frame + dt * charImgs.info[v.actor.item.img].speed[v.anim.quad] -- animate player
+    if v.anim.frame >= charImgs.info[v.actor.item.img].maxFrame[v.anim.quad]+1 then
+      if v.anim.quad == 3 then
+        v.anim.quad = 4
+      elseif v.anim.quad == 5 then
+        v.anim.quad = 1
+      elseif v.anim.quad == 6 then
+        v.anim.quad = 7
+      end
+      v.anim.frame = 1
+    end
+
+    if v.mode == 1 and v.anim.weaponQuad == 1 then
+      v.weapon = weapons[v.actor.item.weapon].img
+    elseif v.mode > 1 and v.anim.weaponQuad == 1 then
+      v.weapon = abilities[v.actor.item.abilities[v.mode-1]].img
+    end
+
+    v.anim.weaponFrame = v.anim.weaponFrame + dt * weaponImgs.info[v.weapon].speed[v.anim.weaponQuad] -- animate weapon
+    if v.anim.weaponFrame >= weaponImgs.info[v.weapon].maxFrame[v.anim.weaponQuad]+1 then
+      v.anim.weaponQuad = 1 -- go back to normal anim
+      v.anim.weaponFrame = 1
+    end
+
+    if v.ragdoll then
       if v.ragdoll.xV == 0 and v.ragdoll.yV == 0 then
         v.ragdoll = nil
       else
@@ -134,15 +223,20 @@ end
 
 function moveEnemy(enemyNum, enemy, delay)
   enemy.wait = false
+  enemy.mode = 0
   local move = false
   if arePlayersSeen(enemy) == true and isRoomOccupied(enemy.room, enemy.seen) == true then -- if known players are in the room, perform normal behavior
     enemy.path.tiles = chooseTile(enemyNum, enemy, rankTiles(enemyNum, enemy))
     enemy.wait = true
-    newDelay(delay/enemyTurnSpeed*3, function (enemy) enemy.wait = false end, {enemy})
+    newDelay(delay/enemyTurnSpeed*3, function (enemy) enemy.wait = false; enemy.anim.quad = 2; enemy.anim.frame = 1 end, {enemy})
   elseif arePlayersSeen(enemy) == true and isRoomOccupied(enemy.room, enemy.seen) == false then -- if no known players are in the room, but are elsewhere, find a door to them
     enemy.path.tiles = chooseTile(enemyNum, enemy, goToDoor(enemyNum, enemy))
-  elseif enemy.patrol ~= nil and enemy.room == enemy.patrol.room then -- if there are no known players, patrol if enemy has a patrol
+    enemy.anim.quad = 2
+    enemy.anim.frame = 1
+  elseif enemy.patrol and enemy.room == enemy.patrol.room then -- if there are no known players, patrol if enemy has a patrol
     enemy.path.tiles = chooseTile(enemyNum, enemy, patrol(enemyNum, enemy))
+    enemy.anim.quad = 2
+    enemy.anim.frame = 1
   else
     enemy.path.tiles = {}
   end
@@ -155,14 +249,11 @@ end
 
 function enemyAttack(enemyNum, enemy) -- damages player, returns true if it attacks, false if it doesn't
   local target = findEnemyTarget(enemyNum, enemy, enemyCombatAIs[enemy.actor.item.combatAI], weapons[enemy.actor.item.weapon], weapons[enemy.actor.item.weapon].cost)
-  if target ~= nil then
+  if target then
     enemy.target.item = target
 
     local dir = getDirection(enemy, enemy.target.item)
     enemy.dir = coordToStringDir(dir) -- face target
-
-    attack(enemy, target, currentLevel.actors)
-    enemy.turnPts = enemy.turnPts - weapons[enemy.actor.item.weapon].cost
     return true
   else
     return false
@@ -173,11 +264,12 @@ function enemyAbility(enemyNum, enemy, minScore) -- damages player, returns true
   for i, v in ipairs(enemy.actor.item.abilities) do
     if enemy.coolDowns[i] == 0 then
       local target = findEnemyTarget(enemyNum, enemy, abilityAIs[abilities[v].ai], abilities[v].dmgInfo, abilities[v].cost, minScore)
-      if target ~= nil then
+      if target then
         enemy.target.item = target
-        useAbility(v, enemy, target, currentLevel.actors)
-        enemy.coolDowns[i] = abilities[enemy.actor.item.abilities[i]].coolDown
-        enemy.turnPts = enemy.turnPts - abilities[v].cost
+        enemy.target.ability = {item = v, num = i}
+
+        local dir = getDirection(enemy, enemy.target.item)
+        enemy.dir = coordToStringDir(dir) -- face target
         return true
       end
     end
@@ -211,6 +303,9 @@ function enemyFollowPath(i, v, dt)
     table.remove(v.path.tiles, 1)
     if #v.path.tiles < 1 then -- stop moving the actor
       v.move = false
+
+      v.anim.quad = 1
+      v.anim.frame = 1
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)
