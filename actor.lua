@@ -192,7 +192,7 @@ function followPath(i, v, dt)
       if v.mode > 0 then
         v.anim.quad = 3
         v.anim.frame = 1
-        newDelay(getAnimTime(charImgs.info[currentActor.actor.item.img], 3), function (player) if player.anim.quad ~= 4 then player.anim.quad = 4; player.anim.frame = 1 end end, {currentActor})
+        newDelay(getAnimTime(charImgs.info[v.actor.item.img], 3), function (player) if player.anim.quad ~= 4 then player.anim.quad = 4; player.anim.frame = 1 end end, {v})
       else
         v.anim.quad = 1
         v.anim.frame = 1
