@@ -16,6 +16,7 @@
 
        currentActor.mode = mode
        currentActor.targetMode = weapons[currentActor.actor.item.weapon].targetMode
+       currentActor.weapon = weapons[currentActor.actor.item.weapon].img
      elseif currentActor.actor.item.abilities[mode-1] and currentActor.coolDowns[mode-1] == 0 then
        -- set animation for pulling up weapon
        if currentActor.move == false and currentActor.mode == 0 then
@@ -25,6 +26,7 @@
 
        currentActor.mode = mode
        currentActor.targetMode = abilities[currentActor.actor.item.abilities[mode-1]].targetMode
+       currentActor.weapon = abilities[currentActor.actor.item.abilities[mode-1]].img
      end
    end
 

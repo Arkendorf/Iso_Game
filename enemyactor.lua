@@ -35,30 +35,33 @@ function enemyactor_update(dt)
             end
           end
           local turnover = true
-          if enemyAbility(i, v, 10) then
-            v.mode = 1+v.target.ability.num
-            turnover = false
-            v.coolDowns[v.target.ability.num] = abilities[v.target.ability.item].coolDown
-            v.turnPts = v.turnPts - abilities[v.target.ability.item].cost
-            if v.anim.quad ~= 3 and v.anim.quad ~= 4 then
+
+          if enemyAbility(i, v, 10) then -- check if ai wants to use ability
+            v.mode = 1+v.target.ability.num -- set the mode of the enemy
+            v.weapon = abilities[v.actor.item.abilities[v.mode-1]].img -- set the weapon
+            turnover = false -- turn should not be ended if there's abilities to be used
+            v.coolDowns[v.target.ability.num] = abilities[v.target.ability.item].coolDown -- set the cool down for the used ability
+            v.turnPts = v.turnPts - abilities[v.target.ability.item].cost -- subtract turnPts for the used ability
+            if v.anim.quad ~= 3 and v.anim.quad ~= 4 then -- if gun is not already up, switch to that animation
               v.anim.quad = 3
               v.anim.frame = 1
-              v.wait = true
-              local weaponSpeed = weaponImgs.info[v.weapon].speed[2]
-              v.anim.weaponNext = {quad = 2, t = getAnimTime(charImgs.info[v.actor.item.img], 3)+1/weaponSpeed}
-              newDelay(getAnimTime(charImgs.info[v.actor.item.img], 3)+1/weaponSpeed, function (player) useAbility(v.target.ability.item, v, v.target.item, currentLevel.actors); end, {v})
-              newDelay(getAnimTime(charImgs.info[v.actor.item.img], 3)+2/weaponSpeed+getAnimTime(weaponImgs.info[v.weapon], 2), function (player) v.wait = false end, {v})
-            else
-              useAbility(v.target.ability.item, v, v.target.item, currentLevel.actors)
+              v.wait = true -- wait for gun to be up before shooting
+              local weaponSpeed = weaponImgs.info[v.weapon].speed[2] -- get the speed of the gun's shoot animation
+              v.anim.weaponNext = {quad = 2, t = getAnimTime(charImgs.info[v.actor.item.img], 3)+1/weaponSpeed} -- set gun to firing animation when weapon is up
+              newDelay(getAnimTime(charImgs.info[v.actor.item.img], 3)+1/weaponSpeed, function (player) useAbility(v.target.ability.item, v, v.target.item, currentLevel.actors); end, {v}) -- use ability when gun is up
+              newDelay(getAnimTime(charImgs.info[v.actor.item.img], 3)+2/weaponSpeed+getAnimTime(weaponImgs.info[v.weapon], 2), function (player) v.wait = false end, {v}) -- stop the wait when ability is finished being used
+            else -- if gun is already up
+              useAbility(v.target.ability.item, v, v.target.item, currentLevel.actors) -- use the ability
 
               v.wait = true -- pause between shots
-              v.anim.weaponQuad = 2
+              v.anim.weaponQuad = 2 -- set gun to firing animation
               v.anim.weaponFrame = 1
-              local weaponSpeed = weaponImgs.info[v.weapon].speed[2]
-              newDelay(getAnimTime(weaponImgs.info[v.weapon], 2)+1/weaponSpeed, function (player) v.wait = false end, {v})
+              local weaponSpeed = weaponImgs.info[v.weapon].speed[2] -- get the speed of the gun's shoot animation
+              newDelay(getAnimTime(weaponImgs.info[v.weapon], 2)+1/weaponSpeed, function (player) v.wait = false end, {v}) -- wait until the ability is finished being used
             end
-          elseif enemyAttack(i, v) then
+          elseif enemyAttack(i, v) then -- same as above, but for attacks (should probably combine these at some point)
             v.mode = 1
+            v.weapon = weapons[v.actor.item.weapon].img
             turnover = false
             v.turnPts = v.turnPts - weapons[v.actor.item.weapon].cost
             if v.anim.quad ~= 3 and v.anim.quad ~= 4 then
@@ -80,13 +83,13 @@ function enemyactor_update(dt)
             end
           end
 
-          if turnover == true or v.turnPts <= 0 then
-            v.turnPts = 0
+          if turnover == true or v.turnPts <= 0 then -- if there are no abilities/weapons to use, or if turnPts are up
+            v.turnPts = 0 -- clear any remaining turnPts
 
-            if v.anim.quad == 2 then
+            if v.anim.quad == 2 then -- if enemy just finished moving, reset animation to idle
               v.anim.quad = 1
               v.anim.frame = 1
-            elseif v.anim.quad == 4 or v.anim.quad == 3 then
+            elseif v.anim.quad == 4 or v.anim.quad == 3 then -- if enemy just finished attacking, put gun down
               v.anim.quad = 5
               v.anim.frame = 1
             end
@@ -131,12 +134,6 @@ function enemyactor_update(dt)
         v.anim.quad = 7
       end
       v.anim.frame = 1
-    end
-
-    if v.mode == 1 and v.anim.weaponQuad == 1 then
-      v.weapon = weapons[v.actor.item.weapon].img
-    elseif v.mode > 1 and v.anim.weaponQuad == 1 then
-      v.weapon = abilities[v.actor.item.abilities[v.mode-1]].img
     end
 
     v.anim.weaponFrame = v.anim.weaponFrame + dt * weaponImgs.info[v.weapon].speed[v.anim.weaponQuad] -- animate weapon
@@ -221,14 +218,14 @@ function isPlayerVisible(player, num)
   return false
 end
 
-function moveEnemy(enemyNum, enemy, delay)
+function moveEnemy(enemyNum, enemy)
   enemy.wait = false
   enemy.mode = 0
   local move = false
   if arePlayersSeen(enemy) == true and isRoomOccupied(enemy.room, enemy.seen) == true then -- if known players are in the room, perform normal behavior
     enemy.path.tiles = chooseTile(enemyNum, enemy, rankTiles(enemyNum, enemy))
-    enemy.wait = true
-    newDelay(delay/enemyTurnSpeed*3, function (enemy) enemy.wait = false; enemy.anim.quad = 2; enemy.anim.frame = 1 end, {enemy})
+    enemy.anim.quad = 2
+    enemy.anim.frame = 1
   elseif arePlayersSeen(enemy) == true and isRoomOccupied(enemy.room, enemy.seen) == false then -- if no known players are in the room, but are elsewhere, find a door to them
     enemy.path.tiles = chooseTile(enemyNum, enemy, goToDoor(enemyNum, enemy))
     enemy.anim.quad = 2
@@ -282,11 +279,9 @@ function startEnemyTurn()
   giveTurnPts(currentLevel.enemyActors)
   updateEffects(currentLevel.enemyActors)
   revealPlayers()
-  local delay = 0
   for i, v in ipairs(currentLevel.enemyActors) do
     if v.dead == false then
-      moveEnemy(i, v, delay)
-      delay = delay + 1
+      moveEnemy(i, v)
     end
   end
   startEnemyHud()

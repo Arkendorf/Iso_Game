@@ -126,12 +126,6 @@ function actor_update(dt)
       v.anim.frame = 1
     end
 
-    if v.mode == 1 and v.anim.weaponQuad == 1 then -- move this later
-      v.weapon = weapons[v.actor.item.weapon].img
-    elseif v.mode > 1 and v.anim.weaponQuad == 1 then
-      v.weapon = abilities[v.actor.item.abilities[v.mode-1]].img
-    end
-
     v.anim.weaponFrame = v.anim.weaponFrame + dt * weaponImgs.info[v.weapon].speed[v.anim.weaponQuad] -- animate weapon
     if v.anim.weaponFrame >= weaponImgs.info[v.weapon].maxFrame[v.anim.weaponQuad]+1 then
       v.anim.weaponQuad = 1 -- go back to normal anim
