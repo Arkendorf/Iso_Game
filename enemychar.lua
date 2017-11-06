@@ -32,13 +32,13 @@ function queueEnemyChars(room)
       if v.anim.quad == 4 then -- draw enemy and possibly weapon
         if v.dir == "l" or v.dir == "u" then
           love.graphics.setColor(255, 255, 255)
-          love.graphics.draw(weaponImgs.img[v.weapon], weaponImgs.quad[v.weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[v.weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[v.weapon].center[v.dir].y-cameraPos.y)
+          love.graphics.draw(weaponImgs.img[v.weapon], weaponImgs.quad[v.weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[v.weapon].center[v.dir].x-cameraPos.x, 12+charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[v.weapon].center[v.dir].y-cameraPos.y)
         end
         love.graphics.setColor(r, g, b)
         love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][v.anim.quad][math.floor(v.anim.frame)], -cameraPos.x, 12-cameraPos.y) -- draw corpse
         if v.dir == "r" or v.dir == "d" then
           love.graphics.setColor(255, 255, 255)
-          love.graphics.draw(weaponImgs.img[v.weapon], weaponImgs.quad[v.weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[v.weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[v.weapon].center[v.dir].y-cameraPos.y)
+          love.graphics.draw(weaponImgs.img[v.weapon], weaponImgs.quad[v.weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[v.weapon].center[v.dir].x-cameraPos.x, 12+charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[v.weapon].center[v.dir].y-cameraPos.y)
         end
       else
         love.graphics.setColor(r, g, b)

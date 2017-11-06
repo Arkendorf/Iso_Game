@@ -25,21 +25,21 @@ function enemyactor_update(dt)
         elseif v.move == true then
           nextTurn = false -- don't end enemies turn if actors are still moving
           enemyFollowPath(i, v, dt)
-        elseif v.turnPts > 0 then
+        else
           if isRoomOccupied(v.room, v.seen) == false and arePlayersSeen(v) then -- use a door if on one and the current room is unoccupied
             local newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
             if newPos then
               v.room, v.x, v.y = newPos.room, newPos.x, newPos.y
               v.turnPts = v.turnPts - 1
               moveEnemy(i, v, 0) -- check if enemy should move once in new room
+              nextTurn = false
             end
           end
-          local turnover = true
 
-          if enemyAbility(i, v, 10) then -- check if ai wants to use ability
+          if enemyAbility(i, v, 10) == true then -- check if ai wants to use ability
+            nextTurn = false
             v.mode = 1+v.target.ability.num -- set the mode of the enemy
             v.weapon = abilities[v.actor.item.abilities[v.mode-1]].img -- set the weapon
-            turnover = false -- turn should not be ended if there's abilities to be used
             v.coolDowns[v.target.ability.num] = abilities[v.target.ability.item].coolDown -- set the cool down for the used ability
             v.turnPts = v.turnPts - abilities[v.target.ability.item].cost -- subtract turnPts for the used ability
             if v.anim.quad ~= 3 and v.anim.quad ~= 4 then -- if gun is not already up, switch to that animation
@@ -59,10 +59,10 @@ function enemyactor_update(dt)
               local weaponSpeed = weaponImgs.info[v.weapon].speed[2] -- get the speed of the gun's shoot animation
               newDelay(getAnimTime(weaponImgs.info[v.weapon], 2)+1/weaponSpeed, function (player) v.wait = false end, {v}) -- wait until the ability is finished being used
             end
-          elseif enemyAttack(i, v) then -- same as above, but for attacks (should probably combine these at some point)
+          elseif enemyAttack(i, v) == true then -- same as above, but for attacks (should probably combine these at some point)
+            nextTurn = false
             v.mode = 1
             v.weapon = weapons[v.actor.item.weapon].img
-            turnover = false
             v.turnPts = v.turnPts - weapons[v.actor.item.weapon].cost
             if v.anim.quad ~= 3 and v.anim.quad ~= 4 then
               v.anim.quad = 3
@@ -81,11 +81,8 @@ function enemyactor_update(dt)
               local weaponSpeed = weaponImgs.info[v.weapon].speed[2]
               newDelay(getAnimTime(weaponImgs.info[v.weapon], 2)+1/weaponSpeed, function (player) v.wait = false end, {v})
             end
-          end
-
-          if turnover == true or v.turnPts <= 0 then -- if there are no abilities/weapons to use, or if turnPts are up
+          else -- if there are no abilities/weapons to use, or if turnPts are up
             v.turnPts = 0 -- clear any remaining turnPts
-
             if v.anim.quad == 2 then -- if enemy just finished moving, reset animation to idle
               v.anim.quad = 1
               v.anim.frame = 1
@@ -93,8 +90,6 @@ function enemyactor_update(dt)
               v.anim.quad = 5
               v.anim.frame = 1
             end
-          else
-            nextTurn = false -- dont end enemies turn if orders need to be given
           end
         end
       end
