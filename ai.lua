@@ -29,9 +29,8 @@ function ai_load()
 
     local averageDist = 0
     for i, v in ipairs(distanceToPlayers) do
-      averageDist = averageDist + v/#distanceToPlayers
+      averageDist = averageDist + (v/tileSize)/#distanceToPlayers
     end
-    averageDist = averageDist
     local distDiffPoints = weapons[enemy.actor.item.weapon].dist.falloff
     local idealDist = weapons[enemy.actor.item.weapon].dist.range
     score = score - math.abs(idealDist - averageDist) * distDiffPoints-- subtrace points based on how close it is to desired distance

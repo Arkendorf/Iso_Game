@@ -1,8 +1,8 @@
 function combat_load()
   weapons = {}
-  weapons[1] = {type = 1, targetMode = 1, baseDmg = 5, dist = {range = 48, falloff = .04}, pierce = false, cost = 1, projectile = 1, icon = 1, particle = 1, img = 1}
-  weapons[2] = {type = 2, targetMode = 1, baseDmg = 1, dist = {range = 48, falloff = .04}, cost = 1, projectile = 1, icon = 1, particle = 1, img = 1}
-  weapons[3] = {type = 3, targetMode = 2, baseDmg = 5, dist = {range = 48, falloff = .04}, cost = 1, projectile = 1, icon = 1, particle = 1, AOE = {range = 128, falloff = .04}, img = 1} -- example AOE weapon
+  weapons[1] = {type = 1, targetMode = 1, baseDmg = 5, dist = {range = 3, falloff = 1}, pierce = false, cost = 1, projectile = 1, icon = 1, particle = 1, img = 1}
+  weapons[2] = {type = 2, targetMode = 1, baseDmg = 1, dist = {range = 3, falloff = 1}, cost = 1, projectile = 1, icon = 1, particle = 1, img = 1}
+  weapons[3] = {type = 3, targetMode = 2, baseDmg = 5, dist = {range = 3, falloff = 1}, cost = 1, projectile = 1, icon = 1, particle = 1, AOE = {range = 3, falloff = 1}, img = 1} -- example AOE weapon
 
   projectiles = {}
   projectiles[1] = {ai = 1, speed = 10, z = 8, img = laserImg}
@@ -185,7 +185,7 @@ function getDamage(a, b, pos, info)
   end
 
   if info.AOE then -- if dmg is AOE,
-    local dist = getDistance(b, pos)
+    local dist = getDistance(b, pos)/tileSize
     if dist <= info.AOE.range and LoS({x = pos.x, y = pos.y}, {x = b.x, y = b.y}, rooms[a.room]) == true then
       if info.AOE.falloff then
         dmg = dmg - dist * info.AOE.falloff
@@ -198,7 +198,7 @@ function getDamage(a, b, pos, info)
   end
 
   if info.dist then -- if attack has an ideal range, check if distance is in that range
-    local dist = getDistance(a, pos) - info.dist.range
+    local dist = getDistance(a, pos)/tileSize - info.dist.range
     if dist < 0 then
       dist = 0
     end
