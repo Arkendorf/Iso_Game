@@ -27,13 +27,15 @@ function ai_load()
       end
     end
 
-    local averageDist = 0
-    for i, v in ipairs(distanceToPlayers) do
-      averageDist = averageDist + (v/tileSize)/#distanceToPlayers
+    if weapons[enemy.actor.item.weapon].dist then
+      local averageDist = 0
+      for i, v in ipairs(distanceToPlayers) do
+        averageDist = averageDist + (v/tileSize)/#distanceToPlayers
+      end
+      local distDiffPoints = weapons[enemy.actor.item.weapon].dist.falloff
+      local idealDist = weapons[enemy.actor.item.weapon].dist.range
+      score = score - math.abs(idealDist - averageDist) * distDiffPoints-- subtrace points based on how close it is to desired distance
     end
-    local distDiffPoints = weapons[enemy.actor.item.weapon].dist.falloff
-    local idealDist = weapons[enemy.actor.item.weapon].dist.range
-    score = score - math.abs(idealDist - averageDist) * distDiffPoints-- subtrace points based on how close it is to desired distance
 
     if playersInSight > 0 then -- add points based on how exposed enemy is
       score = score + singlePlayerPoints + (playersInSight-1)*extraPlayerPoints
@@ -120,11 +122,32 @@ function goToDoor(enemyNum, enemy)
 end
 
 function rankTargets(enemyNum, enemy, func, info)
+  local xMin, xMax, yMin, yMax = nil
+  local room = rooms[enemy.room]
+  if info and info.dist then
+    local tX, tY = coordToTile(enemy.x, enemy.y)
+    local range = info.dist.range + info.baseDmg/info.dist.falloff
+
+    xMin = tX - range
+    if xMin < 1 then xMin = 1 end
+    xMax = tX + range
+    if xMax > #room[1] then xMax = #room[1] end
+    yMin = tY - range
+    if yMin < 1 then yMin = 1 end
+    yMax = tY + range
+    if yMax > #room then yMax = #room end
+  else
+    xMin = 1
+    xMax = #room[1]
+    yMin = 1
+    yMax = #room
+  end
+
   local potentialTargets = {}
-  for i, v in ipairs(rooms[enemy.room]) do -- go through every tile and see if it is a valid target
-    for j, t in ipairs(v) do
-      if tileType[t] == 1 then
-        local target = findTargetFuncs[enemy.targetMode](enemy, {tX = j, tY = i}, currentLevel.actors) -- find target based on weapon targetMode
+  for down = yMin, yMax do -- search room within range for potential targets
+    for across = xMin, xMax do
+      if tileType[room[down][across]] == 1 then
+        local target = findTargetFuncs[enemy.targetMode](enemy, {tX = across, tY = down}, currentLevel.actors) -- find target based on weapon targetMode
         if target then
           potentialTargets[#potentialTargets+1] = {item = target, score = func(enemyNum, enemy, target, info)} -- score target based on weapon targetMode
         end
