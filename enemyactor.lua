@@ -185,7 +185,7 @@ function revealPlayers()
 end
 
 function isPlayerInView(enemy, player)
-  if enemy.room == player.room and player.dead == false and enemy.dead == false and getDistance({x = enemy.x, y = enemy.y}, {x = player.x, y = player.y}) <= enemy.actor.item.eyesight and LoS({x = enemy.x, y = enemy.y}, {x = player.x, y = player.y}, rooms[enemy.room]) == true then
+  if enemy.room == player.room and player.dead == false and enemy.dead == false and getDistance({x = enemy.x, y = enemy.y}, {x = player.x, y = player.y})/tileSize <= enemy.actor.item.eyesight and LoS({x = enemy.x, y = enemy.y}, {x = player.x, y = player.y}, rooms[enemy.room]) == true then
     return true
   else
     return false
@@ -240,21 +240,25 @@ function moveEnemy(enemyNum, enemy)
 end
 
 function enemyAttack(enemyNum, enemy) -- damages player, returns true if it attacks, false if it doesn't
-  local target = findEnemyTarget(enemyNum, enemy, enemyCombatAIs[enemy.actor.item.combatAI], weapons[enemy.actor.item.weapon], weapons[enemy.actor.item.weapon].cost)
-  if target then
-    enemy.target.item = target
+  local cost = weapons[enemy.actor.item.weapon].cost
+  if enemy.turnPts >= cost then
+    local target = findEnemyTarget(enemyNum, enemy, enemyCombatAIs[enemy.actor.item.combatAI], weapons[enemy.actor.item.weapon], cost)
+    if target then
+      enemy.target.item = target
 
-    local dir = getDirection(enemy, enemy.target.item)
-    enemy.dir = coordToStringDir(dir) -- face target
-    return true
-  else
-    return false
+      local dir = getDirection(enemy, enemy.target.item)
+      enemy.dir = coordToStringDir(dir) -- face target
+      return true
+    else
+      return false
+    end
   end
 end
 
 function enemyAbility(enemyNum, enemy, minScore) -- damages player, returns true if it attacks, false if it doesn't
   for i, v in ipairs(enemy.actor.item.abilities) do
-    if enemy.coolDowns[i] == 0 then
+    local cost = abilities[v].cost
+    if enemy.turnPts >= cost and enemy.coolDowns[i] == 0 then
       local target = findEnemyTarget(enemyNum, enemy, abilityAIs[abilities[v].ai], abilities[v].dmgInfo, abilities[v].cost, minScore)
       if target then
         enemy.target.item = target
