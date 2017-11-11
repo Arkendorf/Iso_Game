@@ -1,6 +1,6 @@
 function combat_load()
   weapons = {}
-  weapons[1] = {type = 1, targetMode = 1, baseDmg = 5, dist = {range = 3, falloff = 1}, pierce = false, cost = 1, projectile = 1, icon = 1, particle = 1, img = 1}
+  weapons[1] = {type = 1, targetMode = 1, baseDmg = 5, dist = {range = 3, falloff = 1}, pierce = false, cost = 1, projectile = 1, icon = 1, particle = 1, img = 1, range = 3}
   weapons[2] = {type = 2, targetMode = 1, baseDmg = 1, dist = {range = 3, falloff = 1}, cost = 1, projectile = 1, icon = 1, particle = 1, img = 1}
   weapons[3] = {type = 3, targetMode = 2, baseDmg = 5, dist = {range = 3, falloff = 1}, cost = 1, projectile = 1, icon = 1, particle = 1, AOE = {range = 3, falloff = 1}, img = 1} -- example AOE weapon
 
