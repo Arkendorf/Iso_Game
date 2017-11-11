@@ -1,8 +1,8 @@
 function combat_load()
   weapons = {}
-  weapons[1] = {type = 1, targetMode = 1, baseDmg = 5, dist = {range = 3, falloff = 1}, pierce = false, cost = 1, projectile = 1, icon = 1, particle = 1, img = 1, range = 3}
+  weapons[1] = {type = 1, targetMode = 1, baseDmg = 5, dist = {range = 3, falloff = 1}, pierce = false, cost = 1, projectile = 1, icon = 1, particle = 1, img = 1}
   weapons[2] = {type = 2, targetMode = 1, baseDmg = 1, dist = {range = 3, falloff = 1}, cost = 1, projectile = 1, icon = 1, particle = 1, img = 1}
-  weapons[3] = {type = 3, targetMode = 2, baseDmg = 5, dist = {range = 3, falloff = 1}, cost = 1, projectile = 1, icon = 1, particle = 1, AOE = {range = 3, falloff = 1}, img = 1} -- example AOE weapon
+  weapons[3] = {type = 3, targetMode = 2, baseDmg = 5, dist = {range = 3, falloff = 1}, cost = 1, projectile = 1, icon = 1, particle = 1, AOE = {range = 3, falloff = 1}, range = 3, img = 1} -- example weapon
 
   projectiles = {}
   projectiles[1] = {ai = 1, speed = 10, z = 8, img = laserImg}
@@ -130,9 +130,6 @@ function damage(a, b, table, info)
       dmg = getDamage(a, v, b, info)
       v.health = v.health - dmg
 
-      local dir = getDirection(v, a)
-      v.dir = coordToStringDir(dir)
-
       if v.health <= 0 then
         v.death = {killer = a, dmg = dmg}
       end
@@ -227,6 +224,9 @@ end
 function combat_update(dt)
   for i, v in ipairs(currentLevel.actors) do
     if v.health <= 0 and v.dead == false then
+      -- face killer
+      local dir = getDirection(v, v.death.killer)
+      v.dir = coordToStringDir(dir)
       -- set up ragdoll
       local angle = getAngle({x = v.death.killer.x, y = v.death.killer.y}, {x = v.x, y = v.y})
       local xOffset, yOffset = (v.death.dmg*math.cos(angle))*.2, (v.death.dmg*math.sin(angle))*.2
@@ -249,6 +249,9 @@ function combat_update(dt)
 
   for i, v in ipairs(currentLevel.enemyActors) do
     if v.health <= 0 and v.dead == false then
+      -- face killer
+      local dir = getDirection(v, v.death.killer)
+      v.dir = coordToStringDir(dir)
       -- set up ragdoll
       local angle = getAngle({x = v.death.killer.x, y = v.death.killer.y}, {x = v.x, y = v.y})
       local xOffset, yOffset = (v.death.dmg*math.cos(angle))*.2, (v.death.dmg*math.sin(angle))*.2

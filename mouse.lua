@@ -5,11 +5,11 @@ end
 function mouse_update(dt)
   mouse.x = love.mouse.getX() / screen.scale
   mouse.y = love.mouse.getY() / screen.scale
-  mouse.transX, mouse.transY = mouse.x, mouse.y
-  mouse.transX = mouse.transX-cameraPos.x
-  mouse.transY = mouse.transY-cameraPos.y
+  mouse.transX = mouse.x-cameraPos.x
+  mouse.transY = mouse.y-cameraPos.y
 
   cursorPos = roomNodes[1]
+  cursorPos.dist = getDistance(cursorPos, {x = mouse.transX, y = mouse.transY})
 
   local range = nil
   if currentActor.mode == 1 and weapons[currentActor.actor.item.weapon].range then -- if weapon has a range limit mouse
@@ -17,10 +17,12 @@ function mouse_update(dt)
   elseif currentActor.mode > 1 and weapons[currentActor.actor.item.abilities[currentActor.mode-1]].dmgInfo and weapons[currentActor.actor.item.abilities[currentActor.mode-1]].dmgInfo.range then -- if ability has a range limit mouse
     range = weapons[currentActor.actor.item.abilities[currentActor.mode-1]].dmgInfo.range
   end
+  local tX, tY = coordToTile(currentActor.x, currentActor.y)
   for i, v in ipairs(roomNodes) do
-    if (not range) or (range and getDistance(v, currentActor)<= 5) then
-      if getDistance(v, {x = mouse.transX, y = mouse.transY}) < getDistance(cursorPos, {x = mouse.transX, y = mouse.transY}) then
+    if not range or getDistance({x = v.tX, y = v.tY}, {x = tX, y = tY}) <= range then
+      if getDistance(v, {x = mouse.transX, y = mouse.transY}) < cursorPos.dist then
         cursorPos = v
+        cursorPos.dist = getDistance(cursorPos, {x = mouse.transX, y = mouse.transY})
       end
     end
   end
