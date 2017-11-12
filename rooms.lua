@@ -1,16 +1,16 @@
 function rooms_load()
   rooms = {}
-  rooms[1] = {{2, 1, 2, 1, 1, 1},
-              {4, 1, 4, 1, 5, 1},
-              {2, 1, 1, 3, 3, 1},
-              {2, 1, 5, 1, 5, 1},
-              {4, 1, 1, 2, 1, 5},
-              {4, 1, 2, 4, 5, 5}}
+  rooms[1] = {{1, 1, 1, 2, 1, 1},
+              {1, 1, 1, 2, 1, 1},
+              {1, 1, 1, 3, 3, 1},
+              {1, 1, 1, 1, 1, 1},
+              {1, 1, 1, 1, 1, 1},
+              {2, 2, 2, 2, 1, 1}}
   rooms[2] = {{1, 1, 1, 1, 1, 1},
-              {1, 1, 4, 4, 1, 1},
-              {1, 1, 2, 4, 1, 1},
-              {1, 1, 2, 2, 1, 1},
-              {1, 1, 2, 4, 1, 5},
+              {1, 1, 1, 2, 1, 1},
+              {1, 1, 1, 2, 1, 1},
+              {1, 1, 1, 3, 1, 1},
+              {3, 1, 3, 3, 1, 1},
               {1, 1, 1, 1, 1, 1}}
   tileType = {[0] = 0, [1] = 1, [2] = 2, [3] = 3, [4] = 2, [5] = 1}
   roomAlphas = {}
@@ -42,6 +42,7 @@ function drawRoom()
 
   drawFlatHazards(currentRoom) -- draw hazards that will be beneath everything regardless
   drawFlatDoors(currentRoom)
+  finish_draw()
   drawFlatParticles(currentRoom)
 
   setValidColor(currentActor) -- sets color of path indicator

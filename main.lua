@@ -20,6 +20,7 @@ require("particle")
 require("map")
 require("delay")
 require("ability")
+require("finish")
 
 function love.load()
   controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, switchActor = "q", use = "e", endTurn = "space", modes = {"1", "2", "3"}}

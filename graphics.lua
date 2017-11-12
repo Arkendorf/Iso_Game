@@ -16,7 +16,6 @@ function graphics_load()
 
   buttonFont = love.graphics.newImageFont("buttonfont.png","1234567890")
 
-  wallImg = love.graphics.newImage("wall.png")
   cursorImg = love.graphics.newImage("cursor.png")
   targetImg = love.graphics.newImage("target.png")
   tileSize = 16
@@ -24,6 +23,8 @@ function graphics_load()
   tiles = {}
   tiles.img, tiles.width, tiles.height, tiles.quad, tiles.info = loadFolder("tiles")
   tileTypeImg = love.graphics.newImage("tileindicator.png")
+
+  startTileImg = love.graphics.newImage("starttile.png")
 
   hazardTiles = {}
   hazardTiles.img, hazardTiles.width, hazardTiles.height, hazardTiles.quad, hazardTiles.info = loadFolder("hazards")
