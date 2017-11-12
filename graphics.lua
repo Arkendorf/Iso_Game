@@ -24,7 +24,8 @@ function graphics_load()
   tiles.img, tiles.width, tiles.height, tiles.quad, tiles.info = loadFolder("tiles")
   tileTypeImg = love.graphics.newImage("tileindicator.png")
 
-  startTileImg = love.graphics.newImage("starttile.png")
+  finishImg = love.graphics.newImage("finish.png")
+  finishQuad = createSpriteSheet(finishImg, 3, 3, 32, 16)
 
   hazardTiles = {}
   hazardTiles.img, hazardTiles.width, hazardTiles.height, hazardTiles.quad, hazardTiles.info = loadFolder("hazards")
