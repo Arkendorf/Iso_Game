@@ -3,6 +3,9 @@ function particle_load()
   particles[1] = {ai = 1, startAI = 1, z = 8, time = .3, speed = 10, maxFrame = 3, img = 1}
   particles[2] = {ai = 2, startAI = 2, z = 8, time = 10, zV = 2, xV = 3, yV = 3, img = 2}
   particles[3] = {ai = 2, startAI = 2, z = 16, time = 10, zV = 0, xV = 1.5, yV = 1.5, img = 3}
+  particles[4] = {ai = 2, startAI = 2, z = 8, time = 10, zV = 2, xV = 3, yV = 3, img = 4}
+  particles[5] = {ai = 3, startAI = 3, z = 8, time = .3, speed = 10, maxFrame = 3, xV = 1.5, yV = 1.5, img = 5}
+
 
   particleAIs = {}
 
@@ -36,6 +39,17 @@ function particle_load()
     v.alpha = (v.time/particles[v.type].time)*255
   end
 
+  particleAIs[3] = function(v, dt)
+    v.x = v.x + v.xV
+    v.xV = v.xV * 0.9
+    v.y = v.y + v.yV
+    v.yV = v.yV * 0.9
+    v.frame = v.frame + dt * v.speed
+    if v.frame >= v.maxFrame+1 then
+      v.frame = 1
+    end
+  end
+
   particleStartAIs = {}
 
   particleStartAIs[1] = function (v)
@@ -44,10 +58,19 @@ function particle_load()
   end
 
   particleStartAIs[2] = function (v)
+    v.displayAngle = 0
     v.move = true
     v.zV = math.random(0, particles[v.type].zV*10)/10
     v.xV = math.random(-particles[v.type].xV*10, particles[v.type].xV*10)/10
     v.yV = math.random(-particles[v.type].yV*10, particles[v.type].yV*10)/10
+  end
+
+  particleStartAIs[3] = function (v)
+    v.speed = particles[v.type].speed
+    v.maxFrame = particles[v.type].maxFrame
+    v.xV = math.random(-particles[v.type].yV*10, particles[v.type].yV*10)/10
+    v.yV = math.random(-particles[v.type].yV*10, particles[v.type].yV*10)/10
+    v.displayAngle = math.atan2(v.yV, v.xV) + math.rad(45)
   end
 end
 

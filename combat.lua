@@ -64,6 +64,8 @@ function combat_load()
     end
     return false
   end
+
+  rps = {{blood = 2}, {blood = 5}, {blood = 4}}
 end
 
 function attack(a, b, table)
@@ -134,8 +136,8 @@ function damage(a, b, table, info)
         v.death = {killer = a, dmg = dmg}
       end
 
-      for i = 1, math.ceil(dmg) do
-        newParticle(a.room, v.x, v.y, 2, 0, (charImgs.height[v.actor.item.img]-tileSize)/2)
+      for i = 1, math.ceil(dmg) do -- bleed
+        newParticle(a.room, v.x, v.y, rps[v.actor.item.type].blood, 0, (charImgs.height[v.actor.item.img]-tileSize)/2)
       end
     end
   end
