@@ -42,12 +42,20 @@ function actor_keypressed(key)
     for i, v in ipairs(currentLevel.actors) do
       v.turnPts = 0
     end
-  elseif key == controls.use and currentActor.move == false and currentActor.turnPts > 0 then
-    newPos = useDoor(tileDoorInfo(currentActor.room, coordToTile(currentActor.x, currentActor.y)))
-    if newPos then
-      currentActor.room, currentActor.x, currentActor.y = newPos.room, newPos.x, newPos.y
-      syncRooms()
-      currentActor.turnPts = currentActor.turnPts - 1
+  elseif key == controls.use then
+    local tX, tY = coordToTile(currentActor.x, currentActor.y)
+    if currentActor.move == false and currentActor.turnPts > 0 then
+      newPos = useDoor(tileDoorInfo(currentActor.room, coordToTile(currentActor.x, currentActor.y)))
+      if newPos then
+        currentActor.room, currentActor.x, currentActor.y = newPos.room, newPos.x, newPos.y
+        syncRooms()
+        currentActor.turnPts = currentActor.turnPts - 1
+      end
+    end
+    if not newPos then -- if there is no door
+      if safe(currentActor) and VIPsSafe() then
+        love.event.quit()
+      end
     end
   else
     for i = 1, 5 do

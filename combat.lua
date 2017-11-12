@@ -237,6 +237,9 @@ function combat_update(dt)
       for j, k in ipairs(currentLevel.enemyActors) do
         k.seen[i] = false
       end
+      if v.actor.item.vip then -- if vip dies, end level
+        love.event.quit()
+      end
       if i == currentActorNum then
         nextActor()
         if i == currentActorNum then

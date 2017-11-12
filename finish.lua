@@ -17,3 +17,22 @@ function finish_draw()
     end
   end
 end
+
+function safe(v)
+  local tX, tY = coordToTile(v.x, v.y)
+  if v.room == currentLevel.finish.room and tX >= currentLevel.finish.x and tX <= currentLevel.finish.x + 2 and tY >= currentLevel.finish.y and tY <= currentLevel.finish.y + 2 then
+    return true
+  else
+    return false
+  end
+end
+
+
+function VIPsSafe()
+  for i, v in ipairs(currentLevel.actors) do
+    if v.actor.item.vip and not safe(v) then
+      return false
+    end
+  end
+  return true
+end
