@@ -185,7 +185,7 @@ end
 function chooseTarget(enemyNum, enemy, targets, cost, minScore)
   table.sort(targets, function (a, b) return a.score > b.score end)
   for i, v in ipairs(targets) do
-    if minScore and v.score < minScore then -- if score is less than minimum end search
+    if minScore and v.score < minScore and v.score <= 0 then -- if score is less than minimum end search, or if less than or equal to 0
       return nil
     end
     if targetValidFuncs[enemy.targetMode](v.item, enemy, cost) == true then

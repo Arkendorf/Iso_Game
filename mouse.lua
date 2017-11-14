@@ -1,5 +1,6 @@
 function mouse_load()
   mouse = {}
+  updateCursor = false
 end
 
 function mouse_update(dt)
@@ -29,8 +30,12 @@ function mouse_update(dt)
     end
   end
 
-  if oldCursorPos and (oldCursorPos.tX ~= cursorPos.tX or oldCursorPos.tY ~= cursorPos.tY) then
+  if oldCursorPos and (oldCursorPos.tX ~= cursorPos.tX or oldCursorPos.tY ~= cursorPos.tY) then -- if cursor has moved, update stuff like path
+    updateCursor = true
+  end
+  if updateCursor and currentActor.move == false then -- only update if current actor is not moving
     updateCursorReliants()
+    updateCursor = false
   end
 end
 
@@ -60,11 +65,11 @@ function updateCursorReliants()
     currentActor.path.tiles = newPath({x = tX, y = tY}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
     currentActor.path.valid = pathIsValid(currentActor.path.tiles, currentActor)
     currentActor.currentCost = #currentActor.path.tiles-1
-  elseif currentActor.mode == 1 and currentActor.move == false then -- find weapon target (if any)
+  elseif currentActor.mode == 1 then -- find weapon target (if any)
     currentActor.currentCost = weapons[currentActor.actor.item.weapon].cost
     currentActor.target.item = findTargetFuncs[currentActor.targetMode](currentActor, cursorPos, currentLevel.enemyActors)
     currentActor.target.valid = targetValidFuncs[currentActor.targetMode](currentActor.target.item, currentActor, currentActor.currentCost)
-  elseif currentActor.mode > 1  and currentActor.move == false then -- find ability target (if any)
+  elseif currentActor.mode > 1 then -- find ability target (if any)
     currentActor.currentCost = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].cost
     currentActor.target.item = findTargetFuncs[currentActor.targetMode](currentActor, cursorPos, currentLevel.enemyActors)
     currentActor.target.valid = targetValidFuncs[currentActor.targetMode](currentActor.target.item, currentActor, currentActor.currentCost)

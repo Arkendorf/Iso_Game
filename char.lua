@@ -74,8 +74,10 @@ function drawActorHud(i, v, img, w)
   if health < 0 then health = 0 end
 
   love.graphics.setColor(palette.red) -- future health
-  love.graphics.rectangle("fill", x+9-cameraPos.x, 6-cameraPos.y, v.futureHealth/v.actor.item.health*(w-9), 2)
   love.graphics.print(tostring(health), x+w+1-smallFont:getWidth(tostring(health))-cameraPos.x, -cameraPos.y)
+  if v.futureHealth > 0 then
+    love.graphics.rectangle("fill", x+9-cameraPos.x, 6-cameraPos.y, v.futureHealth/v.actor.item.health*(w-9), 2)
+  end
 
   -- draw icon
   love.graphics.setColor(palette.green)
