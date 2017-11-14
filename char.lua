@@ -33,27 +33,53 @@ function queueChars(room)
         r, g, b = 100, 200, 100
       end
 
-      if v.anim.quad == 4 then -- draw player and possibly weapon
+      local img = v.actor.item.img -- set img
+
+      if v.anim.quad == 4 then -- draw actor and possibly weapon
         if v.dir == "l" or v.dir == "u" then
           love.graphics.setColor(255, 255, 255)
-          love.graphics.draw(weaponImgs.img[v.weapon], weaponImgs.quad[v.weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[v.weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[v.weapon].center[v.dir].y-cameraPos.y)
+          love.graphics.draw(weaponImgs.img[v.weapon], weaponImgs.quad[v.weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[img].center[v.dir].x-weaponImgs.info[v.weapon].center[v.dir].x-cameraPos.x, 9+charImgs.info[img].center[v.dir].y-weaponImgs.info[v.weapon].center[v.dir].y-cameraPos.y)
         end
         love.graphics.setColor(r, g, b)
-        love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][v.anim.quad][math.floor(v.anim.frame)], -cameraPos.x, -cameraPos.y) -- draw corpse
+        love.graphics.draw(charImgs.img[img], charImgs.quad[img][v.dir][v.anim.quad][math.floor(v.anim.frame)], -cameraPos.x, 9-cameraPos.y) -- draw corpse
         if v.dir == "r" or v.dir == "d" then
           love.graphics.setColor(255, 255, 255)
-          love.graphics.draw(weaponImgs.img[v.weapon], weaponImgs.quad[v.weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[v.actor.item.img].center[v.dir].x-weaponImgs.info[v.weapon].center[v.dir].x-cameraPos.x, charImgs.info[v.actor.item.img].center[v.dir].y-weaponImgs.info[v.weapon].center[v.dir].y-cameraPos.y)
+          love.graphics.draw(weaponImgs.img[v.weapon], weaponImgs.quad[v.weapon][v.dir][v.anim.weaponQuad][math.floor(v.anim.weaponFrame)], charImgs.info[img].center[v.dir].x-weaponImgs.info[v.weapon].center[v.dir].x-cameraPos.x, 9+charImgs.info[img].center[v.dir].y-weaponImgs.info[v.weapon].center[v.dir].y-cameraPos.y)
         end
       else
         love.graphics.setColor(r, g, b)
-        love.graphics.draw(charImgs.img[v.actor.item.img], charImgs.quad[v.actor.item.img][v.dir][v.anim.quad][math.floor(v.anim.frame)], -cameraPos.x, -cameraPos.y) -- draw corpse
+        love.graphics.draw(charImgs.img[img], charImgs.quad[img][v.dir][v.anim.quad][math.floor(v.anim.frame)], -cameraPos.x, 9-cameraPos.y) -- draw corpse
+      end
+
+      -- draw health bar / icons
+      if v.dead == false then
+        drawActorHud(i, v, img, 24)
       end
 
       love.graphics.setCanvas(oldCanvas)
-      love.graphics.setColor(255, 255, 255)
 
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {type = 1, img = canvas, x = math.floor(x)+tileSize*2-charImgs.width[v.actor.item.img]/2, y = math.floor(y)+tileSize/2, z= charImgs.height[v.actor.item.img]-tileSize}
+      drawQueue[#drawQueue + 1] = {type = 1, img = canvas, x = math.floor(x)+tileSize*2-charImgs.width[img]/2, y = math.floor(y)+tileSize/2, z = charImgs.height[img]-tileSize+9}
     end
   end
+end
+
+function drawActorHud(i, v, img, w)
+  love.graphics.setFont(smallFont)
+
+  local x = charImgs.width[img]/2-w/2
+
+  -- draw health number and bar
+  local health = math.floor(v.futureHealth*10)/10
+  if health < 0 then health = 0 end
+
+  love.graphics.setColor(palette.red) -- future health
+  love.graphics.rectangle("fill", x+9-cameraPos.x, 6-cameraPos.y, v.futureHealth/v.actor.item.health*(w-9), 2)
+  love.graphics.print(tostring(health), x+w+1-smallFont:getWidth(tostring(health))-cameraPos.x, -cameraPos.y)
+
+  -- draw icon
+  love.graphics.setColor(palette.green)
+  love.graphics.draw(enemyIcon.img, enemyIcon.quad[v.actor.item.type], x-cameraPos.x, -cameraPos.y)
+
+  love.graphics.setFont(font)
 end

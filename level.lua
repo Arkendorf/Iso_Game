@@ -36,7 +36,7 @@ function startLevel(level)
     v.path = {}
     v.move = false
     v.dead = false
-    v.canvas = love.graphics.newCanvas(charImgs.width[v.actor.item.img], charImgs.height[v.actor.item.img])
+    v.canvas = love.graphics.newCanvas(charImgs.width[v.actor.item.img], charImgs.height[v.actor.item.img]+9)
     v.targetMode = 0
     v.currentCost = 0
     v.coolDowns = {0, 0}
@@ -56,18 +56,26 @@ function startLevel(level)
     v.displayHealth = v.health
     v.futureHealth = v.health
     v.mode = 0
-    v.seen = {}
     v.target = {}
     v.path = {}
     v.move = false
     v.dead = false
     v.targetMode = weapons[v.actor.item.weapon].targetMode
-    v.canvas = love.graphics.newCanvas(charImgs.width[v.actor.item.img], charImgs.height[v.actor.item.img]+12)
+    v.canvas = love.graphics.newCanvas(charImgs.width[v.actor.item.img], charImgs.height[v.actor.item.img]+9)
     v.coolDowns = {0, 0}
     v.effects = {}
     v.dir = "r"
     v.anim = {quad = 1, frame = 1, weaponQuad = 1, weaponFrame = 1}
     v.weapon = weapons[v.actor.item.weapon].img
+    v.seen = {}
+    v.willSee = {}
+    for j, k in ipairs(currentLevel.actors) do -- check if enemy will see a player next turn
+      if isPlayerInView(v, k) then
+        v.willSee[j] = true
+      else
+        v.willSee[j] = false
+      end
+    end
   end
   for i, v in ipairs(currentLevel.hazards) do
     v.alpha = 255

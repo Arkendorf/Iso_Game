@@ -7,6 +7,7 @@ end
 function newCurrentActor(newActorNum)
   currentActorNum = newActorNum
   currentActor = currentLevel.actors[newActorNum]
+  newMove = {seers = {}}
   syncRooms()
 end
 
@@ -67,23 +68,7 @@ function actor_keypressed(key)
 end
 
 function actor_update(dt)
-  if currentActor.move == false then
-    if currentActor.targetMode == 0 then
-      local tX, tY = coordToTile(currentActor.x, currentActor.y)
-      currentActor.path.tiles = newPath({x = tX, y = tY}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
-      currentActor.path.valid = pathIsValid(currentActor.path.tiles, currentActor)
-      currentActor.dmg = 0
-      currentActor.currentCost = #currentActor.path.tiles-1
-    else
-      if currentActor.mode == 1 then
-        currentActor.currentCost = weapons[currentActor.actor.item.weapon].cost
-      else
-        currentActor.currentCost = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].cost
-      end
-      currentActor.target.item = findTargetFuncs[currentActor.targetMode](currentActor, cursorPos, currentLevel.enemyActors)
-      currentActor.target.valid = targetValidFuncs[currentActor.targetMode](currentActor.target.item, currentActor, currentActor.currentCost)
-    end
-  end
+
 
   if playerTurn == true then
     local nextTurn = true
@@ -174,6 +159,9 @@ function actor_mousepressed(x, y, button)
     -- set actor animation
     currentActor.anim.quad = 2
     currentActor.anim.frame = 1
+    for i, v in ipairs(currentLevel.enemyActors) do -- set if player will be seen in its new position next enemy turn
+      v.willSee[currentActorNum] = newMove.seers[i]
+    end
     return true
   elseif button == 1 and currentActor.mode == 1 and currentActor.target.valid == true then
     local x, y = tileToCoord(cursorPos.tX, cursorPos.tY) -- set dir

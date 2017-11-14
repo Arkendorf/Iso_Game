@@ -149,7 +149,7 @@ function enemyactor_update(dt)
           v.y = v.y + v.ragdoll.yV
           v.ragdoll.xV = v.ragdoll.xV * 0.9
           v.ragdoll.yV = v.ragdoll.yV * 0.9
-       end
+        end
       end
     end
   end
@@ -175,8 +175,8 @@ end
 
 function revealPlayers()
   for i, v in ipairs(currentLevel.enemyActors) do
-    for j, k in ipairs(currentLevel.actors) do
-      if isPlayerInView(v, k) == true then
+    for j = 1, # currentLevel.actors do
+      if not v.seen[j] and v.willSee[j] then
         v.seen[j] = true
       end
     end

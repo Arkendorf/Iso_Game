@@ -16,6 +16,8 @@ function graphics_load()
 
   buttonFont = love.graphics.newImageFont("buttonfont.png","1234567890")
 
+  smallFont = love.graphics.newImageFont("smallfont.png","1234567890.-", 1)
+
   cursorImg = love.graphics.newImage("cursor.png")
   targetImg = love.graphics.newImage("target.png")
   tileSize = 16
