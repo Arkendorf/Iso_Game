@@ -39,6 +39,7 @@ end
 function actor_keypressed(key)
   if key == controls.switchActor then
     nextActor()
+    updateCursorReliants()
   elseif key == controls.endTurn then
     for i, v in ipairs(currentLevel.actors) do
       v.turnPts = 0
@@ -150,7 +151,7 @@ function startPlayerTurn()
 end
 
 function actor_mousepressed(x, y, button)
-  if button == 1 and currentActor.mode == 0 and currentActor.move == false and #currentActor.path.tiles > 1 and currentActor.path.valid then
+  if button == 1 and currentActor.mode == 0 and currentActor.move == false and currentActor.path.tiles and #currentActor.path.tiles > 1 and currentActor.path.valid then
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost -- reduce turnPts based on how far the actor is moving
     currentActor.move = true
     currentActor.path.tiles = simplifyPath(currentActor.path.tiles)
@@ -169,6 +170,7 @@ function actor_mousepressed(x, y, button)
     currentActor.dir = coordToStringDir(dir)
 
     attack(currentActor, currentActor.target.item, currentLevel.enemyActors)
+    updateCursorReliants()
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
 
     -- set actor animation
@@ -185,6 +187,7 @@ function actor_mousepressed(x, y, button)
     currentActor.dir = coordToStringDir(dir)
 
     useAbility(currentActor.actor.item.abilities[currentActor.mode-1], currentActor, currentActor.target.item, currentLevel.enemyActors)
+    updateCursorReliants()
     currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
     currentActor.coolDowns[currentActor.mode-1] = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].coolDown
 
