@@ -176,7 +176,7 @@ end
 function revealPlayers()
   for i, v in ipairs(currentLevel.enemyActors) do
     for j = 1, # currentLevel.actors do
-      if not v.seen[j] and v.willSee[j] then
+      if not v.seen[j] and v.willSee[j] and not v.dead then
         v.seen[j] = true
       end
     end
