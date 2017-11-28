@@ -185,7 +185,7 @@ end
 function chooseTarget(enemyNum, enemy, targets, cost, minScore)
   table.sort(targets, function (a, b) return a.score > b.score end)
   for i, v in ipairs(targets) do
-    if minScore and v.score < minScore and v.score <= 0 then -- if score is less than minimum end search, or if less than or equal to 0
+    if (minScore and v.score < minScore) or v.score <= 0 then -- if score is less than minimum end search, or if less than or equal to 0
       return nil
     end
     if targetValidFuncs[enemy.targetMode](v.item, enemy, cost) == true then
@@ -197,13 +197,16 @@ end
 
 function chooseTile(enemyNum, enemy, tiles, minScore)
   table.sort(tiles, function (a, b) return a.score > b.score end)
+  local tX, tY = coordToTile(enemy.x, enemy.y)
+  if tX == tiles[1].tX and tY == tiles[1].tY then -- if current tile is top-scoring tile return no path
+    return {}
+  end
   for i, v in ipairs(tiles) do
     if minScore and v.score < minScore then -- if score is less than minimum end search
       return nil
     end
-    local tX, tY = coordToTile(enemy.x, enemy.y)
     local path = newPath({x = tX, y = tY}, {x = v.tX, y = v.tY}, rooms[enemy.room])
-    if #path > 1 and pathIsValid(path, enemy) then
+    if pathIsValid(path, enemy) then
       return path
     end
   end
