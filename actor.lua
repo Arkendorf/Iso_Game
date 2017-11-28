@@ -16,7 +16,7 @@ function syncRooms()
     currentRoom = currentActor.room
     startRoom(currentRoom)
   end
-  centerCamOnCoords(currentActor.x, currentActor.y)
+  driftCamToCoords(currentActor.x, currentActor.y)
 end
 
 function nextActor()
@@ -39,7 +39,6 @@ end
 function actor_keypressed(key)
   if key == controls.switchActor then
     nextActor()
-    updateCursorReliants()
   elseif key == controls.endTurn then
     for i, v in ipairs(currentLevel.actors) do
       v.turnPts = 0
