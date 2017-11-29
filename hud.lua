@@ -74,15 +74,15 @@ function drawPlayerInfoHud()
   love.graphics.rectangle("fill", 4, screen.h-39, currentActor.displayHealth/currentActor.actor.item.health*214, 3)--health
 
 
-  if currentActor.move == true or (currentActor.target.valid == false and currentActor.path.valid == false) then
+  if currentActor.move == true or (newMove.target.valid == false and newMove.path.valid == false) then
     love.graphics.setColor(palette.turnPts)
     love.graphics.rectangle("fill", 4, screen.h-34, currentActor.displayTurnPts/currentActor.actor.item.turnPts*214, 3)--turnPts
   else
     love.graphics.setColor(gradient(5, palette.turnPts))
     love.graphics.rectangle("fill", 4, screen.h-34, currentActor.displayTurnPts/currentActor.actor.item.turnPts*214, 3)-- current quantity of turnPts
-    if currentActor.turnPts-currentActor.currentCost > 0 then
+    if currentActor.turnPts-newMove.cost > 0 then
       love.graphics.setColor(palette.turnPts)
-      love.graphics.rectangle("fill", 4, screen.h-34, (currentActor.turnPts-currentActor.currentCost)/currentActor.actor.item.turnPts*214, 3)--turnPts left after subtraction
+      love.graphics.rectangle("fill", 4, screen.h-34, (currentActor.turnPts-newMove.cost)/currentActor.actor.item.turnPts*214, 3)--turnPts left after subtraction
     end
   end
   love.graphics.setColor(255, 255, 255)

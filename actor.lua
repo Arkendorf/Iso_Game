@@ -7,7 +7,7 @@ end
 function newCurrentActor(newActorNum)
   currentActorNum = newActorNum
   currentActor = currentLevel.actors[newActorNum]
-  newMove = {seers = {}}
+  newMove = {seers = {}, path = {}, target = {}, cost = 0}
   syncRooms()
 end
 
@@ -150,11 +150,14 @@ function startPlayerTurn()
 end
 
 function actor_mousepressed(x, y, button)
-  if button == 1 and currentActor.mode == 0 and currentActor.move == false and currentActor.path.tiles and #currentActor.path.tiles > 1 and currentActor.path.valid then
-    currentActor.turnPts = currentActor.turnPts - currentActor.currentCost -- reduce turnPts based on how far the actor is moving
+  if button == 1 and currentActor.mode == 0 and currentActor.move == false and newMove.path.tiles and #newMove.path.tiles > 1 and newMove.path.valid then
+    currentActor.path.valid = newMove.path.valid -- set actor's info to info from newMove
+    currentActor.path.tiles = newMove.path.tiles
+    currentActor.path.tiles = simplifyPath(currentActor.path.tiles) -- reduce path to basic turns
+    currentActor.turnPts = currentActor.turnPts - newMove.cost -- reduce turnPts based on how far the actor is moving
     currentActor.move = true
-    currentActor.path.tiles = simplifyPath(currentActor.path.tiles)
-    currentActor.path.valid = false
+
+    newMove.path.valid = false
 
     -- set actor animation
     currentActor.anim.quad = 2
@@ -163,14 +166,16 @@ function actor_mousepressed(x, y, button)
       v.willSee[currentActorNum] = newMove.seers[i]
     end
     return true
-  elseif button == 1 and currentActor.mode == 1 and currentActor.target.valid == true then
+  elseif button == 1 and currentActor.mode == 1 and newMove.target.valid == true then
     local x, y = tileToCoord(cursorPos.tX, cursorPos.tY) -- set dir
     local dir = getDirection(currentActor, {x = x, y = y})
     currentActor.dir = coordToStringDir(dir)
 
+    currentActor.target.item = newMove.target.item -- set actor's info to info from newMove
+    currentActor.target.valid = newMove.target.valid
     attack(currentActor, currentActor.target.item, currentLevel.enemyActors)
+    currentActor.turnPts = currentActor.turnPts - newMove.cost
     updateCursorReliants()
-    currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
 
     -- set actor animation
     currentActor.anim.quad = 4
@@ -180,16 +185,18 @@ function actor_mousepressed(x, y, button)
     currentActor.anim.weaponQuad = 2
     currentActor.anim.weaponFrame = 1
     return true
-  elseif button ==1 and currentActor.mode > 1 and currentActor.target.valid == true and currentActor.coolDowns[currentActor.mode-1] == 0 then
+  elseif button ==1 and currentActor.mode > 1 and newMove.target.valid == true and currentActor.coolDowns[currentActor.mode-1] == 0 then
     local x, y = tileToCoord(cursorPos.tX, cursorPos.tY) -- set dir
     local dir = getDirection(currentActor, {x = x, y = y})
     currentActor.dir = coordToStringDir(dir)
 
+    currentActor.target.item = newMove.target.item -- set actor's info to info from newMove
+    currentActor.target.valid = newMove.target.valid
     useAbility(currentActor.actor.item.abilities[currentActor.mode-1], currentActor, currentActor.target.item, currentLevel.enemyActors)
-    updateCursorReliants()
-    currentActor.turnPts = currentActor.turnPts - currentActor.currentCost
+    currentActor.turnPts = currentActor.turnPts - newMove.cost
     currentActor.coolDowns[currentActor.mode-1] = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].coolDown
-
+    updateCursorReliants()
+    
     -- set actor animation
     currentActor.anim.quad = 4
     currentActor.anim.frame = 1
@@ -232,12 +239,12 @@ function followPath(i, v, dt)
   end
 end
 
-function drawPath(actor)
-  if actor.move == false and actor.path.tiles then -- only draw the path if the actor isn't moving along it
-    for i, v in ipairs(actor.path.tiles) do
-      if i > 1 and i < #actor.path.tiles then
-        local oldTile = {x = actor.path.tiles[i-1].x - v.x, y = actor.path.tiles[i-1].y - v.y}
-        local newTile = {x = actor.path.tiles[i+1].x - v.x, y = actor.path.tiles[i+1].y - v.y}
+function drawPath(actor, path)
+  if actor.move == false and path then -- only draw the path if the actor isn't moving along it
+    for i, v in ipairs(path) do
+      if i > 1 and i < #path then
+        local oldTile = {x = path[i-1].x - v.x, y = path[i-1].y - v.y}
+        local newTile = {x = path[i+1].x - v.x, y = path[i+1].y - v.y}
 
         if math.abs(oldTile.x) == 1 and math.abs(newTile.x) == 1 then
           love.graphics.draw(pathImg, pathQuad[3], tileToIso(v.x, v.y))

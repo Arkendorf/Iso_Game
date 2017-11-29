@@ -67,15 +67,15 @@ function drawEnemyActorHud(i, v, img, w)
 
   local dmg = 0
   local color = palette.red
-  if currentActor.mode == 1 and currentActor.target.item and currentActor.target.valid then
+  if currentActor.mode == 1 and newMove.target.item and newMove.target.valid then
     local info = weapons[currentActor.actor.item.weapon]
-    dmg = getDamage(currentActor, v, currentActor.target.item)
+    dmg = getDamage(currentActor, v, newMove.target.item)
     if dmg > 0 and info.type and v.actor.item.type and crit(info.type, v.actor.item.type) then -- check if attack is a crit
       color = palette.orange
     end
-  elseif currentActor.mode > 1 and currentActor.target.item and currentActor.target.valid then
+  elseif currentActor.mode > 1 and cnewMove.target.item and newMove.target.valid then
     local info = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].dmgInfo
-    dmg = getDamage(currentActor, v, currentActor.target.item, info)
+    dmg = getDamage(currentActor, v, newMove.target.item, info)
     if dmg > 0 and info.type and crit(info.type, v.actor.item.type) then -- check if attack is a crit
       color = palette.orange
     end

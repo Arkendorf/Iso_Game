@@ -73,7 +73,7 @@ function drawMapTiles(room, size) -- what room to draw, size of tiles
   end
 
   -- cursorPos
-  setValidColor(currentActor)
+  setValidColor(currentActor, newMove)
   love.graphics.rectangle("line", (cursorPos.tX-1)*size+1, (cursorPos.tY-1)*size+1, size-2, size-2)
   love.graphics.setColor(255, 255, 255)
 end

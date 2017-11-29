@@ -45,9 +45,9 @@ function drawRoom()
   finish_draw()
   drawFlatParticles(currentRoom)
 
-  setValidColor(currentActor) -- sets color of path indicator
+  setValidColor(currentActor, newMove) -- sets color of path indicator
   if currentActor.mode == 0 then
-    drawPath(currentActor) -- draws path indicator
+    drawPath(currentActor, newMove.path.tiles) -- draws path indicator
   end
   mouse_draw()
 

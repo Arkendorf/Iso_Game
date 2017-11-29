@@ -62,22 +62,22 @@ function pathDirection(a, b)
   end
 end
 
-function setValidColor(actor)
+function setValidColor(actor, move)
   if actor.mode == 0 then
-    if actor.path.valid and tileInTable(cursorPos.tX, cursorPos.tY, actor.room, currentLevel.hazards) then
+    if move.path.valid and tileInTable(cursorPos.tX, cursorPos.tY, actor.room, currentLevel.hazards) then
       love.graphics.setColor(palette.orange)
-    elseif actor.path.valid then
+    elseif move.path.valid then
       love.graphics.setColor(palette.green)
     else
       love.graphics.setColor(palette.red)
     end
   else
-    if actor.target.valid then
+    if move.target.valid then
       local info = nil
       if actor.mode > 1 then
-        info = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].dmgInfo
+        info = abilities[actor.actor.item.abilities[actor.mode-1]].dmgInfo
       end
-      if actor.target.item and getTotalDamage(currentActor, currentActor.target.item, currentLevel.enemyActors, info) <= 0 then
+      if move.target.item and getTotalDamage(actor, move.target.item, currentLevel.enemyActors, info) <= 0 then
         love.graphics.setColor(palette.orange)
       else
         love.graphics.setColor(palette.green)

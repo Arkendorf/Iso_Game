@@ -41,10 +41,10 @@ end
 
 function mouse_draw()
   if currentActor.targetMode == 0 then
-    setValidColor(currentActor)
+    setValidColor(currentActor, newMove)
     love.graphics.draw(cursorImg, tileToIso(cursorPos.tX,cursorPos.tY))
   elseif currentActor.targetMode ~= 3 then
-    setValidColor(currentActor)
+    setValidColor(currentActor, newMove)
     love.graphics.draw(targetImg, tileToIso(cursorPos.tX,cursorPos.tY))
   end
 end
@@ -62,16 +62,16 @@ function updateCursorReliants()
 
     -- create path
     local tX, tY = coordToTile(currentActor.x, currentActor.y)
-    currentActor.path.tiles = newPath({x = tX, y = tY}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
-    currentActor.path.valid = pathIsValid(currentActor.path.tiles, currentActor)
-    currentActor.currentCost = #currentActor.path.tiles-1
+    newMove.path.tiles = newPath({x = tX, y = tY}, {x = cursorPos.tX, y = cursorPos.tY}, rooms[currentRoom])
+    newMove.path.valid = pathIsValid(newMove.path.tiles, currentActor)
+    newMove.cost = #newMove.path.tiles-1
   elseif currentActor.mode == 1 then -- find weapon target (if any)
-    currentActor.currentCost = weapons[currentActor.actor.item.weapon].cost
-    currentActor.target.item = findTargetFuncs[currentActor.targetMode](currentActor, cursorPos, currentLevel.enemyActors)
-    currentActor.target.valid = targetValidFuncs[currentActor.targetMode](currentActor.target.item, currentActor, currentActor.currentCost)
+    newMove.cost = weapons[currentActor.actor.item.weapon].cost
+    newMove.target.item = findTargetFuncs[currentActor.targetMode](currentActor, cursorPos, currentLevel.enemyActors)
+    newMove.target.valid = targetValidFuncs[currentActor.targetMode](newMove.target.item, currentActor, newMove.cost)
   elseif currentActor.mode > 1 then -- find ability target (if any)
-    currentActor.currentCost = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].cost
-    currentActor.target.item = findTargetFuncs[currentActor.targetMode](currentActor, cursorPos, currentLevel.enemyActors)
-    currentActor.target.valid = targetValidFuncs[currentActor.targetMode](currentActor.target.item, currentActor, currentActor.currentCost)
+    newMove.cost = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].cost
+    newMove.target.item = findTargetFuncs[currentActor.targetMode](currentActor, cursorPos, currentLevel.enemyActors)
+    newMove.target.valid = targetValidFuncs[currentActor.targetMode](newMove.target.item, currentActor, newMove.cost)
   end
 end

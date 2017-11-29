@@ -38,7 +38,6 @@ function startLevel(level)
     v.dead = false
     v.canvas = love.graphics.newCanvas(charImgs.width[v.actor.item.img], charImgs.height[v.actor.item.img]+9)
     v.targetMode = 0
-    v.currentCost = 0
     v.coolDowns = {0, 0}
     v.effects = {}
     v.dir = "r"
