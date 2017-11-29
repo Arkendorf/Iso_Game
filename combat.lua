@@ -5,8 +5,8 @@ function combat_load()
   weapons[3] = {type = 3, targetMode = 2, baseDmg = 5, dist = {range = 3, falloff = 1}, cost = 1, projectile = 1, icon = 1, particle = 1, AOE = {range = 3, falloff = 1}, range = 3, img = 1} -- example weapon
 
   projectiles = {}
-  projectiles[1] = {ai = 1, speed = 10, z = 8, img = laserImg}
-  projectiles[2] = {ai = 1, speed = 2, z = 8, img = laserImg}
+  projectiles[1] = {ai = 1, speed = 10, z = 8, img = 1}
+  projectiles[2] = {ai = 1, speed = 2, z = 8, img = 1}
 
   projectileAIs = {}
   projectileAIs[1] = function(v, dt)
@@ -284,8 +284,13 @@ end
 function queueProjectiles(room)
   for i, v in ipairs(currentLevel.projectiles) do
     if v.a.room == room then
+      local img = projectiles[v.type].img
       local x, y = coordToIso(v.x, v.y)
-      drawQueue[#drawQueue + 1] = {type = 2, img = projectiles[v.type].img, quad = projectiles[v.type].quad, x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle}
+      if not projectileImgs.quad[img] then
+        drawQueue[#drawQueue + 1] = {type = 2, img = projectileImgs.img[img], x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle}
+      else
+        drawQueue[#drawQueue + 1] = {type = 2, img = projectileImgs.img[img], quad = projectileImgs.img[img][math.floor(v.frame)], x = math.floor(x)+tileSize, y = math.floor(y)+tileSize/2, z = v.z, angle = v.displayAngle}
+      end
     end
   end
 end

@@ -1,6 +1,7 @@
 function mouse_load()
   mouse = {}
   updateCursor = false
+  cursorPos = {tX = 0, tY = 0}
 end
 
 function mouse_update(dt)

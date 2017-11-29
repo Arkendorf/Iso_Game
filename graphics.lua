@@ -36,13 +36,16 @@ function graphics_load()
   doorTiles.img, doorTiles.width, doorTiles.height, doorTiles.quad, doorTiles.info = loadFolder("doors")
 
   particleImgs = {}
-  particleImgs.img, particleImgs.width, particleImgs.height, particleImgs.quad = loadFolder("particles")
+  particleImgs.img, particleImgs.width, particleImgs.height, particleImgs.quad, particleImgs.info = loadFolder("particles")
 
   charImgs = {}
   charImgs.img, charImgs.width, charImgs.height, charImgs.quad, charImgs.info = loadFolder2("chars")
 
   weaponImgs = {}
   weaponImgs.img, weaponImgs.width, weaponImgs.height, weaponImgs.quad, weaponImgs.info = loadFolder2("weapons")
+
+  projectileImgs = {}
+  projectileImgs.img, projectileImgs.width,projectileImgs.height, projectileImgs.quad, projectileImgs.info = loadFolder("projectiles")
 
   pathImg = love.graphics.newImage("path.png")
   pathQuad = createSpriteSheet(pathImg, 2, 3, 32, 16)
@@ -71,8 +74,6 @@ function graphics_load()
     v.right = love.graphics.newQuad(3+(i-1)*32, 6, 3, 26, boxImg:getDimensions())
     v.pattern = love.graphics.newQuad(6+(i-1)*32, 6, 20, 20, boxImg:getDimensions())
   end
-
-  laserImg = love.graphics.newImage("laser.png")
 end
 
 

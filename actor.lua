@@ -9,6 +9,7 @@ function newCurrentActor(newActorNum)
   currentActor = currentLevel.actors[newActorNum]
   newMove = {seers = {}, path = {}, target = {}, cost = 0}
   syncRooms()
+  updateCursorReliants()
 end
 
 function syncRooms()
@@ -156,8 +157,7 @@ function actor_mousepressed(x, y, button)
     currentActor.path.tiles = simplifyPath(currentActor.path.tiles) -- reduce path to basic turns
     currentActor.turnPts = currentActor.turnPts - newMove.cost -- reduce turnPts based on how far the actor is moving
     currentActor.move = true
-
-    newMove.path.valid = false
+    updateCursorReliants()
 
     -- set actor animation
     currentActor.anim.quad = 2
@@ -196,7 +196,7 @@ function actor_mousepressed(x, y, button)
     currentActor.turnPts = currentActor.turnPts - newMove.cost
     currentActor.coolDowns[currentActor.mode-1] = abilities[currentActor.actor.item.abilities[currentActor.mode-1]].coolDown
     updateCursorReliants()
-    
+
     -- set actor animation
     currentActor.anim.quad = 4
     currentActor.anim.frame = 1
