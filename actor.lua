@@ -14,10 +14,13 @@ end
 
 function syncRooms()
   if currentRoom ~= currentActor.room then
-    currentRoom = currentActor.room
-    startRoom(currentRoom)
+    startOldRoom()
+    currentRoom =  currentActor.room
+    startRoom(currentRoom )
+    centerCamOnCoords(currentActor.x, currentActor.y)
+  else
+    driftCamToCoords(currentActor.x, currentActor.y)
   end
-  driftCamToCoords(currentActor.x, currentActor.y)
 end
 
 function nextActor()

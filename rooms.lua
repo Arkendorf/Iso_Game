@@ -28,6 +28,8 @@ function rooms_update(dt)
     end
   end
   hideObstructions(cursorPos.tX, cursorPos.tY, currentRoom, dt)
+
+  updateOldRoom(dt)
 end
 
 function rooms_draw()
@@ -286,4 +288,37 @@ function resetHiddenObstructions(room)
       v.alpha = 255
     end
   end
+end
+
+function drawOldRoom()
+  if oldRoom and oldRoom.pos < screen.w then
+    love.graphics.setShader(shaders.swap) -- if object is partially transparent, set shader accordingly
+    shaders.swap:send("pos", oldRoom.pos)
+
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.rectangle("fill", 0, 0, screen.w, screen.h) -- temporary extra background
+    love.graphics.setColor(255, 255, 255)
+
+    love.graphics.draw(oldRoom.canvas)
+
+    love.graphics.setShader()
+  end
+end
+
+function updateOldRoom(dt)
+  if oldRoom and oldRoom.pos < screen.w then
+    oldRoom.pos = oldRoom.pos + dt * 1440
+  else
+    oldRoom = nil
+  end
+end
+
+function startOldRoom()
+  oldRoom = {pos = 0}
+  oldRoom.canvas, oldCanvas = startNewCanvas(screen.w, screen.h)
+  love.graphics.push()
+  love.graphics.translate(cameraPos.x, cameraPos.y)
+  drawRoom(currentRoom)
+  love.graphics.setCanvas(oldCanvas)
+  love.graphics.pop()
 end

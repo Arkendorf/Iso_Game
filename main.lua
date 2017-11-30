@@ -78,8 +78,13 @@ function love.draw()
 
   love.graphics.push()
   love.graphics.translate(cameraPos.x, cameraPos.y)
+
   rooms_draw()
+
   love.graphics.pop()
+
+  drawOldRoom()
+
   hud_draw()
   infobox_draw()
   love.graphics.print(love.timer.getFPS())
