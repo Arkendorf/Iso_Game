@@ -52,6 +52,7 @@ function actor_keypressed(key)
         currentActor.room, currentActor.x, currentActor.y = newPos.room, newPos.x, newPos.y
         syncRooms()
         currentActor.turnPts = currentActor.turnPts - 1
+        checkForObstructions()
       end
     end
     if not newPos then -- if there is no door

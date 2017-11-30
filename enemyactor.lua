@@ -33,6 +33,7 @@ function enemyactor_update(dt)
               v.turnPts = v.turnPts - 1
               moveEnemy(i, v, 0) -- check if enemy should move once in new room
               nextTurn = false
+              checkForObstructions()
             end
           end
 

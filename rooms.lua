@@ -17,7 +17,7 @@ function rooms_load()
   roomNodes = {}
 
   drawQueue = {}
-  fadeSpeed = 10
+  fadeSpeed = 1024
 end
 
 function rooms_update(dt)
@@ -28,8 +28,6 @@ function rooms_update(dt)
     end
   end
   hideObstructions(cursorPos.tX, cursorPos.tY, currentRoom, dt)
-  hideHazards(cursorPos.tX, cursorPos.tY, currentRoom, dt)
-  hideDoors(cursorPos.tX, cursorPos.tY, currentRoom, dt)
 end
 
 function rooms_draw()
@@ -146,6 +144,7 @@ function startRoom(room)
   if not roomAlphas[room] then
     roomAlphas[room] = createRoomAlpha(room)
   end
+  resetHiddenObstructions(room)
 end
 
 function createRoomAlpha(room)
@@ -201,23 +200,15 @@ end
 
 function hideObstructions(tX, tY, room, dt)
   local x, y = tileToIso(tX, tY)
-  for i, v in ipairs(rooms[room]) do
+  for i, v in ipairs(rooms[room]) do -- set "transparency" for tiles
     for j, t in ipairs(v) do
-      if j+2 > tX or i+2 > tY then
-        local img = rooms[room][i][j]
-        local x2, y2 = tileToIso(j, i)
-        if (neighbors({x = tX, y = tY}, {x = j, y = i}) == true) or (y2 > y and y2-tiles.height[img]+tileSize - y <= 0 and math.abs(x2 - x) <= tiles.width[img]/2) then
-          if roomAlphas[room][i][j] > 0 then
-            roomAlphas[room][i][j] = roomAlphas[room][i][j] - dt * fadeSpeed
-          else
-            roomAlphas[room][i][j] = 0
-          end
+      local img = rooms[room][i][j]
+      local x2, y2 = tileToIso(j, i)
+      if (j+2 > tX or i+2 > tY) and ((neighbors({x = tX, y = tY}, {x = j, y = i}) == true) or (y2 > y and y2-tiles.height[img]+tileSize - y <= 0 and math.abs(x2 - x) <= tiles.width[img]/2)) then
+        if roomAlphas[room][i][j] > 0 then
+          roomAlphas[room][i][j] = roomAlphas[room][i][j] - dt * fadeSpeed
         else
-          if roomAlphas[room][i][j] < 255 then
-            roomAlphas[room][i][j] = roomAlphas[room][i][j] + dt * fadeSpeed
-          else
-            roomAlphas[room][i][j] = 255
-          end
+          roomAlphas[room][i][j] = 0
         end
       else
         if roomAlphas[room][i][j] < 255 then
@@ -226,6 +217,73 @@ function hideObstructions(tX, tY, room, dt)
           roomAlphas[room][i][j] = 255
         end
       end
+    end
+  end
+  for i, v in ipairs(currentLevel.hazards) do -- set "transparency" for hazards
+    local img = hazards[v.type].img
+    local x2, y2 = tileToIso(v.tX, v.tY)
+    if v.room == room and (v.tX+2 > tX or v.tY+2 > tY) and ((neighbors({x = tX, y = tY}, {x = v.tX, y = v.tY}) == true) or (y2 > y and y2-hazardTiles.height[img]+tileSize - y <= 0 and math.abs(x2 - x) <= hazardTiles.width[img]/2)) then
+      if v.alpha > 0 then
+        v.alpha = v.alpha - dt * fadeSpeed
+      else
+        v.alpha = 0
+      end
+    else
+      if v.alpha < 255 then
+        v.alpha = v.alpha + dt * fadeSpeed
+      else
+        v.alpha = 255
+      end
+    end
+  end
+  for i, v in ipairs(currentLevel.doors) do -- set "transparency" for doors
+    local tX2, tY2 = nil
+    if room == v.room1 then
+      tX2, tY2 = v.tX1, v.tY1
+      if v.blocked[1] == true then
+        img = doors[v.type].img2
+      else
+        img = doors[v.type].img1
+      end
+    else
+      tX2, tY2 = v.tX2, v.tY2
+      if v.blocked[2] == true then
+        img = doors[v.type].img2
+      else
+        img = doors[v.type].img1
+      end
+    end
+    local x2, y2 = tileToIso(tX2, tY2)
+    if (tX2+2 > tX or tY2+2 > tY) and (room == v.room1 or room == v.room2) and ((neighbors({x = tX, y = tY}, {x = tX2, y = tY2}) == true) or (y2 > y and y2-doorTiles.height[img]+tileSize - y <= 0 and math.abs(x2 - x1) <= doorTiles.width[img]/2)) then
+      if v.alpha > 0 then
+        v.alpha = v.alpha - dt * fadeSpeed
+      else
+        v.alpha = 0
+      end
+    else
+      if v.alpha < 255 then
+        v.alpha = v.alpha + dt * fadeSpeed
+      else
+        v.alpha = 255
+      end
+    end
+  end
+end
+
+function resetHiddenObstructions(room)
+  for i, v in ipairs(rooms[room]) do
+    for j, t in ipairs(v) do
+      roomAlphas[room][i][j] = 255
+    end
+  end
+  for i, v in ipairs(currentLevel.hazards) do
+    if v.room == room then
+      v.alpha = 255
+    end
+  end
+  for i, v in ipairs(currentLevel.doors) do
+    if v.room1 == room or v.room2 == room then
+      v.alpha = 255
     end
   end
 end

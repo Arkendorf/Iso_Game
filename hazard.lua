@@ -103,35 +103,3 @@ function updateEffects(table)
     end
   end
 end
-
-
-
-
-function hideHazards(tX, tY, room, dt)
-  local x, y = tileToIso(tX, tY)
-  for i, v in ipairs(currentLevel.hazards) do
-    if v.room == room and v.tX+2 > tX or v.tY+2 > tY then
-      local img = hazards[v.type].img
-      local x2, y2 = tileToIso(v.tX, v.tY)
-      if (neighbors({x = tX, y = tY}, {x = v.tX, y = v.tY}) == true) or (y2 > y and y2-hazardTiles.height[img]+tileSize - y <= 0 and math.abs(x2 - x) <= hazardTiles.width[img]/2) then
-        if v.alpha > 0 then
-          v.alpha = v.alpha - dt * fadeSpeed
-        else
-          v.alpha = 0
-        end
-      else
-        if v.alpha < 255 then
-          v.alpha = v.alpha + dt * fadeSpeed
-        else
-          v.alpha = 255
-        end
-      end
-    else
-      if v.alpha < 255 then
-        v.alpha = v.alpha + dt * fadeSpeed
-      else
-        v.alpha = 255
-      end
-    end
-  end
-end
