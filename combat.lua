@@ -249,6 +249,8 @@ function combat_update(dt)
           break
         end
       end
+
+      checkForObstructions()
     end
   end
 
@@ -264,6 +266,8 @@ function combat_update(dt)
 
       v.dead = true
       v.anim.quad = 6 -- draw enemy as dead
+
+      checkForObstructions()
     end
   end
 

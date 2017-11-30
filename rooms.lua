@@ -17,7 +17,7 @@ function rooms_load()
   roomNodes = {}
 
   drawQueue = {}
-  fadeSpeed = 500
+  fadeSpeed = 100
 end
 
 function rooms_update(dt)
@@ -71,10 +71,11 @@ function drawItemsInQueue()
       v.g = 255
       v.b = 255
     end
-    if not v.alpha then
-      v.alpha = 255
+    if v.alpha and v.alpha < 255 then
+      love.graphics.setShader(shaders.pixelFade) -- if object is partially transparent, set shader accordingly
+      shaders.pixelFade:send("a", v.alpha/255)
     end
-    love.graphics.setColor(v.r, v.g, v.b, v.alpha)
+    love.graphics.setColor(v.r, v.g, v.b)
 
     if v.type == 1 then
       if not v.quad then
@@ -103,6 +104,7 @@ function drawItemsInQueue()
         love.graphics.draw(v.img, v.quad, v.x, v.y-v.z, v.angle, 1, 1, math.floor(w/2), math.floor(h/2))
       end
     end
+    love.graphics.setShader() -- reset shader
   end
   love.graphics.setColor(225, 255, 255)
 end
@@ -172,10 +174,10 @@ function drawFloor(room)
         local x, y = tileToIso(j, i)
         if tileType[t] == 2 then
           local r, g, b = unpack(palette.blue)
-          love.graphics.setColor(r, g, b, 255-roomAlphas[room][i][j])
+          love.graphics.setColor(r, g, b)
         else
           local r, g, b = unpack(palette.cyan)
-          love.graphics.setColor(r, g, b, 255-roomAlphas[room][i][j])
+          love.graphics.setColor(r, g, b)
         end
         love.graphics.draw(tileTypeImg, x, y)
         love.graphics.setColor(255, 255, 255)

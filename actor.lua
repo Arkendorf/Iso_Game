@@ -223,6 +223,8 @@ function followPath(i, v, dt)
         v.anim.quad = 1
         v.anim.frame = 1
       end
+
+      checkForObstructions()
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)

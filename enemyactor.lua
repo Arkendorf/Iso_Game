@@ -300,6 +300,8 @@ function enemyFollowPath(i, v, dt)
 
       v.anim.quad = 1
       v.anim.frame = 1
+
+      checkForObstructions()
     end
   else
     local dir = pathDirection({x = v.x, y = v.y}, path)

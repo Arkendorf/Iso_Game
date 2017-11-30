@@ -42,8 +42,11 @@ function queueHazards(room)
       local x, y = tileToIso(v.tX, v.tY)
       if v.alpha < 255 then -- if hazard is being hidden, draw a marker
         local r, g, b = unpack(palette.red)
-        love.graphics.setColor(r, g, b, 255-v.alpha)
+        love.graphics.setShader(shaders.pixelFadeOpp) -- if hazard is partially transparent, set shader accordingly for marker
+        shaders.pixelFadeOpp:send("a", v.alpha/255)
+        love.graphics.setColor(r, g, b)
         love.graphics.draw(tileTypeImg, x, y)
+        love.graphics.setShader()
       end
 
       local img = hazards[v.type].img
@@ -62,17 +65,22 @@ function drawFlatHazards(room)
       local x, y = tileToIso(v.tX, v.tY)
       if v.alpha < 255 then -- if hazard is being hidden, draw a marker
         local r, g, b = unpack(palette.red)
-        love.graphics.setColor(r, g, b, 255-v.alpha)
+        love.graphics.setShader(shaders.pixelFadeOpp) -- if hazard is partially transparent, set shader accordingly for marker
+        shaders.pixelFadeOpp:send("a", v.alpha/255)
+        love.graphics.setColor(r, g, b)
         love.graphics.draw(tileTypeImg, x, y)
+        love.graphics.setShader(shaders.pixelFade) -- if hazard is partially transparent, set shader accordingly for marker
+        shaders.pixelFadeOpp:send("a", v.alpha/255)
       end
 
       local img = hazards[v.type].img
-      love.graphics.setColor(255, 255, 255, v.alpha)
+      love.graphics.setColor(255, 255, 255)
       if not hazardTiles.quad[img] then
         love.graphics.draw(hazardTiles.img[img], x+tileSize-hazardTiles.width[img]/2, y-hazardTiles.height[img]+tileSize)
       else
         love.graphics.draw(hazardTiles.img[img], hazardTiles.quad[img][math.floor(hazardTiles.info[img].frame)], x+tileSize-hazardTiles.width[img]/2, y-hazardTiles.height[img]+tileSize)
       end
+      love.graphics.setShader()
     end
   end
 end

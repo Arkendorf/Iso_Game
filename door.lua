@@ -19,14 +19,14 @@ function queueDoors(room)
       local img = nil
       if v.room1 == room then
         x, y = tileToIso(v.tX1, v.tY1)
-        if isDoorObstructed(i, 1) == true then
+        if v.blocked[1] == true then
           img = doors[v.type].img2
         else
           img = doors[v.type].img1
         end
       else
         x, y = tileToIso(v.tX2, v.tY2)
-        if isDoorObstructed(i, 2) == true then
+        if v.blocked[2] == true then
           img = doors[v.type].img2
         else
           img = doors[v.type].img1
@@ -34,8 +34,11 @@ function queueDoors(room)
       end
       if v.alpha < 255 then -- if door is being hidden, draw a marker
         local r, g, b = unpack(palette.yellow)
-        love.graphics.setColor(r, g, b, 255-v.alpha)
+        love.graphics.setShader(shaders.pixelFadeOpp) -- if door is partially transparent, set shader accordingly for marker
+        shaders.pixelFadeOpp:send("a", v.alpha/255)
+        love.graphics.setColor(r, g, b)
         love.graphics.draw(tileTypeImg, x, y)
+        love.graphics.setShader()
       end
 
 
@@ -56,14 +59,14 @@ function drawFlatDoors(room)
       local img = nil
       if v.room1 == room then
         x, y = tileToIso(v.tX1, v.tY1)
-        if isDoorObstructed(i, 1) == true then
+        if v.blocked[1] == true then
           img = doors[v.type].img2
         else
           img = doors[v.type].img1
         end
       else
         x, y = tileToIso(v.tX2, v.tY2)
-        if isDoorObstructed(i, 2) == true then
+        if v.blocked[2] == true then
           img = doors[v.type].img2
         else
           img = doors[v.type].img1
@@ -71,16 +74,22 @@ function drawFlatDoors(room)
       end
       if v.alpha < 255 then -- if door is being hidden, draw a marker
         local r, g, b = unpack(palette.yellow)
-        love.graphics.setColor(r, g, b, 255-v.alpha)
+        love.graphics.setShader(shaders.pixelFadeOpp) -- if door is partially transparent, set shader accordingly for marker
+        shaders.pixelFadeOpp:send("a", v.alpha/255)
+        love.graphics.setColor(r, g, b)
         love.graphics.draw(tileTypeImg, x, y)
+
+        love.graphics.setShader(shaders.pixelFade) -- if door is partially transparent, set shader accordingly
+        shaders.pixelFade:send("a", v.alpha/255)
       end
 
-      love.graphics.setColor(255, 255, 255, v.alpha)
+      love.graphics.setColor(255, 255, 255)
       if not doorTiles.quad[img] then
         love.graphics.draw(doorTiles.img[img], x+tileSize-doorTiles.width[img]/2, y-doorTiles.height[img]+tileSize)
       else
         love.graphics.draw(doorTiles.img[img], doorTiles.quad[img][math.floor(doorTiles.info[img].frame)], x+tileSize-doorTiles.width[img]/2, y-doorTiles.height[img]+tileSize)
       end
+      love.graphics.setShader()
     end
   end
 end
@@ -102,14 +111,14 @@ function useDoor(door, side)
     currentDoor = currentLevel.doors[door]
     if side == 1 then
       local x, y = tileToCoord(currentDoor.tX2, currentDoor.tY2)
-      if isDoorObstructed(door, side) == true then
+      if currentDoor.blocked[side] == true then
         return
       else
         return {room = currentDoor.room2, x = x, y = y}
       end
     else
       local x, y = tileToCoord(currentDoor.tX1, currentDoor.tY1)
-      if isDoorObstructed(door, side) == true then
+      if currentDoor.blocked[side] == true then
         return
       else
         return {room = currentDoor.room1, x = x, y = y}
@@ -118,29 +127,35 @@ function useDoor(door, side)
   end
 end
 
+function checkForObstructions()
+  for i, v in ipairs(currentLevel.doors) do
+    v.blocked = {isDoorObstructed(v, 1), isDoorObstructed(v, 2)}
+  end
+end
+
 function isDoorObstructed(door, side)
-  currentDoor = currentLevel.doors[door]
+  currentDoor = door
   if side == 1 then
     local x, y = tileToCoord(currentDoor.tX2, currentDoor.tY2)
     for i, v in ipairs(currentLevel.actors) do -- check if player actor is obstructing door on side 1
-      if (v.room == currentDoor.room2 and v.x == x and v.y == y) or (v.move == true and v.room == currentDoor.room2 and v.path.tiles[#v.path.tiles].x == currentDoor.tX2 and v.path.tiles[#v.path.tiles].y == currentDoor.tY2) then
+      if v.dead == false and (v.room == currentDoor.room2 and v.x == x and v.y == y) or (v.move == true and v.room == currentDoor.room2 and v.path.tiles[#v.path.tiles].x == currentDoor.tX2 and v.path.tiles[#v.path.tiles].y == currentDoor.tY2) then
         return true
       end
     end
     for i, v in ipairs(currentLevel.enemyActors) do  -- check if enemy actor is obstructing door on side 1
-      if (v.room == currentDoor.room2 and v.x == x and v.y == y) or (v.move == true and v.room == currentDoor.room2 and v.path.tiles[#v.path.tiles].x == currentDoor.tX2 and v.path.tiles[#v.path.tiles].y == currentDoor.tY2) then
+      if v.dead == false and (v.room == currentDoor.room2 and v.x == x and v.y == y) or (v.move == true and v.room == currentDoor.room2 and v.path.tiles[#v.path.tiles].x == currentDoor.tX2 and v.path.tiles[#v.path.tiles].y == currentDoor.tY2) then
         return true
       end
     end
   else
     local x, y = tileToCoord(currentDoor.tX1, currentDoor.tY1)
     for i, v in ipairs(currentLevel.actors) do  -- check if player actor is obstructing door on side 2
-      if (v.room == currentDoor.room1 and v.x == x and v.y == y) or (v.move == true and v.room == currentDoor.room1 and v.path.tiles[#v.path.tiles].x == currentDoor.tX1 and v.path.tiles[#v.path.tiles].y == currentDoor.tY1) then
+      if v.dead == false and (v.room == currentDoor.room1 and v.x == x and v.y == y) or (v.move == true and v.room == currentDoor.room1 and v.path.tiles[#v.path.tiles].x == currentDoor.tX1 and v.path.tiles[#v.path.tiles].y == currentDoor.tY1) then
         return true
       end
     end
     for i, v in ipairs(currentLevel.enemyActors) do  -- check if enemy actor is obstructing door on side 2
-      if (v.room == currentDoor.room1 and v.x == x and v.y == y) or (v.move == true and v.room == currentDoor.room1 and v.path.tiles[#v.path.tiles].x == currentDoor.tX1 and v.path.tiles[#v.path.tiles].y == currentDoor.tY1) then
+      if v.dead == false and (v.room == currentDoor.room1 and v.x == x and v.y == y) or (v.move == true and v.room == currentDoor.room1 and v.path.tiles[#v.path.tiles].x == currentDoor.tX1 and v.path.tiles[#v.path.tiles].y == currentDoor.tY1) then
         return true
       end
     end
@@ -154,14 +169,14 @@ function hideDoors(tX1, tY1, room, dt)
     local tX2, tY2 = nil
     if room == v.room1 then
       tX2, tY2 = v.tX1, v.tY1
-      if isDoorObstructed(i, 1) == true then
+      if v.blocked[1] == true then
         img = doors[v.type].img2
       else
         img = doors[v.type].img1
       end
     else
       tX2, tY2 = v.tX2, v.tY2
-      if isDoorObstructed(i, 2) == true then
+      if v.blocked[2] == true then
         img = doors[v.type].img2
       else
         img = doors[v.type].img1

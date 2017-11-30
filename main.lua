@@ -21,6 +21,7 @@ require("map")
 require("delay")
 require("ability")
 require("finish")
+require("shaders")
 
 function love.load()
   controls = {panCamera = {left = "a", right = "d", up = "w", down = "s"}, switchActor = "q", use = "e", endTurn = "space", modes = {"1", "2", "3"}}
@@ -32,6 +33,7 @@ function love.load()
              health = {255, 0, 0}, turnPts = {0, 255, 255}, orange = {255, 127, 0}}
 
   graphics_load()
+  shaders_load()
   infobox_load()
   map_load()
   rooms_load()

@@ -103,15 +103,18 @@ function drawFlatParticles(room)
     if v.room == room and v.z <= 0 then
       local img = particles[v.type].img
       local x, y = coordToIso(v.x, v.y)
+      love.graphics.setShader(shaders.pixelFade) -- if particle is partially transparent, set shader accordingly
+      shaders.pixelFade:send("a", v.alpha/255)
       if not particleImgs.quad[img] then
         local w, h = particleImgs.width[img], particleImgs.height[img]
-        love.graphics.setColor(255, 255, 255, v.alpha)
+        love.graphics.setColor(255, 255, 255)
         love.graphics.draw(particleImgs.img[img], math.floor(x)+tileSize, math.floor(y)+tileSize/2, v.displayAngle, 1, 1, math.floor(w/2), math.floor(h/2))
       else
         local w, h = particleImgs.width[img], particleImgs.height[img]
-        love.graphics.setColor(255, 255, 255, v.alpha)
+        love.graphics.setColor(255, 255, 255)
         love.graphics.draw(particleImgs.img[img], particleImgs.quad[img][math.floor(v.frame)], math.floor(x)+tileSize, math.floor(y)+tileSize/2, v.displayAngle, 1, 1, math.floor(w/2), math.floor(h/2))
       end
+      love.graphics.setShader() -- reset shader
     end
   end
 end

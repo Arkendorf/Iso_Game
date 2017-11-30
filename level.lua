@@ -83,6 +83,8 @@ function startLevel(level)
     v.alpha = 255
   end
 
+  checkForObstructions()
+  
   startRoom(currentRoom)
   centerCamOnCoords(currentLevel.actors[1].x, currentLevel.actors[1].y)
 end
