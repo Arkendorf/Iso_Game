@@ -41,8 +41,6 @@ function queueDoors(room)
         love.graphics.setShader()
       end
 
-
-      local img = doors[v.type].img1
       if not doorTiles.quad[img] then
         drawQueue[#drawQueue + 1] = {type = 1, img = doorTiles.img[img], x = x+tileSize*2-doorTiles.width[img]/2, y = y+tileSize/2, z = doorTiles.height[img]-tileSize, alpha = v.alpha}
       else

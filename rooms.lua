@@ -17,7 +17,7 @@ function rooms_load()
   roomNodes = {}
 
   drawQueue = {}
-  fadeSpeed = 100
+  fadeSpeed = 10
 end
 
 function rooms_update(dt)
@@ -46,7 +46,7 @@ function drawRoom()
   drawFlatParticles(currentRoom)
 
   setValidColor(currentActor, newMove) -- sets color of path indicator
-  if currentActor.mode == 0 then
+  if currentActor.mode == 0 and currentRoom == currentActor.room then
     drawPath(currentActor, newMove.path.tiles) -- draws path indicator
   end
   mouse_draw()

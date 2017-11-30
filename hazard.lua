@@ -70,7 +70,7 @@ function drawFlatHazards(room)
         love.graphics.setColor(r, g, b)
         love.graphics.draw(tileTypeImg, x, y)
         love.graphics.setShader(shaders.pixelFade) -- if hazard is partially transparent, set shader accordingly for marker
-        shaders.pixelFadeOpp:send("a", v.alpha/255)
+        shaders.pixelFade:send("a", v.alpha/255)
       end
 
       local img = hazards[v.type].img
