@@ -33,33 +33,33 @@ function rooms_update(dt)
 end
 
 function rooms_draw()
-  drawRoom()
+  drawRoom(currentRoom)
   love.graphics.setColor(255, 255, 255)
 end
 
-function drawRoom()
-  drawFloor(currentRoom) -- floor is drawn first so it will be at the bottom
+function drawRoom(room)
+  drawFloor(room) -- floor is drawn first so it will be at the bottom
 
-  drawFlatHazards(currentRoom) -- draw hazards that will be beneath everything regardless
-  drawFlatDoors(currentRoom)
-  finish_draw()
-  drawFlatParticles(currentRoom)
+  drawFlatHazards(room) -- draw hazards that will be beneath everything regardless
+  drawFlatDoors(room)
+  drawFinish(room)
+  drawFlatParticles(room)
 
   setValidColor(currentActor, newMove) -- sets color of path indicator
-  if currentActor.mode == 0 and currentRoom == currentActor.room then
+  if currentActor.mode == 0 and room == currentActor.room then
     drawPath(currentActor, newMove.path.tiles) -- draws path indicator
   end
   mouse_draw()
 
   drawQueue = {} -- reset queue
-  queueWalls(currentRoom)
-  queueCover(currentRoom)
-  queueHazards(currentRoom)
-  queueDoors(currentRoom)
-  queueChars(currentRoom)
-  queueEnemyChars(currentRoom)
-  queueParticles(currentRoom)
-  queueProjectiles(currentRoom)
+  queueWalls(room)
+  queueCover(room)
+  queueHazards(room)
+  queueDoors(room)
+  queueChars(room)
+  queueEnemyChars(room)
+  queueParticles(room)
+  queueProjectiles(room)
   table.sort(drawQueue, function(a, b) return a.y < b.y end) -- sort queue to ensure proper layering
   drawItemsInQueue() -- draw items in queue
 end

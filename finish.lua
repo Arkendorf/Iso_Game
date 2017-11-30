@@ -1,5 +1,5 @@
-function finish_draw()
-  if currentActor.room == currentLevel.start.room then -- draw start of level
+function drawFinish(room)
+  if room == currentLevel.start.room then -- draw start of level
     love.graphics.setColor(palette.purple)
     for i = 0, 2 do
       for j = 0, 2 do
@@ -9,7 +9,7 @@ function finish_draw()
     end
   end
 
-  if currentActor.room == currentLevel.finish.room then -- draw end of level
+  if room == currentLevel.finish.room then -- draw end of level
   love.graphics.setColor(palette.yellow)
     for i = 0, 2 do
       for j = 0, 2 do

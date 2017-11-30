@@ -16,7 +16,7 @@ function syncRooms()
   if currentRoom ~= currentActor.room then
     startOldRoom()
     currentRoom =  currentActor.room
-    startRoom(currentRoom )
+    startRoom(currentRoom)
     centerCamOnCoords(currentActor.x, currentActor.y)
   else
     driftCamToCoords(currentActor.x, currentActor.y)
