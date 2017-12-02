@@ -29,6 +29,10 @@ function enemyactor_update(dt)
           if isRoomOccupied(v.room, v.seen) == false and arePlayersSeen(v) then -- use a door if on one and the current room is unoccupied
             local newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
             if newPos then
+              local warp = v.warp
+              warp.x, warp.y, warp.room, warp.alpha = v.x, v.y, v.room, 0 -- set old position in warp
+              warp.active = true
+
               v.room, v.x, v.y = newPos.room, newPos.x, newPos.y
               v.turnPts = v.turnPts - 1
               moveEnemy(i, v, 0) -- check if enemy should move once in new room
@@ -103,6 +107,14 @@ function enemyactor_update(dt)
 
   -- all-time shananigans
   for i, v in ipairs(currentLevel.enemyActors) do
+    if v.warp.active == true then
+      if v.warp.alpha <= 255 then
+        v.warp.alpha = v.warp.alpha + dt * 60 * 4
+      else
+        v.warp.active = false
+      end
+    end
+
     if v.anim.next then -- switch animations if necessary
       v.anim.next.t = v.anim.next.t - dt
       if v.anim.next.t <= 0 then

@@ -1,7 +1,7 @@
 function level_load()
   levels = {}
   levels[1] = {
-               doors = {{room1 = 1, room2 = 2, tX1 = 6, tY1 = 6, tX2 = 6, tY2 = 6, type = 1}, {room1 = 1, room2 = 2, tX1 = 6, tY1 = 1, tX2 = 5, tY2 = 3, type = 1}},
+               doors = {{room1 = 1, room2 = 2, tX1 = 6, tY1 = 6, tX2 = 6, tY2 = 6, type = 1}, {room1 = 1, room2 = 2, tX1 = 6, tY1 = 1, tX2 = 5, tY2 = 3, type = 1}, {room1 = 1, room2 = 1, tX1 = 2, tY1 = 1, tX2 = 5, tY2 = 1, type = 1}},
                hazards = {{tX = 6, tY = 3, type = 1, room = 1}},
                actors = {{actor = {num = 1}}, {actor = {num = 2}}},
                enemyActors = {{actor = {num = 1}, room = 1, start = {x= 2, y = 5}}, {actor = {num = 1}, room = 1, start = {x= 5, y = 2}},
@@ -37,6 +37,7 @@ function startLevel(level)
     v.move = false
     v.dead = false
     v.canvas = love.graphics.newCanvas(charImgs.width[v.actor.item.img], charImgs.height[v.actor.item.img]+9)
+    v.warp = {active = false, canvas = love.graphics.newCanvas(charImgs.width[v.actor.item.img], charImgs.height[v.actor.item.img]+9)}
     v.targetMode = 0
     v.coolDowns = {0, 0}
     v.effects = {}
@@ -61,6 +62,7 @@ function startLevel(level)
     v.dead = false
     v.targetMode = weapons[v.actor.item.weapon].targetMode
     v.canvas = love.graphics.newCanvas(charImgs.width[v.actor.item.img], charImgs.height[v.actor.item.img]+9)
+    v.warp = {active = false, canvas = love.graphics.newCanvas(charImgs.width[v.actor.item.img], charImgs.height[v.actor.item.img]+9)}
     v.coolDowns = {0, 0}
     v.effects = {}
     v.dir = "r"
@@ -84,7 +86,7 @@ function startLevel(level)
   end
 
   checkForObstructions()
-  
+
   startRoom(currentRoom)
   centerCamOnCoords(currentLevel.actors[1].x, currentLevel.actors[1].y)
 end

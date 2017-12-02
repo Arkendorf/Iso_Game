@@ -52,6 +52,10 @@ function actor_keypressed(key)
     if currentActor.move == false and currentActor.turnPts > 0 then
       newPos = useDoor(tileDoorInfo(currentActor.room, coordToTile(currentActor.x, currentActor.y)))
       if newPos then
+        local warp = currentActor.warp
+        warp.x, warp.y, warp.room, warp.alpha = currentActor.x, currentActor.y, currentActor.room, 0 -- set old position in warp
+        warp.active = true
+
         currentActor.room, currentActor.x, currentActor.y = newPos.room, newPos.x, newPos.y
         syncRooms()
         currentActor.turnPts = currentActor.turnPts - 1
@@ -73,8 +77,6 @@ function actor_keypressed(key)
 end
 
 function actor_update(dt)
-
-
   if playerTurn == true then
     local nextTurn = true
     for i, v in ipairs(currentLevel.actors) do
@@ -95,6 +97,14 @@ function actor_update(dt)
 
   -- all-time shananigans
   for i, v in ipairs(currentLevel.actors) do
+    if v.warp.active == true then
+      if v.warp.alpha <= 255 then
+        v.warp.alpha = v.warp.alpha + dt * 60 * 4
+      else
+        v.warp.active = false
+      end
+    end
+
     if v.anim.next then -- switch animations if necessary
       v.anim.next.t = v.anim.next.t - dt
       if v.anim.next.t <= 0 then
@@ -141,7 +151,7 @@ function actor_update(dt)
           v.y = v.y + v.ragdoll.yV
           v.ragdoll.xV = v.ragdoll.xV * 0.9
           v.ragdoll.yV = v.ragdoll.yV * 0.9
-       end
+        end
       end
     end
   end

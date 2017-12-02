@@ -34,10 +34,10 @@ end
 
 function rooms_draw()
   drawRoom(currentRoom)
-  love.graphics.setColor(255, 255, 255)
 end
 
 function drawRoom(room)
+  love.graphics.setColor(255, 255, 255)
   drawFloor(room) -- floor is drawn first so it will be at the bottom
 
   drawFlatHazards(room) -- draw hazards that will be beneath everything regardless
@@ -308,17 +308,24 @@ end
 function updateOldRoom(dt)
   if oldRoom and oldRoom.pos < screen.w then
     oldRoom.pos = oldRoom.pos + dt * 1440
+
+    oldRoom.canvas, oldCanvas = resumeCanvas(oldRoom.canvas)
+    love.graphics.push()
+    love.graphics.translate(cameraPos.x, cameraPos.y)
+    drawRoom(oldRoom.room)
+    love.graphics.setCanvas(oldCanvas)
+    love.graphics.pop()
   else
     oldRoom = nil
   end
 end
 
 function startOldRoom()
-  oldRoom = {pos = 0}
+  oldRoom = {pos = 0, room = currentRoom}
   oldRoom.canvas, oldCanvas = startNewCanvas(screen.w, screen.h)
   love.graphics.push()
   love.graphics.translate(cameraPos.x, cameraPos.y)
-  drawRoom(currentRoom)
+  drawRoom(oldRoom.room)
   love.graphics.setCanvas(oldCanvas)
   love.graphics.pop()
 end

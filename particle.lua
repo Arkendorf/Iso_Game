@@ -6,7 +6,6 @@ function particle_load()
   particles[4] = {ai = 2, startAI = 2, z = 8, time = 10, zV = 2, xV = 3, yV = 3, img = 4}
   particles[5] = {ai = 3, startAI = 3, z = 8, time = .3, speed = 10, maxFrame = 3, xV = 1.5, yV = 1.5, img = 5}
 
-
   particleAIs = {}
 
   particleAIs[1] = function(v, dt)
@@ -50,6 +49,13 @@ function particle_load()
     end
   end
 
+  particleAIs[4] = function(v, dt)
+    v.z = v.z + v.zV * dt
+    if v.z < 0 then
+      v.alpha = 255
+    end
+  end
+
   particleStartAIs = {}
 
   particleStartAIs[1] = function (v)
@@ -71,6 +77,10 @@ function particle_load()
     v.xV = math.random(-particles[v.type].yV*10, particles[v.type].yV*10)/10
     v.yV = math.random(-particles[v.type].yV*10, particles[v.type].yV*10)/10
     v.displayAngle = math.atan2(v.yV, v.xV) + math.rad(45)
+  end
+
+  particleStartAIs[4] = function (v)
+    v.zV = particles[v.type].zV
   end
 end
 
