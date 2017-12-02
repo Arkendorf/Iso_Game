@@ -1,7 +1,7 @@
 function level_load()
   levels = {}
   levels[1] = {
-               doors = {{room1 = 1, room2 = 2, tX1 = 6, tY1 = 6, tX2 = 6, tY2 = 6, type = 1}, {room1 = 1, room2 = 2, tX1 = 6, tY1 = 1, tX2 = 5, tY2 = 3, type = 1}, {room1 = 1, room2 = 1, tX1 = 2, tY1 = 1, tX2 = 5, tY2 = 1, type = 1}},
+               doors = {{room1 = 1, room2 = 2, tX1 = 6, tY1 = 6, tX2 = 6, tY2 = 6, type = 1}, {room1 = 1, room2 = 1, tX1 = 2, tY1 = 1, tX2 = 5, tY2 = 1, type = 1}},
                hazards = {{tX = 6, tY = 3, type = 1, room = 1}},
                actors = {{actor = {num = 1}}, {actor = {num = 2}}},
                enemyActors = {{actor = {num = 1}, room = 1, start = {x= 2, y = 5}}, {actor = {num = 1}, room = 1, start = {x= 5, y = 2}},
@@ -82,7 +82,8 @@ function startLevel(level)
     v.alpha = 255
   end
   for i, v in ipairs(currentLevel.doors) do
-    v.alpha = 255
+    v.alpha1 = 255
+    v.alpha2 = 255
   end
 
   checkForObstructions()

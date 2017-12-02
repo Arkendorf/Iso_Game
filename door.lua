@@ -14,37 +14,48 @@ end
 
 function queueDoors(room)
   for i, v in ipairs(currentLevel.doors) do
-    if (v.room1 == room or v.room2 == room) and doors[v.type].drawType == 2 then
-      local x, y = nil
+    if v.room1 == room and doors[v.type].drawType == 2 then
+      local x, y = tileToIso(v.tX1, v.tY1)
       local img = nil
-      if v.room1 == room then
-        x, y = tileToIso(v.tX1, v.tY1)
-        if v.blocked[1] == true then
-          img = doors[v.type].img2
-        else
-          img = doors[v.type].img1
-        end
+      if v.blocked[1] == true then
+        img = doors[v.type].img2
       else
-        x, y = tileToIso(v.tX2, v.tY2)
-        if v.blocked[2] == true then
-          img = doors[v.type].img2
-        else
-          img = doors[v.type].img1
-        end
+        img = doors[v.type].img1
       end
-      if v.alpha < 255 then -- if door is being hidden, draw a marker
+      if v.alpha1 < 255 then -- if door is being hidden, draw a marker
         local r, g, b = unpack(palette.yellow)
         love.graphics.setShader(shaders.pixelFadeOpp) -- if door is partially transparent, set shader accordingly for marker
-        shaders.pixelFadeOpp:send("a", v.alpha/255)
+        shaders.pixelFadeOpp:send("a", v.alpha1/255)
         love.graphics.setColor(r, g, b)
         love.graphics.draw(tileTypeImg, x, y)
         love.graphics.setShader()
       end
-
       if not doorTiles.quad[img] then
-        drawQueue[#drawQueue + 1] = {type = 1, img = doorTiles.img[img], x = x+tileSize*2-doorTiles.width[img]/2, y = y+tileSize/2, z = doorTiles.height[img]-tileSize, alpha = v.alpha}
+        drawQueue[#drawQueue + 1] = {type = 1, img = doorTiles.img[img], x = x+tileSize*2-doorTiles.width[img]/2, y = y+tileSize/2, z = doorTiles.height[img]-tileSize, alpha = v.alpha1}
       else
-        drawQueue[#drawQueue + 1] = {type = 1, img = doorTiles.img[img], quad = doorTiles.quad[img][math.floor(doorTiles.info[img].frame)], x = x+tileSize*2-doorTiles.width[img]/2, y = y+tileSize/2, z = doorTiles.height[img]-tileSize, alpha = v.alpha}
+        drawQueue[#drawQueue + 1] = {type = 1, img = doorTiles.img[img], quad = doorTiles.quad[img][math.floor(doorTiles.info[img].frame)], x = x+tileSize*2-doorTiles.width[img]/2, y = y+tileSize/2, z = doorTiles.height[img]-tileSize, alpha = v.alpha1}
+      end
+    end
+    if v.room2 == room and doors[v.type].drawType == 2 then
+      local x, y = tileToIso(v.tX2, v.tY2)
+      local img = nil
+      if v.blocked[2] == true then
+        img = doors[v.type].img2
+      else
+        img = doors[v.type].img1
+      end
+      if v.alpha2 < 255 then -- if door is being hidden, draw a marker
+        local r, g, b = unpack(palette.yellow)
+        love.graphics.setShader(shaders.pixelFadeOpp) -- if door is partially transparent, set shader accordingly for marker
+        shaders.pixelFadeOpp:send("a", v.alpha2/255)
+        love.graphics.setColor(r, g, b)
+        love.graphics.draw(tileTypeImg, x, y)
+        love.graphics.setShader()
+      end
+      if not doorTiles.quad[img] then
+        drawQueue[#drawQueue + 1] = {type = 1, img = doorTiles.img[img], x = x+tileSize*2-doorTiles.width[img]/2, y = y+tileSize/2, z = doorTiles.height[img]-tileSize, alpha = v.alpha2}
+      else
+        drawQueue[#drawQueue + 1] = {type = 1, img = doorTiles.img[img], quad = doorTiles.quad[img][math.floor(doorTiles.info[img].frame)], x = x+tileSize*2-doorTiles.width[img]/2, y = y+tileSize/2, z = doorTiles.height[img]-tileSize, alpha = v.alpha2}
       end
     end
   end
@@ -52,35 +63,50 @@ end
 
 function drawFlatDoors(room)
   for i, v in ipairs(currentLevel.doors) do
-    if (v.room1 == room or v.room2 == room) and doors[v.type].drawType == 1 then
-      local x, y = nil
+    if v.room1 == room and doors[v.type].drawType == 1 then -- draw first side of the door
+      local x, y = tileToIso(v.tX1, v.tY1)
       local img = nil
-      if v.room1 == room then
-        x, y = tileToIso(v.tX1, v.tY1)
-        if v.blocked[1] == true then
-          img = doors[v.type].img2
-        else
-          img = doors[v.type].img1
-        end
+      if v.blocked[1] == true then
+        img = doors[v.type].img2
       else
-        x, y = tileToIso(v.tX2, v.tY2)
-        if v.blocked[2] == true then
-          img = doors[v.type].img2
-        else
-          img = doors[v.type].img1
-        end
+        img = doors[v.type].img1
       end
-      if v.alpha < 255 then -- if door is being hidden, draw a marker
+      if v.alpha1 < 255 then -- if door is being hidden, draw a marker
         local r, g, b = unpack(palette.yellow)
         love.graphics.setShader(shaders.pixelFadeOpp) -- if door is partially transparent, set shader accordingly for marker
-        shaders.pixelFadeOpp:send("a", v.alpha/255)
+        shaders.pixelFadeOpp:send("a", v.alpha1/255)
         love.graphics.setColor(r, g, b)
         love.graphics.draw(tileTypeImg, x, y)
 
         love.graphics.setShader(shaders.pixelFade) -- if door is partially transparent, set shader accordingly
-        shaders.pixelFade:send("a", v.alpha/255)
+        shaders.pixelFade:send("a", v.alpha1/255)
       end
+      love.graphics.setColor(255, 255, 255)
+      if not doorTiles.quad[img] then
+        love.graphics.draw(doorTiles.img[img], x+tileSize-doorTiles.width[img]/2, y-doorTiles.height[img]+tileSize)
+      else
+        love.graphics.draw(doorTiles.img[img], doorTiles.quad[img][math.floor(doorTiles.info[img].frame)], x+tileSize-doorTiles.width[img]/2, y-doorTiles.height[img]+tileSize)
+      end
+      love.graphics.setShader()
+    end
+    if v.room2 == room and doors[v.type].drawType == 1 then -- draw second side of door
+      local x, y = tileToIso(v.tX2, v.tY2)
+      local img = nil
+      if v.blocked[2] == true then
+        img = doors[v.type].img2
+      else
+        img = doors[v.type].img1
+      end
+      if v.alpha2 < 255 then -- if door is being hidden, draw a marker
+        local r, g, b = unpack(palette.yellow)
+        love.graphics.setShader(shaders.pixelFadeOpp) -- if door is partially transparent, set shader accordingly for marker
+        shaders.pixelFadeOpp:send("a", v.alpha2/255)
+        love.graphics.setColor(r, g, b)
+        love.graphics.draw(tileTypeImg, x, y)
 
+        love.graphics.setShader(shaders.pixelFade) -- if door is partially transparent, set shader accordingly
+        shaders.pixelFade:send("a", v.alpha2/255)
+      end
       love.graphics.setColor(255, 255, 255)
       if not doorTiles.quad[img] then
         love.graphics.draw(doorTiles.img[img], x+tileSize-doorTiles.width[img]/2, y-doorTiles.height[img]+tileSize)
