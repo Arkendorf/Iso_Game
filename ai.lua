@@ -105,14 +105,14 @@ function goToDoor(enemyNum, enemy)
     if enemy.room == v.room1 then
       for j, k in ipairs(currentLevel.actors) do
         if k.room == v.room2 and enemy.seen[j] == true then
-          potentialTiles = rankPathToTile(enemyNum, enemy, potentialTiles, v.tX1, v.tX2)
+          potentialTiles = rankPathToTile(enemyNum, enemy, potentialTiles, v.tX1, v.tY1)
           break
         end
       end
     elseif enemy.room == v.room2 then
       for j, k in ipairs(currentLevel.actors) do
         if k.room == v.room1 and enemy.seen[j] == true then
-          potentialTiles = rankPathToTile(enemyNum, enemy, potentialTiles, v.tX1, v.tX2)
+          potentialTiles = rankPathToTile(enemyNum, enemy, potentialTiles, v.tX2, v.tY2)
           break
         end
       end

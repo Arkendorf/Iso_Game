@@ -29,6 +29,8 @@ function enemyactor_update(dt)
           if isRoomOccupied(v.room, v.seen) == false and arePlayersSeen(v) then -- use a door if on one and the current room is unoccupied
             local newPos = useDoor(tileDoorInfo(v.room, coordToTile(v.x, v.y)))
             if newPos then
+              nextTurn = false
+              
               local warp = v.warp
               warp.x, warp.y, warp.room, warp.alpha = v.x, v.y, v.room, 0 -- set old position in warp
               warp.active = true
@@ -36,7 +38,7 @@ function enemyactor_update(dt)
               v.room, v.x, v.y = newPos.room, newPos.x, newPos.y
               v.turnPts = v.turnPts - 1
               moveEnemy(i, v, 0) -- check if enemy should move once in new room
-              nextTurn = false
+
               checkForObstructions()
             end
           end

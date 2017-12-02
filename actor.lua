@@ -162,6 +162,7 @@ function startPlayerTurn()
   giveTurnPts(currentLevel.actors)
   updateEffects(currentLevel.actors)
   reduceCoolDowns(currentLevel.actors)
+  updateCursorReliants()
 end
 
 function actor_mousepressed(x, y, button)
